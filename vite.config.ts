@@ -2,6 +2,8 @@ import { defineConfig } from 'vite'
 import mkcert from 'vite-plugin-mkcert'
 import react from '@vitejs/plugin-react-swc'
 import tsconfigPaths from 'vite-tsconfig-paths'
+import { visualizer } from 'rollup-plugin-visualizer'
+import viteCompression from 'vite-plugin-compression'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -14,23 +16,54 @@ export default defineConfig({
     },
   },
   plugins: [
-    // Allows using React dev server along with building a React application with Vite.
-    // https://npmjs.com/package/@vitejs/plugin-react-swc
+    // React development with SWC for fast builds
     react(),
-    // Allows using the compilerOptions.paths property in tsconfig.json.
-    // https://www.npmjs.com/package/vite-tsconfig-paths
+    // Support for TypeScript paths
     tsconfigPaths(),
-    // Creates a custom SSL certificate valid for the local machine.
-    // Using this plugin requires admin rights on the first dev-mode launch.
-    // https://www.npmjs.com/package/vite-plugin-mkcert
+    // Create SSL certificate for HTTPS development
     process.env.HTTPS && mkcert(),
+    // Bundle analyzer (open stats.html after build to see bundle size)
+    process.env.ANALYZE && visualizer({
+      open: true,
+      filename: 'stats.html',
+      gzipSize: true,
+      brotliSize: true,
+    }),
+    // Compress assets for production
+    viteCompression({
+      algorithm: 'gzip',
+      threshold: 10240, // only compress files larger than 10kb
+    }),
+    viteCompression({
+      algorithm: 'brotliCompress',
+      threshold: 10240,
+    }),
   ],
   build: {
     target: 'esnext',
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+      },
+    },
+    // Split chunks for better caching
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'mantine-core': ['@mantine/core', '@mantine/hooks'],
+          'telegram-ui': ['@telegram-apps/telegram-ui', '@telegram-apps/sdk-react'],
+        },
+      },
+    },
+    // Generate source maps only in development
+    sourcemap: process.env.NODE_ENV !== 'production',
   },
   publicDir: './public',
   server: {
-    // Exposes your dev server and makes it accessible for the devices in the same network.
+    // Expose dev server to devices on the network
     host: true,
   },
 })

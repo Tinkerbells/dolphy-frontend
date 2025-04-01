@@ -3,14 +3,14 @@ import '@telegram-apps/telegram-ui/dist/styles.css'
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 import { retrieveLaunchParams } from '@telegram-apps/sdk-react'
+import '@mantine/core/styles.css'
 
 import { init } from '@/init.ts'
-import { Root } from '@/components/root.tsx'
 import { EnvUnsupported } from '@/components/env-unsupported.tsx'
 
-import './index.css'
 // Mock the environment in case, we are outside Telegram.
 import './mockEnv.ts'
+import App from './app.tsx'
 
 const root = ReactDOM.createRoot(document.getElementById('root')!)
 
@@ -21,6 +21,7 @@ try {
     || import.meta.env.DEV
 
   await init({
+  // Configure all application dependencies.
     debug,
     eruda: debug && ['ios', 'android'].includes(platform),
     mockForMacOS: platform === 'macos',
@@ -28,7 +29,7 @@ try {
     .then(() => {
       root.render(
         <StrictMode>
-          <Root />
+          <App />
         </StrictMode>,
       )
     })
