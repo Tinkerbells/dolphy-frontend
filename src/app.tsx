@@ -1,13 +1,14 @@
 import { observer } from 'mobx-react-lite'
 import { AppRoot } from '@telegram-apps/telegram-ui'
-import { Suspense, useEffect, useMemo } from 'react'
 import { Notifications } from '@mantine/notifications'
 import { withErrorBoundary } from 'react-error-boundary'
-import { AppShell, createTheme, LoadingOverlay, MantineProvider } from '@mantine/core'
+import React, { Suspense, useEffect, useMemo } from 'react'
+import { createTheme, LoadingOverlay, MantineProvider } from '@mantine/core'
 import { Navigate, Outlet, Route, HashRouter as Router, Routes } from 'react-router-dom'
 import { isMiniAppDark, retrieveLaunchParams, useSignal } from '@telegram-apps/sdk-react'
 
 import { createUser } from './domain/user'
+import { InversifyProvider } from './di/provider'
 import { BottomNavigation } from './ui/navigation'
 import { useTelegram } from './services/telegram-adapter'
 import { StoreProvider, useStore } from './services/store'
@@ -105,9 +106,11 @@ const AppContent = observer(() => {
 
 // Root provider component
 const Provider = enhance(() => (
-  <StoreProvider>
-    <AppContent />
-  </StoreProvider>
+  <InversifyProvider>
+    <StoreProvider>
+      <AppContent />
+    </StoreProvider>
+  </InversifyProvider>
 ))
 
 export default Provider

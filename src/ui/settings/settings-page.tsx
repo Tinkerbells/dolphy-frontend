@@ -19,10 +19,8 @@ import {
 import type { StudyPreferences } from '../../domain/user'
 
 import { useStore } from '../../services/store'
-import { useTelegram } from '../../services/telegram-adapter'
-import { useNotifier } from '../../services/notification-adapter'
 import { DEFAULT_PREFERENCES, updateUserPreferences } from '../../domain/user'
-import { useDecksStorage, useUserStorage } from '../../services/storage-adapter'
+import { useDIDecksStorage, useDINotifier, useDITelegram, useDIUserStorage } from '../../di/hooks'
 
 // Reset confirmation modal
 const ResetConfirmationModal: React.FC<{
@@ -49,10 +47,10 @@ const ResetConfirmationModal: React.FC<{
 // Settings page component
 export const SettingsPage: React.FC = observer(() => {
   const navigate = useNavigate()
-  const telegram = useTelegram()
-  const notifier = useNotifier()
-  const { user, updateUser } = useUserStorage()
-  const { decks } = useDecksStorage()
+  const telegram = useDITelegram()
+  const notifier = useDINotifier()
+  const userStorage = useDIUserStorage()
+  const deckStorage = useDIDecksStorage()
   const store = useStore()
 
   // Reset confirmation modal
@@ -60,7 +58,7 @@ export const SettingsPage: React.FC = observer(() => {
 
   // Settings state
   const [preferences, setPreferences] = useState<StudyPreferences>(
-    user?.preferences || DEFAULT_PREFERENCES,
+    userStorage.user?.preferences || DEFAULT_PREFERENCES,
   )
 
   // Set page title and back button
@@ -74,18 +72,18 @@ export const SettingsPage: React.FC = observer(() => {
 
   // Update state when user changes
   useEffect(() => {
-    if (user?.preferences) {
-      setPreferences(user.preferences)
+    if (userStorage.user?.preferences) {
+      setPreferences(userStorage.user.preferences)
     }
-  }, [user])
+  }, [userStorage.user])
 
   // Handle save settings
   const handleSaveSettings = () => {
-    if (!user)
+    if (!userStorage.user)
       return
 
-    const updatedUser = updateUserPreferences(user, preferences)
-    updateUser(updatedUser)
+    const updatedUser = updateUserPreferences(userStorage.user, preferences)
+    userStorage.updateUser(updatedUser)
     notifier.notify('Settings saved successfully')
   }
 
@@ -96,13 +94,13 @@ export const SettingsPage: React.FC = observer(() => {
     navigate('/')
   }
 
-  if (!user)
+  if (!userStorage.user)
     return null
 
   // Generate deck options for default deck selection
   const deckOptions = [
     { value: '', label: 'None' },
-    ...decks.map(deck => ({
+    ...deckStorage.decks.map(deck => ({
       value: deck.id,
       label: deck.title,
     })),

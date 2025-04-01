@@ -1,7 +1,9 @@
+// Required by Inversify at the entry point of the application
+import 'reflect-metadata'
 // Include Telegram UI styles first to allow our code override the package CSS.
 import '@telegram-apps/telegram-ui/dist/styles.css'
-import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
+import React, { StrictMode } from 'react'
 import { retrieveLaunchParams } from '@telegram-apps/sdk-react'
 import '@mantine/core/styles.css'
 

@@ -1,6 +1,5 @@
 import { observer } from 'mobx-react-lite'
 import { useDisclosure } from '@mantine/hooks'
-// src/ui/DeckDetail/DeckDetailPage.tsx
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
@@ -23,11 +22,7 @@ import {
 import type { Card as FlashCard } from '../../domain/card'
 
 import { formatDate } from '../../lib/datetime'
-import { useTelegram } from '../../services/telegram-adapter'
-// Import use case for creating cards
-import { useCreateCard } from '../../application/create-card'
-import { useNotifier } from '../../services/notification-adapter'
-import { useCardsStorage, useDecksStorage } from '../../services/storage-adapter'
+import { useDICardsStorage, useDICreateCard, useDIDecksStorage, useDINotifier, useDITelegram } from '../../di/hooks'
 
 // Card component to display a flashcard
 const CardItem: React.FC<{ card: FlashCard }> = observer(({ card }) => {
@@ -88,8 +83,8 @@ const ImportCardsModal: React.FC<{
   deckId: string
 }> = ({ opened, onClose, deckId }) => {
   const [importText, setImportText] = useState('')
-  const { createBulkCards } = useCreateCard() // Import this from application layer
-  const notifier = useNotifier()
+  const { createBulkCards } = useDICreateCard()
+  const notifier = useDINotifier()
 
   const handleImport = async () => {
     if (!importText.trim()) {
@@ -155,15 +150,15 @@ const ImportCardsModal: React.FC<{
 export const DeckDetailPage: React.FC = observer(() => {
   const { deckId } = useParams<{ deckId: string }>()
   const navigate = useNavigate()
-  const telegram = useTelegram()
-  const { getDeck, deleteDeck } = useDecksStorage()
-  const { getCardsByDeck } = useCardsStorage()
+  const telegram = useDITelegram()
+  const deckStorage = useDIDecksStorage()
+  // const cardStorage = useDICardsStorage()
   const [search, setSearch] = useState('')
   const [deleteModalOpened, deleteModal] = useDisclosure(false)
   const [importModalOpened, importModal] = useDisclosure(false)
 
-  const deck = deckId ? getDeck(deckId) : undefined
-  const cards = deckId ? getCardsByDeck(deckId) : []
+  const deck = deckId ? deckStorage.getDeck(deckId) : undefined
+  // const cards = deckId ? cardStorage.getCardsByDeck(deckId) : []
 
   // Set page title and back button
   useEffect(() => {
@@ -185,17 +180,17 @@ export const DeckDetailPage: React.FC = observer(() => {
   if (!deck)
     return null
 
-  // Filter cards by search
-  const filteredCards = cards.filter(card =>
-    card.front.toLowerCase().includes(search.toLowerCase())
-    || card.back.toLowerCase().includes(search.toLowerCase())
-    || card.tags.some(tag => tag.toLowerCase().includes(search.toLowerCase())),
-  )
+  // // Filter cards by search
+  // const filteredCards = cards.filter(card =>
+  //   card.front.toLowerCase().includes(search.toLowerCase())
+  //   || card.back.toLowerCase().includes(search.toLowerCase())
+  //   || card.tags.some(tag => tag.toLowerCase().includes(search.toLowerCase())),
+  // )
 
   // Handle deck deletion
   const handleDeleteDeck = () => {
     if (deckId) {
-      deleteDeck(deckId)
+      deckStorage.deleteDeck(deckId)
       navigate('/')
     }
   }
@@ -238,7 +233,7 @@ export const DeckDetailPage: React.FC = observer(() => {
 
         <Group>
           <Badge color="blue">
-            {cards.length}
+            {/* {cards.length} */}
             {' '}
             cards
           </Badge>
@@ -261,7 +256,7 @@ export const DeckDetailPage: React.FC = observer(() => {
         <Group>
           <Button
             onClick={() => navigate(`/study/${deckId}`)}
-            disabled={cards.length === 0}
+            // disabled={cards.length === 0}
           >
             Study Now
           </Button>
@@ -288,28 +283,28 @@ export const DeckDetailPage: React.FC = observer(() => {
           }
         />
 
-        {filteredCards.length === 0
-          ? (
-              <Stack align="center" gap="md" my="xl">
-                <Text c="dimmed">
-                  {cards.length === 0
-                    ? 'This deck has no cards yet'
-                    : 'No cards match your search'}
-                </Text>
-                <Button
-                  onClick={() => navigate(`/card/new/${deckId}`)}
-                >
-                  Add a Card
-                </Button>
-              </Stack>
-            )
-          : (
-              <SimpleGrid cols={{ base: 1, sm: 2 }}>
-                {filteredCards.map(card => (
-                  <CardItem key={card.id} card={card} />
-                ))}
-              </SimpleGrid>
-            )}
+        {/* {filteredCards.length === 0 */}
+        {/*   ? ( */}
+        {/*       <Stack align="center" gap="md" my="xl"> */}
+        {/*         <Text c="dimmed"> */}
+        {/*           {cards.length === 0 */}
+        {/*             ? 'This deck has no cards yet' */}
+        {/*             : 'No cards match your search'} */}
+        {/*         </Text> */}
+        {/*         <Button */}
+        {/*           onClick={() => navigate(`/card/new/${deckId}`)} */}
+        {/*         > */}
+        {/*           Add a Card */}
+        {/*         </Button> */}
+        {/*       </Stack> */}
+        {/*     ) */}
+        {/*   : ( */}
+        {/*       <SimpleGrid cols={{ base: 1, sm: 2 }}> */}
+        {/*         {filteredCards.map(card => ( */}
+        {/*           <CardItem key={card.id} card={card} /> */}
+        {/*         ))} */}
+        {/*       </SimpleGrid> */}
+        {/*     )} */}
       </Stack>
 
       <DeleteDeckModal

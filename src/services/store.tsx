@@ -1,5 +1,6 @@
+// src/services/store.ts
+import { injectable } from 'inversify'
 import { makeAutoObservable } from 'mobx'
-// src/services/store.tsx
 import React, { createContext, useContext, useState } from 'react'
 
 import type { Card } from '../domain/card'
@@ -9,8 +10,8 @@ import type { StudySession } from '../domain/study'
 
 import { LOCAL_DECKS } from './fake-data'
 
-// MobX Store Class
-class AppStore {
+@injectable()
+export class AppStore {
   user?: User = undefined
   decks: Deck[] = []
   cards: Card[] = []

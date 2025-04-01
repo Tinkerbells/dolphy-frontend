@@ -19,9 +19,7 @@ import {
 
 import type { ReviewType } from '../../domain/study'
 
-import { useStudyDeck } from '../../application/study-deck'
-import { useTelegram } from '../../services/telegram-adapter'
-import { useDecksStorage } from '../../services/storage-adapter'
+import { useDIDecksStorage, useDIStudyDeck, useDITelegram } from '../../di/hooks'
 
 // Session summary modal
 const StudySummaryModal: React.FC<{
@@ -166,9 +164,9 @@ const EndSessionModal: React.FC<{
 export const StudyPage: React.FC = observer(() => {
   const { deckId } = useParams<{ deckId: string }>()
   const navigate = useNavigate()
-  const telegram = useTelegram()
-  const { getDeck } = useDecksStorage()
-  const deck = deckId ? getDeck(deckId) : undefined
+  const telegram = useDITelegram()
+  const deckStorage = useDIDecksStorage()
+  const deck = deckId ? deckStorage.getDeck(deckId) : undefined
 
   const [endSessionOpened, endSessionModal] = useDisclosure(false)
   const [summaryOpened, summaryModal] = useDisclosure(false)
@@ -181,7 +179,7 @@ export const StudyPage: React.FC = observer(() => {
     showAnswer,
     answerCard,
     endStudySession,
-  } = useStudyDeck()
+  } = useDIStudyDeck()
 
   // Initialize study session
   useEffect(() => {
@@ -196,8 +194,6 @@ export const StudyPage: React.FC = observer(() => {
       navigate(`/deck/${deckId}`)
     }
 
-    // Set page title
-
     // Set up back button
     telegram.showBackButton(true)
     const cleanup = telegram.onBackButtonClick(() => {
@@ -207,7 +203,7 @@ export const StudyPage: React.FC = observer(() => {
     return () => {
       cleanup()
     }
-  }, [deckId, navigate, startStudySession, telegram])
+  }, [deckId, navigate, startStudySession, telegram, endSessionModal])
 
   if (!deck || !studyState.studyCards.length)
     return null

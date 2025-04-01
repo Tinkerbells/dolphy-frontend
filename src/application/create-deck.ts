@@ -1,50 +1,63 @@
-// src/application/createDeck.ts
+// src/application/create-deck.ts
+import { inject, injectable } from 'inversify'
+
 import type { Deck, DeckDescription, DeckTitle } from '../domain/deck'
 import type { DeckStorageService, NotificationService, UserStorageService } from './ports'
 
+import { SYMBOLS } from '../di/symbols'
 import { createDeck } from '../domain/deck'
+// Keep the old hook for backward compatibility during transition
 import { useNotifier } from '../services/notification-adapter'
 import { useDecksStorage, useUserStorage } from '../services/storage-adapter'
 
-export function useCreateDeck() {
-  const storage: DeckStorageService = useDecksStorage()
-  const userStorage: UserStorageService = useUserStorage()
-  const notifier: NotificationService = useNotifier()
+@injectable()
+export class CreateDeckService {
+  constructor(
+    @inject(SYMBOLS.DeckStorageService) private storage: DeckStorageService,
+    @inject(SYMBOLS.UserStorageService) private userStorage: UserStorageService,
+    @inject(SYMBOLS.NotificationService) private notifier: NotificationService,
+  ) {}
 
-  async function createNewDeck(title: DeckTitle, description: DeckDescription, tags: string[] = []): Promise<Deck | undefined> {
-    if (!userStorage.user) {
-      notifier.notify('You need to be logged in to create a deck')
+  async createNewDeck(title: DeckTitle, description: DeckDescription, tags: string[] = []): Promise<Deck | undefined> {
+    if (!this.userStorage.user) {
+      this.notifier.notify('You need to be logged in to create a deck')
       return undefined
     }
 
     if (!title.trim()) {
-      notifier.notify('Deck title cannot be empty')
+      this.notifier.notify('Deck title cannot be empty')
       return undefined
     }
 
     // Check for duplicate names
-    const isDuplicate = storage.decks.some(deck =>
+    const isDuplicate = this.storage.decks.some(deck =>
       deck.title.toLowerCase() === title.toLowerCase()
-      && deck.owner === userStorage.user!.id,
+      && deck.owner === this.userStorage.user!.id,
     )
 
     if (isDuplicate) {
-      notifier.notify('You already have a deck with this name')
+      this.notifier.notify('You already have a deck with this name')
       return undefined
     }
 
     try {
-      const deck = createDeck(title, description, userStorage.user.id, tags)
-      storage.createDeck(deck)
-      notifier.notify(`Deck "${title}" created successfully`)
+      const deck = createDeck(title, description, this.userStorage.user.id, tags)
+      this.storage.createDeck(deck)
+      this.notifier.notify(`Deck "${title}" created successfully`)
       return deck
     }
     catch (error) {
-      notifier.notify('Failed to create deck')
+      this.notifier.notify('Failed to create deck')
       console.error('Create deck error:', error)
       return undefined
     }
   }
+}
 
-  return { createNewDeck }
+export function useCreateDeck() {
+  const storage = useDecksStorage()
+  const userStorage = useUserStorage()
+  const notifier = useNotifier()
+
+  return new CreateDeckService(storage, userStorage, notifier)
 }

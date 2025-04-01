@@ -1,7 +1,8 @@
+import { observer } from 'mobx-react-lite'
+
 import './navigation.modules.css'
 
-import { createElement } from 'react'
-import { observer } from 'mobx-react-lite'
+import React, { createElement } from 'react'
 import { Tooltip, UnstyledButton } from '@mantine/core'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { isMiniAppDark, useSignal } from '@telegram-apps/sdk-react'

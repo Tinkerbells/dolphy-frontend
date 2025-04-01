@@ -1,17 +1,24 @@
-// src/application/createCard.ts
+// src/application/create-card.ts
+import { inject, injectable } from 'inversify'
+
 import type { Card, CardFace } from '../domain/card'
 import type { CardStorageService, DeckStorageService, NotificationService } from './ports'
 
+import { SYMBOLS } from '../di/symbols'
 import { createCard } from '../domain/card'
+// Keep the old hook for backward compatibility during transition
 import { useNotifier } from '../services/notification-adapter'
 import { useCardsStorage, useDecksStorage } from '../services/storage-adapter'
 
-export function useCreateCard() {
-  const cardStorage: CardStorageService = useCardsStorage()
-  const deckStorage: DeckStorageService = useDecksStorage()
-  const notifier: NotificationService = useNotifier()
+@injectable()
+export class CreateCardService {
+  constructor(
+    @inject(SYMBOLS.CardStorageService) private cardStorage: CardStorageService,
+    @inject(SYMBOLS.DeckStorageService) private deckStorage: DeckStorageService,
+    @inject(SYMBOLS.NotificationService) private notifier: NotificationService,
+  ) {}
 
-  async function createNewCard(
+  async createNewCard(
     front: CardFace,
     back: CardFace,
     deckId: UniqueId,
@@ -19,14 +26,14 @@ export function useCreateCard() {
   ): Promise<Card | undefined> {
     // Validate input
     if (!front.trim() || !back.trim()) {
-      notifier.notify('Card front and back cannot be empty')
+      this.notifier.notify('Card front and back cannot be empty')
       return undefined
     }
 
     // Check if deck exists
-    const deck = deckStorage.getDeck(deckId)
+    const deck = this.deckStorage.getDeck(deckId)
     if (!deck) {
-      notifier.notify('Deck not found')
+      this.notifier.notify('Deck not found')
       return undefined
     }
 
@@ -35,35 +42,35 @@ export function useCreateCard() {
       const card = createCard(front, back, deckId, tags)
 
       // Save the card
-      cardStorage.createCard(card)
+      this.cardStorage.createCard(card)
 
       // Update deck stats
-      const deckCards = cardStorage.getCardsByDeck(deckId)
+      const deckCards = this.cardStorage.getCardsByDeck(deckId)
       const updatedDeck = {
         ...deck,
         cardCount: deckCards.length,
         newCount: deckCards.filter(c => c.status === 'new').length,
       }
-      deckStorage.updateDeck(updatedDeck)
+      this.deckStorage.updateDeck(updatedDeck)
 
-      notifier.notify('Card created successfully')
+      this.notifier.notify('Card created successfully')
       return card
     }
     catch (error) {
-      notifier.notify('Failed to create card')
+      this.notifier.notify('Failed to create card')
       console.error('Create card error:', error)
       return undefined
     }
   }
 
-  async function createBulkCards(
+  async createBulkCards(
     cards: Array<{ front: CardFace, back: CardFace, tags?: string[] }>,
     deckId: UniqueId,
   ): Promise<Card[]> {
     // Check if deck exists
-    const deck = deckStorage.getDeck(deckId)
+    const deck = this.deckStorage.getDeck(deckId)
     if (!deck) {
-      notifier.notify('Deck not found')
+      this.notifier.notify('Deck not found')
       return []
     }
 
@@ -75,31 +82,37 @@ export function useCreateCard() {
 
       // Skip if no valid cards
       if (newCards.length === 0) {
-        notifier.notify('No valid cards to create')
+        this.notifier.notify('No valid cards to create')
         return []
       }
 
       // Save each card
-      newCards.forEach(card => cardStorage.createCard(card))
+      newCards.forEach(card => this.cardStorage.createCard(card))
 
       // Update deck stats
-      const deckCards = cardStorage.getCardsByDeck(deckId)
+      const deckCards = this.cardStorage.getCardsByDeck(deckId)
       const updatedDeck = {
         ...deck,
         cardCount: deckCards.length,
         newCount: deckCards.filter(c => c.status === 'new').length,
       }
-      deckStorage.updateDeck(updatedDeck)
+      this.deckStorage.updateDeck(updatedDeck)
 
-      notifier.notify(`${newCards.length} cards created successfully`)
+      this.notifier.notify(`${newCards.length} cards created successfully`)
       return newCards
     }
     catch (error) {
-      notifier.notify('Failed to create cards')
+      this.notifier.notify('Failed to create cards')
       console.error('Create bulk cards error:', error)
       return []
     }
   }
+}
 
-  return { createNewCard, createBulkCards }
+export function useCreateCard() {
+  const cardStorage = useCardsStorage()
+  const deckStorage = useDecksStorage()
+  const notifier = useNotifier()
+
+  return new CreateCardService(cardStorage, deckStorage, notifier)
 }

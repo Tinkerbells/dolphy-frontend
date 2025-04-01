@@ -6,7 +6,7 @@ import type {
   RefAttributes,
 } from 'react'
 
-import {
+import React, {
   forwardRef,
 } from 'react'
 

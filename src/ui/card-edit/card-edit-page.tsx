@@ -1,6 +1,5 @@
 import { observer } from 'mobx-react-lite'
 import { useDisclosure } from '@mantine/hooks'
-// src/ui/CardEdit/CardEditPage.tsx
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
@@ -21,10 +20,7 @@ import {
 
 import type { CardFace } from '../../domain/card'
 
-import { useTelegram } from '../../services/telegram-adapter'
-import { useCreateCard } from '../../application/create-card'
-import { useNotifier } from '../../services/notification-adapter'
-import { useCardsStorage, useDecksStorage } from '../../services/storage-adapter'
+import { useDICardsStorage, useDICreateCard, useDIDecksStorage, useDINotifier, useDITelegram } from '../../di/hooks'
 
 // Delete card confirmation modal
 const DeleteCardModal: React.FC<{
@@ -97,14 +93,14 @@ export const CardEditPage: React.FC<{
   mode: 'create' | 'edit'
 }> = observer(({ mode }) => {
   const navigate = useNavigate()
-  const telegram = useTelegram()
-  const notifier = useNotifier()
+  const telegram = useDITelegram()
+  const notifier = useDINotifier()
   const { cardId } = useParams<{ cardId?: string }>()
   const { deckId } = useParams<{ deckId?: string }>()
 
-  const { getCard, deleteCard, getCardsByDeck } = useCardsStorage()
-  const { getDeck } = useDecksStorage()
-  const { createNewCard } = useCreateCard()
+  const cardStorage = useDICardsStorage()
+  const deckStorage = useDIDecksStorage()
+  const { createNewCard } = useDICreateCard()
 
   const [front, setFront] = useState<CardFace>('')
   const [back, setBack] = useState<CardFace>('')
@@ -116,7 +112,7 @@ export const CardEditPage: React.FC<{
   // Get all available tags from the deck
   useEffect(() => {
     if (mode === 'create' && deckId) {
-      const deckCards = getCardsByDeck(deckId)
+      const deckCards = cardStorage.getCardsByDeck(deckId)
       const tagSet = new Set<string>()
       deckCards.forEach((card) => {
         card.tags.forEach(tag => tagSet.add(tag))
@@ -124,9 +120,9 @@ export const CardEditPage: React.FC<{
       setAvailableTags(Array.from(tagSet))
     }
     else if (mode === 'edit' && cardId) {
-      const card = getCard(cardId)
+      const card = cardStorage.getCard(cardId)
       if (card) {
-        const deckCards = getCardsByDeck(card.deckId)
+        const deckCards = cardStorage.getCardsByDeck(card.deckId)
         const tagSet = new Set<string>()
         deckCards.forEach((c) => {
           c.tags.forEach(tag => tagSet.add(tag))
@@ -134,12 +130,12 @@ export const CardEditPage: React.FC<{
         setAvailableTags(Array.from(tagSet))
       }
     }
-  }, [mode, deckId, cardId, getCardsByDeck, getCard])
+  }, [mode, deckId, cardId, cardStorage])
 
   // Load card data for edit mode
   useEffect(() => {
     if (mode === 'edit' && cardId) {
-      const card = getCard(cardId)
+      const card = cardStorage.getCard(cardId)
       if (card) {
         setFront(card.front)
         setBack(card.back)
@@ -150,7 +146,7 @@ export const CardEditPage: React.FC<{
         navigate('/')
       }
     }
-  }, [mode, cardId, getCard, navigate, notifier])
+  }, [mode, cardId, cardStorage, navigate, notifier])
 
   // Set page title and back button
   useEffect(() => {
@@ -161,7 +157,7 @@ export const CardEditPage: React.FC<{
         navigate(`/deck/${deckId}`)
       }
       else if (mode === 'edit' && cardId) {
-        const card = getCard(cardId)
+        const card = cardStorage.getCard(cardId)
         if (card) {
           navigate(`/deck/${card.deckId}`)
         }
@@ -175,14 +171,14 @@ export const CardEditPage: React.FC<{
     })
 
     return cleanup
-  }, [mode, deckId, cardId, telegram, navigate, getCard])
+  }, [mode, deckId, cardId, telegram, navigate, cardStorage])
 
   // Get the current deck
   const deck = mode === 'create' && deckId
-    ? getDeck(deckId)
+    ? deckStorage.getDeck(deckId)
     : mode === 'edit' && cardId
-      ? getCard(cardId)?.deckId
-        ? getDeck(getCard(cardId)!.deckId)
+      ? cardStorage.getCard(cardId)?.deckId
+        ? deckStorage.getDeck(cardStorage.getCard(cardId)!.deckId)
         : undefined
       : undefined
 
@@ -204,7 +200,7 @@ export const CardEditPage: React.FC<{
     }
     else if (mode === 'edit' && cardId) {
       // Update existing card
-      const card = getCard(cardId)
+      const card = cardStorage.getCard(cardId)
       if (card) {
         const updatedCard = {
           ...card,
@@ -212,7 +208,7 @@ export const CardEditPage: React.FC<{
           back,
           tags,
         }
-        useCardsStorage().updateCard(updatedCard)
+        cardStorage.updateCard(updatedCard)
         notifier.notify('Card updated successfully')
         navigate(`/deck/${card.deckId}`)
       }
@@ -222,21 +218,14 @@ export const CardEditPage: React.FC<{
   // Handle delete button click
   const handleDelete = () => {
     if (mode === 'edit' && cardId) {
-      const card = getCard(cardId)
+      const card = cardStorage.getCard(cardId)
       if (card) {
-        deleteCard(cardId)
+        cardStorage.deleteCard(cardId)
         notifier.notify('Card deleted successfully')
         navigate(`/deck/${card.deckId}`)
       }
     }
   }
-
-  // Create a new tag
-  // const handleCreateTag = (query: string) => {
-  //   setTags([...tags, query])
-  //   setAvailableTags([...availableTags, query])
-  //   return query
-  // }
 
   if (!deck && mode === 'create') {
     // Redirect if we don't have a valid deck for creating
@@ -306,7 +295,7 @@ export const CardEditPage: React.FC<{
                 navigate(`/deck/${deckId}`)
               }
               else if (mode === 'edit' && cardId) {
-                const card = getCard(cardId)
+                const card = cardStorage.getCard(cardId)
                 if (card)
                   navigate(`/deck/${card.deckId}`)
               }

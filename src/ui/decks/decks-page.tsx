@@ -21,15 +21,13 @@ import {
 import type { Deck } from '../../domain/deck'
 
 import { useStore } from '../../services/store'
-import { useTelegram } from '../../services/telegram-adapter'
-import { useCreateDeck } from '../../application/create-deck'
-import { useCardsStorage } from '../../services/storage-adapter'
 import { formatDate, formatRelativeTime } from '../../lib/datetime'
+import { useDICardsStorage, useDICreateDeck, useDITelegram } from '../../di/hooks'
 
 const DeckCard: React.FC<{ deck: Deck }> = observer(({ deck }) => {
   const navigate = useNavigate()
-  const { getCardsByDeck } = useCardsStorage()
-  const deckCards = getCardsByDeck(deck.id)
+  // const cardStorage = useDICardsStorage()
+  // const deckCards = cardStorage.getCardsByDeck(deck.id)
 
   // Calculate due cards
   const dueCount = deck.newCount + deck.reviewCount + deck.learningCount
@@ -47,7 +45,7 @@ const DeckCard: React.FC<{ deck: Deck }> = observer(({ deck }) => {
 
         <Group gap="xs" mt="md">
           <Badge color="blue">
-            {deckCards.length}
+            {/* {deckCards.length} */}
             {' '}
             cards
           </Badge>
@@ -74,7 +72,7 @@ const DeckCard: React.FC<{ deck: Deck }> = observer(({ deck }) => {
               e.stopPropagation()
               navigate(`/study/${deck.id}`)
             }}
-            disabled={deckCards.length === 0}
+            // disabled={deckCards.length === 0}
           >
             Study Now
           </Button>
@@ -98,14 +96,14 @@ const CreateDeckModal: React.FC<{
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const navigate = useNavigate()
-  const { createNewDeck } = useCreateDeck()
+  // const createDeckService = useDICreateDeck()
 
   const handleSubmit = async () => {
-    const deck = await createNewDeck(title, description)
-    if (deck) {
-      onClose()
-      navigate(`/deck/${deck.id}`)
-    }
+    // const deck = await createDeckService.createNewDeck(title, description)
+    // if (deck) {
+    //   onClose()
+    //   navigate(`/deck/${deck.id}`)
+    // }
   }
 
   return (
@@ -138,7 +136,7 @@ const CreateDeckModal: React.FC<{
 // Main Decks Page component
 export const DecksPage: React.FC = observer(() => {
   const navigate = useNavigate()
-  const telegram = useTelegram()
+  const telegram = useDITelegram()
   const store = useStore()
   const [search, setSearch] = useState('')
   const [opened, { open, close }] = useDisclosure(false)

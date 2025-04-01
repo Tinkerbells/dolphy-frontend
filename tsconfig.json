@@ -8,6 +8,8 @@
       "DOM.Iterable"
     ],
     "useDefineForClassFields": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
     "paths": {
@@ -17,15 +19,16 @@
     },
     "resolveJsonModule": true,
     "types": [
-      "vite/client"
+      "vite/client",
+      "reflect-metadata"
     ],
     "allowImportingTsExtensions": true,
     "strict": true,
-    "isolatedModules": true,
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noEmit": true,
+    "isolatedModules": true,
     "skipLibCheck": true
   },
   "references": [
