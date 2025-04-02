@@ -11,8 +11,6 @@ import { compose, ErrorHandler, logError } from './lib/react'
 
 // Lazy load page components
 const DecksPage = React.lazy(() => import('./pages/decks/decks-page').then(module => ({ default: module.DecksPage })))
-const DeckDetailsPage = React.lazy(() => import('./pages/decks/deck-detail-page').then(module => ({ default: module.DeckDetailsPage })))
-const StudyPage = React.lazy(() => import('./pages/decks/study-page').then(module => ({ default: module.StudyPage })))
 
 // Create theme
 const theme = createTheme({
@@ -54,8 +52,6 @@ const AppRouter = enhance(() => {
         <Routes>
           <Route element={<MainLayout />}>
             <Route path="/" element={<DecksPage />} />
-            <Route path="/deck/:deckId" element={<DeckDetailsPage />} />
-            <Route path="/study/:deckId" element={<StudyPage />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Route>
         </Routes>

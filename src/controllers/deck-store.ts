@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify'
-import { action, computed, makeObservable, observable, runInAction } from 'mobx'
+import { makeObservable, runInAction } from 'mobx'
 
 import { Decks } from '@/models/decks'
 
@@ -11,10 +11,10 @@ import { SYMBOLS } from '../di/symbols'
 
 @injectable()
 export class DeckStore {
-  @observable decks: Decks = new Decks()
-  @observable selectedDeck?: Deck
-  @observable isLoading = false
-  @observable error?: string
+  decks: Decks = new Decks()
+  selectedDeck?: Deck
+  isLoading = false
+  error?: string
 
   constructor(
     @inject(SYMBOLS.DeckService) private deckService: DeckService,
@@ -23,17 +23,14 @@ export class DeckStore {
     makeObservable(this)
   }
 
-  @computed
   get deckCount(): number {
     return this.decks.deckCount
   }
 
-  @computed
   get hasDecks(): boolean {
     return this.decks.hasDecks
   }
 
-  @action
   async loadDecks() {
     this.isLoading = true
     this.error = undefined
@@ -54,7 +51,6 @@ export class DeckStore {
     }
   }
 
-  @action
   async createDeck(title: string, description: string, tags: string[] = []) {
     this.isLoading = true
     this.error = undefined
@@ -77,12 +73,10 @@ export class DeckStore {
     }
   }
 
-  @action
   selectDeck(deckId: string) {
     this.selectedDeck = this.decks.selectDeck(deckId)
   }
 
-  @action
   async updateDeck(deck: Deck) {
     this.isLoading = true
     this.error = undefined
@@ -105,7 +99,6 @@ export class DeckStore {
     }
   }
 
-  @action
   async deleteDeck(deckId: string) {
     this.isLoading = true
     this.error = undefined
