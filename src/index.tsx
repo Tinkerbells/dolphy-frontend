@@ -11,6 +11,8 @@ import App from './app'
 import { init } from './init'
 // Mock the environment in case, we are outside Telegram.
 import './mockEnv'
+// Импортируем настройку MobX DevTools
+import { setupMobxDevTools } from './devtools'
 import { EnvUnsupported } from './components/env-unsupported'
 
 const root = ReactDOM.createRoot(document.getElementById('root')!)
@@ -28,6 +30,9 @@ try {
     mockForMacOS: platform === 'macos',
   })
     .then(() => {
+      // Вызываем настройку MobX DevTools после инициализации приложения
+      setupMobxDevTools()
+
       root.render(
         <StrictMode>
           <App />

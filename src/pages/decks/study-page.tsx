@@ -3,33 +3,31 @@ import { observer } from 'mobx-react-lite'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Container, Group, Stack, Title } from '@mantine/core'
 
-import { useDeckStore, useStudyStore } from '@/controllers/store'
+import type { DeckStore } from '@/controllers/deck-store'
+import type { StudyStore } from '@/controllers/study-store'
+
+import { SYMBOLS } from '@/di/symbols'
+import { withDependencies } from '@/di/inject'
 
 import type { ReviewType } from '../../domain/study'
 
 import { StudyCardView } from '../../views/study/study-card'
-import { useTelegramService } from '../../services/telegram-service'
 
-export const StudyPage = observer(() => {
+interface StudyPageProps {
+  deckStore: DeckStore
+  studyStore: StudyStore
+}
+
+const StudyPageComponent = observer(({ deckStore, studyStore }: StudyPageProps) => {
   const { deckId } = useParams<{ deckId: string }>()
   const navigate = useNavigate()
-  const studyStore = useStudyStore()
-  const deckStore = useDeckStore()
-  const telegram = useTelegramService()
 
   useEffect(() => {
-    telegram.showBackButton(true)
-    telegram.onBackButtonClick(() => navigate(`/deck/${deckId}`))
-
     if (deckId) {
       deckStore.selectDeck(deckId)
       studyStore.startStudySession(deckId)
     }
-
-    return () => {
-      telegram.showBackButton(false)
-    }
-  }, [deckId, deckStore, studyStore, telegram, navigate])
+  }, [deckId, deckStore, studyStore, navigate])
 
   const handleShowAnswer = () => {
     studyStore.revealAnswer()
@@ -66,3 +64,11 @@ export const StudyPage = observer(() => {
     </Container>
   )
 })
+
+export const StudyPage = withDependencies(
+  StudyPageComponent,
+  {
+    deckStore: SYMBOLS.DeckStore,
+    studyStore: SYMBOLS.StudyStore,
+  },
+)

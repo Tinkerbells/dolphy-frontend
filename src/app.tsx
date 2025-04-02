@@ -7,7 +7,6 @@ import { createTheme, LoadingOverlay, MantineProvider } from '@mantine/core'
 import { Navigate, Outlet, Route, HashRouter as Router, Routes } from 'react-router-dom'
 
 import { AppProvider } from './di/provider'
-import { BottomNavigation } from './ui/navigation'
 import { compose, ErrorHandler, logError } from './lib/react'
 
 // Lazy load page components
@@ -24,7 +23,6 @@ function MainLayout() {
   return (
     <div className="root-wrapper">
       <Outlet />
-      <BottomNavigation />
     </div>
   )
 }

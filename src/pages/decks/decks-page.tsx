@@ -5,30 +5,30 @@ import { useDisclosure } from '@mantine/hooks'
 import React, { useEffect, useState } from 'react'
 import { ActionIcon, Container, Group, Modal, Stack, TextInput, Title } from '@mantine/core'
 
-import { useDeckStore } from '@/controllers/store'
+import type { DeckStore } from '@/controllers/deck-store'
+
+import { SYMBOLS } from '@/di/symbols'
+import { withDependencies } from '@/di/inject'
 
 import { DeckFormView } from '../../views/decks/deck-form.view'
 import { DeckListView } from '../../views/decks/deck-list.view'
-import { useTelegramService } from '../../services/telegram-service'
 
-export const DecksPage = observer(() => {
+interface DecksPageProps {
+  deckStore: DeckStore
+}
+
+const DecksPageComponent = observer(({ deckStore }: DecksPageProps) => {
   const navigate = useNavigate()
-  const deckStore = useDeckStore()
-  const telegram = useTelegramService()
   const [search, setSearch] = useState('')
   const [opened, { open, close }] = useDisclosure(false)
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
 
   useEffect(() => {
-    telegram.showBackButton(false)
     deckStore.loadDecks()
-  }, [telegram, deckStore])
+  }, [deckStore])
 
-  const filteredDecks = deckStore.decks.filter(deck =>
-    deck.title.toLowerCase().includes(search.toLowerCase())
-    || deck.description.toLowerCase().includes(search.toLowerCase()),
-  )
+  const filteredDecks = deckStore.decks.filter(search)
 
   const handleCreateDeck = async () => {
     const result = await deckStore.createDeck(title, description)
@@ -89,3 +89,10 @@ export const DecksPage = observer(() => {
     </Container>
   )
 })
+
+export const DecksPage = withDependencies(
+  DecksPageComponent,
+  {
+    deckStore: SYMBOLS.DeckStore,
+  },
+)

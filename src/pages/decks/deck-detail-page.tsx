@@ -5,35 +5,33 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { ActionIcon, Button, Container, Group, Modal, Stack, Title } from '@mantine/core'
 
-import { useCardStore, useDeckStore } from '@/controllers/store'
+import type { DeckStore } from '@/controllers/deck-store'
+import type { CardStore } from '@/controllers/card-store'
+
+import { SYMBOLS } from '@/di/symbols'
+import { withDependencies } from '@/di/inject'
 
 import { CardFormView } from '../../views/cards/cards-form.view'
 import { CardListView } from '../../views/cards/cards-list.view'
-import { useTelegramService } from '../../services/telegram-service'
 
-export const DeckDetailsPage = observer(() => {
+interface DeckDetailsPageProps {
+  deckStore: DeckStore
+  cardStore: CardStore
+}
+
+const DeckDetailsComponent = observer(({ deckStore, cardStore }: DeckDetailsPageProps) => {
   const { deckId } = useParams<{ deckId: string }>()
   const navigate = useNavigate()
-  const deckStore = useDeckStore()
-  const cardStore = useCardStore()
-  const telegram = useTelegramService()
   const [opened, { open, close }] = useDisclosure(false)
   const [front, setFront] = useState('')
   const [back, setBack] = useState('')
 
   useEffect(() => {
-    telegram.showBackButton(true)
-    telegram.onBackButtonClick(() => navigate('/'))
-
     if (deckId) {
       deckStore.selectDeck(deckId)
       cardStore.loadCardsByDeck(deckId)
     }
-
-    return () => {
-      telegram.showBackButton(false)
-    }
-  }, [deckId, deckStore, cardStore, telegram, navigate])
+  }, [deckId, deckStore, cardStore, navigate])
 
   const handleCreateCard = async () => {
     if (!deckId)
@@ -86,3 +84,11 @@ export const DeckDetailsPage = observer(() => {
     </Container>
   )
 })
+
+export const DeckDetailsPage = withDependencies(
+  DeckDetailsComponent,
+  {
+    deckStore: SYMBOLS.DeckStore,
+    cardStore: SYMBOLS.CardStore,
+  },
+)

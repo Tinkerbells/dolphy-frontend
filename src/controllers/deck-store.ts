@@ -1,6 +1,8 @@
 import { inject, injectable } from 'inversify'
 import { action, computed, makeObservable, observable, runInAction } from 'mobx'
 
+import { Decks } from '@/models/decks'
+
 import type { Deck } from '../domain/deck'
 import type { DeckService } from '../services/deck-service'
 import type { NotificationService } from '../services/notification-service'
@@ -9,7 +11,7 @@ import { SYMBOLS } from '../di/symbols'
 
 @injectable()
 export class DeckStore {
-  @observable decks: Deck[] = []
+  @observable decks: Decks = new Decks()
   @observable selectedDeck?: Deck
   @observable isLoading = false
   @observable error?: string
@@ -23,12 +25,12 @@ export class DeckStore {
 
   @computed
   get deckCount(): number {
-    return this.decks.length
+    return this.decks.deckCount
   }
 
   @computed
   get hasDecks(): boolean {
-    return this.decks.length > 0
+    return this.decks.hasDecks
   }
 
   @action
@@ -39,7 +41,7 @@ export class DeckStore {
     try {
       const decks = await this.deckService.getAllDecks()
       runInAction(() => {
-        this.decks = decks
+        this.decks.setDecks(decks)
         this.isLoading = false
       })
     }
@@ -60,7 +62,6 @@ export class DeckStore {
     try {
       const deck = await this.deckService.createDeck(title, description, tags)
       runInAction(() => {
-        this.decks.push(deck)
         this.isLoading = false
         this.notifier.notify(`Deck "${title}" created successfully`)
       })
@@ -78,7 +79,7 @@ export class DeckStore {
 
   @action
   selectDeck(deckId: string) {
-    this.selectedDeck = this.decks.find(deck => deck.id === deckId)
+    this.selectedDeck = this.decks.selectDeck(deckId)
   }
 
   @action
@@ -89,13 +90,6 @@ export class DeckStore {
     try {
       await this.deckService.updateDeck(deck)
       runInAction(() => {
-        const index = this.decks.findIndex(d => d.id === deck.id)
-        if (index !== -1) {
-          this.decks[index] = deck
-          if (this.selectedDeck?.id === deck.id) {
-            this.selectedDeck = deck
-          }
-        }
         this.isLoading = false
         this.notifier.notify('Deck updated successfully')
       })
@@ -119,7 +113,6 @@ export class DeckStore {
     try {
       await this.deckService.deleteDeck(deckId)
       runInAction(() => {
-        this.decks = this.decks.filter(deck => deck.id !== deckId)
         if (this.selectedDeck?.id === deckId) {
           this.selectedDeck = undefined
         }
