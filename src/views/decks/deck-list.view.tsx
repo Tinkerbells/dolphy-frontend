@@ -1,12 +1,10 @@
 import React from 'react'
 import { Badge, Button, Card, Group, SimpleGrid, Stack, Text, Title } from '@mantine/core'
 
-import type { Deck } from '../../domain/deck'
-
 import { formatDate, formatRelativeTime } from '../../lib/datetime'
 
 interface DeckListViewProps {
-  decks: Deck[]
+  decks: any
   loading: boolean
   onDeckClick: (deckId: string) => void
   onStudyClick: (deckId: string) => void
@@ -111,4 +109,3 @@ export const DeckListView: React.FC<DeckListViewProps> = ({
     </Stack>
   )
 }
-
