@@ -1,20 +1,24 @@
 export const SYMBOLS = {
-  // Storage services
-  UserStorageService: Symbol.for('UserStorageService'),
-  DeckStorageService: Symbol.for('DeckStorageService'),
-  CardStorageService: Symbol.for('CardStorageService'),
-  StudySessionStorageService: Symbol.for('StudySessionStorageService'),
+  // Core
+  StorageAdapter: Symbol.for('StorageAdapter'),
 
-  // Other services
+  // Repositories
+  UserRepository: Symbol.for('UserRepository'),
+  DeckRepository: Symbol.for('DeckRepository'),
+  CardRepository: Symbol.for('CardRepository'),
+  StudySessionRepository: Symbol.for('StudySessionRepository'),
+
+  // Services
   NotificationService: Symbol.for('NotificationService'),
   TelegramService: Symbol.for('TelegramService'),
-  ApiService: Symbol.for('ApiService'),
+  UserService: Symbol.for('UserService'),
+  DeckService: Symbol.for('DeckService'),
+  CardService: Symbol.for('CardService'),
+  StudyService: Symbol.for('StudyService'),
 
-  // Application services
-  CreateCardService: Symbol.for('CreateCardService'),
-  CreateDeckService: Symbol.for('CreateDeckService'),
-  StudyDeckService: Symbol.for('StudyDeckService'),
-
-  // Store
-  AppStore: Symbol.for('AppStore'),
+  // Controllers (MobX Stores)
+  DeckStore: Symbol.for('DeckStore'),
+  CardStore: Symbol.for('CardStore'),
+  StudyStore: Symbol.for('StudyStore'),
+  RootStore: Symbol.for('RootStore'),
 }

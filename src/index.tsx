@@ -7,12 +7,11 @@ import React, { StrictMode } from 'react'
 import '@mantine/core/styles.css'
 import { retrieveLaunchParams } from '@telegram-apps/sdk-react'
 
-import { init } from '@/init.ts'
-import { EnvUnsupported } from '@/components/env-unsupported.tsx'
-
+import App from './app'
+import { init } from './init'
 // Mock the environment in case, we are outside Telegram.
-import './mockEnv.ts'
-import App from './app.tsx'
+import './mockEnv'
+import { EnvUnsupported } from './components/env-unsupported'
 
 const root = ReactDOM.createRoot(document.getElementById('root')!)
 
@@ -23,7 +22,7 @@ try {
     || import.meta.env.DEV
 
   await init({
-  // Configure all application dependencies.
+    // Configure all application dependencies.
     debug,
     eruda: debug && ['ios', 'android'].includes(platform),
     mockForMacOS: platform === 'macos',

@@ -1,30 +1,33 @@
-import { observer } from 'mobx-react-lite'
-import React, { Suspense, useMemo } from 'react'
+import React, { Suspense } from 'react'
 import { AppRoot } from '@telegram-apps/telegram-ui'
 import { Notifications } from '@mantine/notifications'
 import { withErrorBoundary } from 'react-error-boundary'
+import { isMiniAppDark, useSignal } from '@telegram-apps/sdk-react'
 import { createTheme, LoadingOverlay, MantineProvider } from '@mantine/core'
 import { Navigate, Outlet, Route, HashRouter as Router, Routes } from 'react-router-dom'
-import { isMiniAppDark, retrieveLaunchParams, useSignal } from '@telegram-apps/sdk-react'
 
-import { DecksPage } from './ui'
-import { InversifyProvider } from './di/provider'
+import { AppProvider } from './di/provider'
 import { BottomNavigation } from './ui/navigation'
 import { compose, ErrorHandler, logError } from './lib/react'
+
+// Lazy load page components
+const DecksPage = React.lazy(() => import('./pages/decks/decks-page').then(module => ({ default: module.DecksPage })))
+const DeckDetailsPage = React.lazy(() => import('./pages/decks/deck-detail-page').then(module => ({ default: module.DeckDetailsPage })))
+const StudyPage = React.lazy(() => import('./pages/decks/study-page').then(module => ({ default: module.StudyPage })))
 
 // Create theme
 const theme = createTheme({
   // Customize theme if needed
 })
 
-const MainLayout = observer(() => {
+function MainLayout() {
   return (
     <div className="root-wrapper">
       <Outlet />
       <BottomNavigation />
     </div>
   )
-})
+}
 
 // Enhance components with error boundary
 const enhance = compose(component =>
@@ -53,6 +56,8 @@ const AppRouter = enhance(() => {
         <Routes>
           <Route element={<MainLayout />}>
             <Route path="/" element={<DecksPage />} />
+            <Route path="/deck/:deckId" element={<DeckDetailsPage />} />
+            <Route path="/study/:deckId" element={<StudyPage />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Route>
         </Routes>
@@ -61,28 +66,26 @@ const AppRouter = enhance(() => {
   )
 })
 
-const AppContent = observer(() => {
+function AppContent() {
   const isDark = useSignal(isMiniAppDark)
-  const lp = useMemo(() => retrieveLaunchParams(), [])
 
   return (
     <MantineProvider theme={theme} defaultColorScheme={isDark ? 'dark' : 'light'}>
       <Notifications />
       <AppRoot
         appearance={isDark ? 'dark' : 'light'}
-        platform={['macos', 'ios'].includes(lp.tgWebAppPlatform) ? 'ios' : 'base'}
       >
         <AppRouter />
       </AppRoot>
     </MantineProvider>
   )
-})
+}
 
 // Root provider component
-const Provider = enhance(() => (
-  <InversifyProvider>
+const App = enhance(() => (
+  <AppProvider>
     <AppContent />
-  </InversifyProvider>
+  </AppProvider>
 ))
 
-export default Provider
+export default App
