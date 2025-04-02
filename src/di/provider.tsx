@@ -2,13 +2,11 @@ import type { Container } from 'inversify'
 
 import React, { createContext, useContext } from 'react'
 
-import type { RootStore } from '../controllers/root-store'
 import type { TelegramService } from '../services/telegram-service'
 import type { NotificationService } from '../services/notification-service'
 
 import { SYMBOLS } from './symbols'
 import { container } from './container'
-import { StoreProvider } from '../controllers/store'
 import { TelegramServiceProvider } from '../services/telegram-service'
 import { NotificationServiceProvider } from '../services/notification-service'
 
@@ -27,19 +25,16 @@ export const DIProvider: React.FC<{ children: React.ReactNode }> = ({ children }
 // Combined provider that includes all contexts
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // Get instances from the container
-  const rootStore = container.get<RootStore>(SYMBOLS.RootStore)
   const notificationService = container.get<NotificationService>(SYMBOLS.NotificationService)
   const telegramService = container.get<TelegramService>(SYMBOLS.TelegramService)
 
   return (
     <DIProvider>
-      <StoreProvider value={rootStore}>
-        <NotificationServiceProvider value={notificationService}>
-          <TelegramServiceProvider value={telegramService}>
-            {children}
-          </TelegramServiceProvider>
-        </NotificationServiceProvider>
-      </StoreProvider>
+      <NotificationServiceProvider value={notificationService}>
+        <TelegramServiceProvider value={telegramService}>
+          {children}
+        </TelegramServiceProvider>
+      </NotificationServiceProvider>
     </DIProvider>
   )
 }
