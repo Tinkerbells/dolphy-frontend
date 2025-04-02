@@ -1,4 +1,5 @@
 import React, { Suspense } from 'react'
+import { observer } from 'mobx-react-lite'
 import { AppRoot } from '@telegram-apps/telegram-ui'
 import { Notifications } from '@mantine/notifications'
 import { withErrorBoundary } from 'react-error-boundary'
@@ -14,16 +15,17 @@ const DecksPage = React.lazy(() => import('./pages/decks/decks-page').then(modul
 
 // Create theme
 const theme = createTheme({
-  // Customize theme if needed
+  primaryColor: 'blue',
+  fontFamily: '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif',
 })
 
-function MainLayout() {
+const MainLayout = observer(() => {
   return (
     <div className="root-wrapper">
       <Outlet />
     </div>
   )
-}
+})
 
 // Enhance components with error boundary
 const enhance = compose(component =>
@@ -51,8 +53,9 @@ const AppRouter = enhance(() => {
       <Suspense fallback={<GlobalLoading />}>
         <Routes>
           <Route element={<MainLayout />}>
-            <Route path="/" element={<DecksPage />} />
-            <Route path="*" element={<Navigate to="/" />} />
+            <Route path="/" element={<Navigate to="/decks" />} />
+            <Route path="/decks" element={<DecksPage />} />
+            <Route path="*" element={<Navigate to="/decks" />} />
           </Route>
         </Routes>
       </Suspense>

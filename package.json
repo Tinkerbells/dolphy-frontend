@@ -39,7 +39,8 @@
     "react-error-boundary": "^5.0.0",
     "react-router-dom": "^6.23.0",
     "recharts": "2",
-    "reflect-metadata": "^0.2.2"
+    "reflect-metadata": "^0.2.2",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.11.0",
