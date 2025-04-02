@@ -18,18 +18,24 @@ import {
   Title,
 } from '@mantine/core'
 
+import type { CreateDeckService } from '@/application/create-deck'
+
 import type { Deck } from '../../domain/deck'
+import type { AppStore } from '../../services/store'
+import type { CardStorageService, TelegramService } from '../../application/ports'
 
-import { useStore } from '../../services/store'
+import { SYMBOLS } from '../../di/symbols'
+import { withDependencies } from '../../di/inject'
 import { formatDate, formatRelativeTime } from '../../lib/datetime'
-import { useDICardsStorage, useDICreateDeck, useDITelegram } from '../../di/hooks'
 
-const DeckCard: React.FC<{ deck: Deck }> = observer(({ deck }) => {
+interface DeckCardProps {
+  deck: Deck
+  cardStorage?: CardStorageService
+}
+
+const DeckCard: React.FC<DeckCardProps> = observer(({ deck }) => {
   const navigate = useNavigate()
-  // const cardStorage = useDICardsStorage()
-  // const deckCards = cardStorage.getCardsByDeck(deck.id)
 
-  // Calculate due cards
   const dueCount = deck.newCount + deck.reviewCount + deck.learningCount
 
   return (
@@ -88,22 +94,27 @@ const DeckCard: React.FC<{ deck: Deck }> = observer(({ deck }) => {
   )
 })
 
-// Component for creating a new deck
-const CreateDeckModal: React.FC<{
+interface CreateDeckModalProps {
   opened: boolean
   onClose: () => void
-}> = ({ opened, onClose }) => {
+  createDeckService?: CreateDeckService
+}
+
+const CreateDeckModal: React.FC<CreateDeckModalProps> = ({
+  opened,
+  onClose,
+  createDeckService,
+}) => {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
-  const navigate = useNavigate()
-  // const createDeckService = useDICreateDeck()
 
   const handleSubmit = async () => {
-    // const deck = await createDeckService.createNewDeck(title, description)
-    // if (deck) {
-    //   onClose()
-    //   navigate(`/deck/${deck.id}`)
-    // }
+    if (createDeckService) {
+      const deck = await createDeckService.createNewDeck(title, description)
+      if (deck) {
+        onClose()
+      }
+    }
   }
 
   return (
@@ -133,20 +144,24 @@ const CreateDeckModal: React.FC<{
   )
 }
 
-// Main Decks Page component
-export const DecksPage: React.FC = observer(() => {
+const InjectedCreateDeckModal = withDependencies(CreateDeckModal, {
+  createDeckService: SYMBOLS.CreateDeckService,
+})
+
+interface DecksPageProps {
+  telegram: TelegramService
+  store: AppStore
+}
+
+const DecksPageComponent: React.FC<DecksPageProps> = observer(({ telegram, store }) => {
   const navigate = useNavigate()
-  const telegram = useDITelegram()
-  const store = useStore()
   const [search, setSearch] = useState('')
   const [opened, { open, close }] = useDisclosure(false)
 
-  // Set page title and hide back button
   useEffect(() => {
     telegram.showBackButton(false)
   }, [telegram])
 
-  // Filter decks by search term
   const filteredDecks = store.decks.filter(deck =>
     deck.title.toLowerCase().includes(search.toLowerCase())
     || deck.description.toLowerCase().includes(search.toLowerCase()),
@@ -201,7 +216,12 @@ export const DecksPage: React.FC = observer(() => {
         </Flex>
       </Stack>
 
-      <CreateDeckModal opened={opened} onClose={close} />
+      <InjectedCreateDeckModal opened={opened} onClose={close} />
     </Container>
   )
+})
+
+export const DecksPage = withDependencies(DecksPageComponent, {
+  telegram: SYMBOLS.TelegramService,
+  store: SYMBOLS.AppStore,
 })

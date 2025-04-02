@@ -1,7 +1,5 @@
-// src/services/store.ts
 import { injectable } from 'inversify'
 import { makeAutoObservable } from 'mobx'
-import React, { createContext, useContext, useState } from 'react'
 
 import type { Card } from '../domain/card'
 import type { Deck } from '../domain/deck'
@@ -167,27 +165,4 @@ export class AppStore {
     localStorage.removeItem('flashcards-sessions')
     localStorage.removeItem('flashcards-current-session')
   }
-}
-
-// Create the store context
-const StoreContext = createContext<AppStore | null>(null)
-
-// Provider component
-export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [store] = useState(() => new AppStore())
-
-  return (
-    <StoreContext.Provider value={store}>
-      {children}
-    </StoreContext.Provider>
-  )
-}
-
-// Custom hook to use the store
-export function useStore() {
-  const store = useContext(StoreContext)
-  if (!store) {
-    throw new Error('useStore must be used within a StoreProvider')
-  }
-  return store
 }

@@ -1,24 +1,22 @@
 import { observer } from 'mobx-react-lite'
+import React, { Suspense, useMemo } from 'react'
 import { AppRoot } from '@telegram-apps/telegram-ui'
 import { Notifications } from '@mantine/notifications'
 import { withErrorBoundary } from 'react-error-boundary'
-import React, { Suspense, useEffect, useMemo } from 'react'
 import { createTheme, LoadingOverlay, MantineProvider } from '@mantine/core'
 import { Navigate, Outlet, Route, HashRouter as Router, Routes } from 'react-router-dom'
 import { isMiniAppDark, retrieveLaunchParams, useSignal } from '@telegram-apps/sdk-react'
 
-import { createUser } from './domain/user'
+import { DecksPage } from './ui'
 import { InversifyProvider } from './di/provider'
 import { BottomNavigation } from './ui/navigation'
-import { useTelegram } from './services/telegram-adapter'
-import { StoreProvider, useStore } from './services/store'
 import { compose, ErrorHandler, logError } from './lib/react'
-import { CardEditPage, DeckDetailPage, DecksPage, SettingsPage, StudyPage } from './ui'
 
 // Create theme
 const theme = createTheme({
   // Customize theme if needed
 })
+
 const MainLayout = observer(() => {
   return (
     <div className="root-wrapper">
@@ -55,11 +53,6 @@ const AppRouter = enhance(() => {
         <Routes>
           <Route element={<MainLayout />}>
             <Route path="/" element={<DecksPage />} />
-            <Route path="/deck/:deckId" element={<DeckDetailPage />} />
-            <Route path="/study/:deckId" element={<StudyPage />} />
-            <Route path="/card/new/:deckId" element={<CardEditPage mode="create" />} />
-            <Route path="/card/edit/:cardId" element={<CardEditPage mode="edit" />} />
-            <Route path="/settings" element={<SettingsPage />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Route>
         </Routes>
@@ -68,28 +61,9 @@ const AppRouter = enhance(() => {
   )
 })
 
-// Main app content component with store and theme setup
 const AppContent = observer(() => {
-  const store = useStore()
-  const telegram = useTelegram()
   const isDark = useSignal(isMiniAppDark)
   const lp = useMemo(() => retrieveLaunchParams(), [])
-
-  useEffect(() => {
-    // Initialize user if not exists
-    if (!store.user) {
-      const userId = telegram.getUserId()
-      const userName = telegram.getUserName()
-      store.setUser(createUser(userId, userName))
-    }
-
-    // Load cards from fake data if none exist
-    if (store.cards.length === 0 && store.decks.length > 0) {
-      import('./services/fake-data').then(({ LOCAL_CARDS }) => {
-        store.setCards(LOCAL_CARDS)
-      })
-    }
-  }, [store, telegram])
 
   return (
     <MantineProvider theme={theme} defaultColorScheme={isDark ? 'dark' : 'light'}>
@@ -107,9 +81,7 @@ const AppContent = observer(() => {
 // Root provider component
 const Provider = enhance(() => (
   <InversifyProvider>
-    <StoreProvider>
-      <AppContent />
-    </StoreProvider>
+    <AppContent />
   </InversifyProvider>
 ))
 

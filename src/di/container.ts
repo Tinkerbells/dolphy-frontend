@@ -4,7 +4,6 @@ import { Container } from 'inversify'
 
 // Interfaces
 import type {
-  ApiService,
   CardStorageService,
   DeckStorageService,
   NotificationService,

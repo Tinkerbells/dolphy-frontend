@@ -16,16 +16,8 @@ import type {
 } from './ports'
 
 import { SYMBOLS } from '../di/symbols'
+import { updateCardDifficulty } from '../domain/card'
 import { updateDeckLastStudied } from '../domain/deck'
-// Keep the old hook for backward compatibility during transition
-import { useNotifier } from '../services/notification-adapter'
-import { sortCardsByDueness, updateCardDifficulty } from '../domain/card'
-import {
-  useCardsStorage,
-  useDecksStorage,
-  useStudySessionStorage,
-  useUserStorage,
-} from '../services/storage-adapter'
 import {
   addReview,
   completeSession,
@@ -45,9 +37,6 @@ export class StudyDeckService {
     @inject(SYMBOLS.NotificationService) private notifier: NotificationService,
   ) {}
 
-  // Add a ref to track if we've already started a session
-  private sessionStartedRef = React.createRef<boolean>()
-
   public studyState = {
     currentCardIndex: 0,
     studyCards: [] as Card[],
@@ -61,16 +50,7 @@ export class StudyDeckService {
   }
 
   startStudySession(deckId: UniqueId): StudySession | undefined {
-    // Check if session is already started to prevent infinite loops
-    if (this.sessionStartedRef.current) {
-      return this.sessionStorage.currentSession
-    }
-
     // Mark session as started
-    if (!this.userStorage.user) {
-      this.notifier.notify('You need to be logged in to study')
-      return undefined
-    }
 
     // Get the deck
     const deck = this.deckStorage.getDeck(deckId)
@@ -87,24 +67,12 @@ export class StudyDeckService {
     }
 
     // Prepare cards for study
-    const { newCardsPerDay, reviewsPerDay } = this.userStorage.user.preferences
 
     // Get due cards sorted by priority
-    const dueCards = sortCardsByDueness(allDeckCards)
 
     // Limit cards based on user preferences
-    const newCards = dueCards.filter(card => card.status === 'new').slice(0, newCardsPerDay)
-    const reviewCards = dueCards
-      .filter(card => card.status !== 'new')
-      .slice(0, reviewsPerDay)
 
     // Combine and re-sort
-    const studyCards = sortCardsByDueness([...newCards, ...reviewCards])
-
-    if (studyCards.length === 0) {
-      this.notifier.notify('No cards due for study in this deck')
-      return undefined
-    }
 
     // Create a new study session
     const session = createStudySession(deckId)
@@ -114,7 +82,6 @@ export class StudyDeckService {
     // Update study state
     this.setStudyState({
       currentCardIndex: 0,
-      studyCards,
       showAnswer: false,
       startTime: Date.now(),
     })
@@ -222,55 +189,5 @@ export class StudyDeckService {
 
   getStudyState() {
     return this.studyState
-  }
-}
-
-export function useStudyDeck() {
-  const cardStorage = useCardsStorage()
-  const deckStorage = useDecksStorage()
-  const sessionStorage = useStudySessionStorage()
-  const userStorage = useUserStorage()
-  const notifier = useNotifier()
-
-  const service = new StudyDeckService(
-    cardStorage,
-    deckStorage,
-    sessionStorage,
-    userStorage,
-    notifier,
-  )
-
-  // Create a React state wrapper around the service's state for UI updates
-  const [studyState, setStudyState] = useState(service.getStudyState())
-
-  // Wrap methods to update the React state
-  return {
-    studyState,
-    startStudySession: (deckId: UniqueId) => {
-      const result = service.startStudySession(deckId)
-      setStudyState(service.getStudyState())
-      return result
-    },
-    getCurrentCard: () => service.getCurrentCard(),
-    showAnswer: () => {
-      service.showAnswer()
-      setStudyState(service.getStudyState())
-    },
-    answerCard: (reviewType: ReviewType) => {
-      service.answerCard(reviewType)
-      setStudyState(service.getStudyState())
-    },
-    pauseStudySession: () => {
-      service.pauseStudySession()
-      setStudyState(service.getStudyState())
-    },
-    resumeStudySession: () => {
-      service.resumeStudySession()
-      setStudyState(service.getStudyState())
-    },
-    endStudySession: () => {
-      service.endStudySession()
-      setStudyState(service.getStudyState())
-    },
   }
 }

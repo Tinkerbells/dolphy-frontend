@@ -7,8 +7,6 @@ import type { DeckStorageService, NotificationService, UserStorageService } from
 import { SYMBOLS } from '../di/symbols'
 import { createDeck } from '../domain/deck'
 // Keep the old hook for backward compatibility during transition
-import { useNotifier } from '../services/notification-adapter'
-import { useDecksStorage, useUserStorage } from '../services/storage-adapter'
 
 @injectable()
 export class CreateDeckService {
@@ -52,12 +50,4 @@ export class CreateDeckService {
       return undefined
     }
   }
-}
-
-export function useCreateDeck() {
-  const storage = useDecksStorage()
-  const userStorage = useUserStorage()
-  const notifier = useNotifier()
-
-  return new CreateDeckService(storage, userStorage, notifier)
 }

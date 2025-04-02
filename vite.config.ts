@@ -19,12 +19,7 @@ export default defineConfig({
   plugins: [
     // Используем только один плагин для React с настройками для автоматической трансформации JSX
     swc.vite(),
-    react({
-      jsxImportSource: 'react',
-      plugins: [
-        ['@swc/plugin-transform-imports', {}],
-      ],
-    }),
+    react(),
     // Support for TypeScript paths
     tsconfigPaths(),
     // Create SSL certificate for HTTPS development

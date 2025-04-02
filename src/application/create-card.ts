@@ -7,8 +7,6 @@ import type { CardStorageService, DeckStorageService, NotificationService } from
 import { SYMBOLS } from '../di/symbols'
 import { createCard } from '../domain/card'
 // Keep the old hook for backward compatibility during transition
-import { useNotifier } from '../services/notification-adapter'
-import { useCardsStorage, useDecksStorage } from '../services/storage-adapter'
 
 @injectable()
 export class CreateCardService {
@@ -107,12 +105,4 @@ export class CreateCardService {
       return []
     }
   }
-}
-
-export function useCreateCard() {
-  const cardStorage = useCardsStorage()
-  const deckStorage = useDecksStorage()
-  const notifier = useNotifier()
-
-  return new CreateCardService(cardStorage, deckStorage, notifier)
 }

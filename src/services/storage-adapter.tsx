@@ -14,9 +14,6 @@ import type {
   UserStorageService as UserStorageServiceInterface,
 } from '../application/ports'
 
-// Import this from the original location - this is just to make the transition hooks work
-import { useStore } from './store'
-
 @injectable()
 export class UserStorageService implements UserStorageServiceInterface {
   private store: AppStore
@@ -135,25 +132,4 @@ export class StudySessionStorageService implements StudySessionStorageServiceInt
   setCurrentSession(session?: StudySession): void {
     this.store.setCurrentSession(session)
   }
-}
-
-// Keep the old hooks for backward compatibility during transition
-export function useUserStorage(): UserStorageServiceInterface {
-  const store = useStore()
-  return new UserStorageService(store)
-}
-
-export function useDecksStorage(): DeckStorageServiceInterface {
-  const store = useStore()
-  return new DeckStorageService(store)
-}
-
-export function useCardsStorage(): CardStorageServiceInterface {
-  const store = useStore()
-  return new CardStorageService(store)
-}
-
-export function useStudySessionStorage(): StudySessionStorageServiceInterface {
-  const store = useStore()
-  return new StudySessionStorageService(store)
 }
