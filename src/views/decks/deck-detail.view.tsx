@@ -84,88 +84,86 @@ export const DeckDetailView: React.FC<DeckDetailViewProps> = ({
         </Stack>
       </Card>
 
-      <Group grow>
-        <Card shadow="sm" padding="lg" radius="md" withBorder>
-          <Stack align="center" gap="md">
-            <RingProgress
-              size={180}
-              thickness={16}
-              roundCaps
-              sections={[
-                { value: newPercent, color: 'blue' },
-                { value: reviewPercent, color: 'grape' },
-                { value: learningPercent, color: 'green' },
-                { value: completedPercent, color: 'gray' },
-              ]}
-              label={(
-                <Text ta="center">
-                  <Text size="xl" fw={700}>
-                    {deck.cardCount}
-                  </Text>
-                  <Text size="sm">Cards</Text>
+      <Card shadow="sm" padding="lg" radius="md" withBorder>
+        <Stack align="center" gap="md">
+          <RingProgress
+            size={180}
+            thickness={16}
+            roundCaps
+            sections={[
+              { value: newPercent, color: 'blue' },
+              { value: reviewPercent, color: 'grape' },
+              { value: learningPercent, color: 'green' },
+              { value: completedPercent, color: 'gray' },
+            ]}
+            label={(
+              <Text ta="center">
+                <Text size="xl" fw={700}>
+                  {deck.cardCount}
                 </Text>
-              )}
-            />
-
-            <Stack gap={8} align="center">
-              <Group gap={8}>
-                <Badge color="blue" size="lg">
-                  New:
-                  {deck.newCount}
-                </Badge>
-                <Badge color="grape" size="lg">
-                  Review:
-                  {deck.reviewCount}
-                </Badge>
-                <Badge color="green" size="lg">
-                  Learning:
-                  {deck.learningCount}
-                </Badge>
-              </Group>
-
-              {deck.lastStudied && (
-                <Text size="sm" c="dimmed">
-                  Last studied:
-                  {' '}
-                  {formatRelativeTime(deck.lastStudied)}
-                </Text>
-              )}
-            </Stack>
-          </Stack>
-        </Card>
-
-        <Card shadow="sm" padding="lg" radius="md" withBorder>
-          <Stack justify="space-between" h="100%">
-            <Stack gap="md">
-              <Title order={3}>Ready to Study?</Title>
-
-              <Text>
-                {totalDue > 0
-                  ? `You have ${totalDue} cards due for review.`
-                  : 'All caught up! No cards due for review.'}
+                <Text size="sm">Cards</Text>
               </Text>
-            </Stack>
+            )}
+          />
 
-            <Group grow>
-              <Button
-                leftSection={<Book size={18} />}
-                variant="light"
-                onClick={onManageCardsClick}
-              >
-                Manage Cards
-              </Button>
-
-              <Button
-                leftSection={<Play size={18} />}
-                onClick={onStudyClick}
-                disabled={deck.cardCount === 0}
-              >
-                Study Now
-              </Button>
+          <Stack gap={8} align="center">
+            <Group gap={8}>
+              <Badge color="blue" size="lg">
+                New:
+                {deck.newCount}
+              </Badge>
+              <Badge color="grape" size="lg">
+                Review:
+                {deck.reviewCount}
+              </Badge>
+              <Badge color="green" size="lg">
+                Learning:
+                {deck.learningCount}
+              </Badge>
             </Group>
+
+            {deck.lastStudied && (
+              <Text size="sm" c="dimmed">
+                Last studied:
+                {' '}
+                {formatRelativeTime(deck.lastStudied)}
+              </Text>
+            )}
           </Stack>
-        </Card>
-      </Group>
+        </Stack>
+      </Card>
+
+      <Card shadow="sm" padding="lg" radius="md" withBorder>
+        <Stack justify="space-between" h="100%">
+          <Stack gap="md">
+            <Title order={3}>Ready to Study?</Title>
+
+            <Text>
+              {totalDue > 0
+                ? `You have ${totalDue} cards due for review.`
+                : 'All caught up! No cards due for review.'}
+            </Text>
+          </Stack>
+
+          <Group grow>
+            <Button
+              leftSection={<Book size={18} />}
+              variant="light"
+              onClick={onManageCardsClick}
+            >
+              Manage Cards
+            </Button>
+
+            <Button
+              leftSection={<Play size={18} />}
+              onClick={onStudyClick}
+              disabled={deck.cardCount === 0}
+            >
+              Study Now
+            </Button>
+          </Group>
+        </Stack>
+      </Card>
     </Stack>
   )
 }

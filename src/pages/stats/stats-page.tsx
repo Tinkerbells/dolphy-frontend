@@ -78,7 +78,7 @@ const StatsPageComponent = observer(({
                       <Title order={4}>{deck.title}</Title>
                       <DeckStatsChart deck={deck} />
 
-                      <Group mt="md" position="right">
+                      <Group mt="md">
                         <Button
                           variant="light"
                           size="sm"

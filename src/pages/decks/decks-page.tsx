@@ -1,15 +1,17 @@
-import { Search, X } from 'lucide-react'
 import { observer } from 'mobx-react-lite'
+import { Plus, Search, X } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useDisclosure } from '@mantine/hooks'
 import React, { useEffect, useState } from 'react'
-import { ActionIcon, Container, Group, Modal, Stack, TextInput, Title } from '@mantine/core'
+import { ActionIcon, Button, Container, Drawer, Group, Stack, TextInput, Title } from '@mantine/core'
 
 import type { DeckStore } from '@/controllers/deck-store'
 
 import { SYMBOLS } from '@/di/symbols'
+import { FloatButton } from '@/views/common'
 import { withDependencies } from '@/di/inject'
 
+import styles from './decks-page.module.css'
 import { DeckFormView } from '../../views/decks/deck-form.view'
 import { DeckListView } from '../../views/decks/deck-list.view'
 
@@ -44,11 +46,6 @@ const DecksPageComponent = observer(({ deckStore }: DecksPageProps) => {
       <Stack gap="lg">
         <Group justify="space-between">
           <Title order={2}>My Decks</Title>
-          <Group>
-            <ActionIcon variant="filled" color="blue" onClick={() => navigate('/settings')}>
-              <Search size={18} />
-            </ActionIcon>
-          </Group>
         </Group>
 
         <TextInput
@@ -75,7 +72,7 @@ const DecksPageComponent = observer(({ deckStore }: DecksPageProps) => {
         />
       </Stack>
 
-      <Modal opened={opened} onClose={close} title="Create New Deck">
+      <Drawer position="bottom" opened={opened} onClose={close} title="Create New Deck">
         <DeckFormView
           title={title}
           description={description}
@@ -85,7 +82,10 @@ const DecksPageComponent = observer(({ deckStore }: DecksPageProps) => {
           onSubmit={handleCreateDeck}
           onCancel={close}
         />
-      </Modal>
+      </Drawer>
+      <FloatButton onClick={open} placement="bottom-right" className={styles.floatButton}>
+        <Plus />
+      </FloatButton>
     </Container>
   )
 })

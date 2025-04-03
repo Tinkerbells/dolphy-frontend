@@ -21,7 +21,7 @@ export const DeckFormView: React.FC<DeckFormViewProps> = ({
   onCancel,
 }) => {
   return (
-    <Stack>
+    <Stack justify="center">
       <TextInput
         label="Deck Title"
         placeholder="Enter deck title"

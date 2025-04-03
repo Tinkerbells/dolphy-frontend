@@ -1,7 +1,12 @@
 // src/di/container.ts
 
 import 'reflect-metadata'
+
+import type { MobxQueryClient } from 'mobx-tanstack-query'
+
 import { Container } from 'inversify'
+
+import { mobxQueryClient } from '@/lib/mobx-query'
 
 import type { TelegramService } from '../services/telegram-service'
 import type { NotificationService } from '../services/notification-service'
@@ -25,6 +30,8 @@ import { StudySessionRepository } from '../repositories/study-session-repository
 
 // Create and configure the container
 const container = new Container()
+
+container.bind<MobxQueryClient>(SYMBOLS.QueryClient).toConstantValue(mobxQueryClient)
 
 // Register repositories
 container.bind<DeckRepository>(SYMBOLS.DeckRepository).to(DeckRepository).inSingletonScope()

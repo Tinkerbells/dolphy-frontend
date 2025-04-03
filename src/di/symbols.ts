@@ -1,6 +1,6 @@
 export const SYMBOLS = {
   // Core
-
+  QueryClient: Symbol.for('QueryClient'),
   // Repositories
   UserRepository: Symbol.for('UserRepository'),
   DeckRepository: Symbol.for('DeckRepository'),

@@ -1,14 +1,20 @@
 import React, { Suspense } from 'react'
 import { observer } from 'mobx-react-lite'
+import { ModalsProvider } from '@mantine/modals'
 import { AppRoot } from '@telegram-apps/telegram-ui'
 import { Notifications } from '@mantine/notifications'
 import { withErrorBoundary } from 'react-error-boundary'
+import { QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { isMiniAppDark, useSignal } from '@telegram-apps/sdk-react'
-import { createTheme, LoadingOverlay, MantineProvider } from '@mantine/core'
+import { AppShell, createTheme, LoadingOverlay, MantineProvider } from '@mantine/core'
 import { Navigate, Outlet, Route, HashRouter as Router, Routes } from 'react-router-dom'
 
 import { AppProvider } from './di/provider'
+import { mobxQueryClient } from './lib/mobx-query'
+import { Navigation } from './views/navigation/navigation'
 import { compose, ErrorHandler, logError } from './lib/react'
+import { BottomNavigation } from './views/navigation/bottom-navigation-menu'
 
 // Lazy load page components
 const DecksPage = React.lazy(() => import('./pages/decks/decks-page').then(module => ({ default: module.DecksPage })))
@@ -25,9 +31,10 @@ const theme = createTheme({
 
 const MainLayout = observer(() => {
   return (
-    <div className="root-wrapper">
+    <AppShell className="root-wrapper">
       <Outlet />
-    </div>
+      <BottomNavigation />
+    </AppShell>
   )
 })
 
@@ -76,14 +83,19 @@ function AppContent() {
   const isDark = useSignal(isMiniAppDark)
 
   return (
-    <MantineProvider theme={theme} defaultColorScheme={isDark ? 'dark' : 'light'}>
-      <Notifications />
-      <AppRoot
-        appearance={isDark ? 'dark' : 'light'}
-      >
-        <AppRouter />
-      </AppRoot>
-    </MantineProvider>
+    <QueryClientProvider client={mobxQueryClient}>
+      <MantineProvider theme={theme} defaultColorScheme={isDark ? 'dark' : 'light'}>
+        <ModalsProvider>
+          <Notifications />
+          <AppRoot
+            appearance={isDark ? 'dark' : 'light'}
+          >
+            <AppRouter />
+          </AppRoot>
+          <ReactQueryDevtools initialIsOpen={false} />
+        </ModalsProvider>
+      </MantineProvider>
+    </QueryClientProvider>
   )
 }
 

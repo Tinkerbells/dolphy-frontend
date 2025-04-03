@@ -1,5 +1,10 @@
+// src/controllers/enhanced-deck-store.ts
+
+import type { MobxQueryClient } from 'mobx-tanstack-query'
+
 import { makeAutoObservable } from 'mobx'
 import { inject, injectable } from 'inversify'
+import { MobxMutation, MobxQuery } from 'mobx-tanstack-query'
 
 import type { DeckDto } from '../models/decks'
 import type { DeckService } from '../services/deck-service'
@@ -11,162 +16,221 @@ import { Decks } from '../models/decks'
 
 @injectable()
 export class DeckStore {
-  decks = new Decks()
-  isLoading = false
   currentDeckId: string | null = null
+
+  private decksQuery: MobxQuery<Decks, Error>
+  private deckByIdQuery: MobxQuery<DeckDto | null, Error>
+  private createDeckMutation: MobxMutation<DeckDto, { title: string, description: string }, Error>
+  private updateDeckMutation: MobxMutation<DeckDto | null, { id: string, updates: Partial<DeckDto> }, Error>
+  private deleteDeckMutation: MobxMutation<boolean, string, Error>
 
   constructor(
     @inject(SYMBOLS.DeckService) private deckService: DeckService,
     @inject(SYMBOLS.TelegramService) private telegramService: TelegramService,
     @inject(SYMBOLS.NotificationService) private notificationService: NotificationService,
+    @inject(SYMBOLS.QueryClient) private queryClient: MobxQueryClient,
   ) {
     makeAutoObservable(this)
-  }
 
-  async loadDecks(): Promise<void> {
-    try {
-      this.setLoading(true)
-      const userId = this.telegramService.getUserId()
-      this.decks = await this.deckService.getDecks(userId)
-    }
-    catch (error) {
-      console.error('Failed to load decks:', error)
-      this.notificationService.notify('Failed to load decks')
-    }
-    finally {
-      this.setLoading(false)
-    }
-  }
+    // Initialize queries and mutations
+    const userId = this.telegramService.getUserId()
 
-  async createDeck(title: string, description: string): Promise<DeckDto | null> {
-    try {
-      this.setLoading(true)
-      const userId = this.telegramService.getUserId()
-      const newDeck = await this.deckService.createDeck(userId, title, description)
+    // Query for all decks
+    this.decksQuery = new MobxQuery({
+      queryClient,
+      queryKey: ['decks', userId],
+      queryFn: () => this.deckService.getDecks(userId),
+      staleTime: 60 * 1000, // 1 minute
+      refetchOnWindowFocus: true,
+    })
 
-      // Update the local decks list
-      await this.loadDecks()
+    // Query for a single deck by ID
+    this.deckByIdQuery = new MobxQuery({
+      queryClient,
+      queryKey: ['deck', ''],
+      queryFn: async ({ queryKey }) => {
+        const deckId = queryKey[1]
+        if (!deckId)
+          return null
+        return this.deckService.getDeckById(deckId)
+      },
+      enabled: false, // Disabled by default until we have a deck ID
+    })
 
-      this.notificationService.notify('Deck created successfully')
-      return newDeck
-    }
-    catch (error) {
-      console.error('Failed to create deck:', error)
-      this.notificationService.notify('Failed to create deck')
-      return null
-    }
-    finally {
-      this.setLoading(false)
-    }
-  }
+    // Mutation for creating a new deck
+    this.createDeckMutation = new MobxMutation({
+      queryClient,
+      mutationFn: async ({ title, description }) => {
+        return this.deckService.createDeck(userId, title, description)
+      },
+      onSuccess: (newDeck) => {
+        // Update the decks query cache with the new deck
+        this.queryClient.setQueryData(['decks', userId], (oldData: Decks | undefined) => {
+          if (!oldData)
+            return new Decks([newDeck])
+          return new Decks([...oldData.decks, newDeck])
+        })
+        this.notificationService.notify('Deck created successfully')
+      },
+      onError: () => {
+        this.notificationService.notify('Failed to create deck')
+      },
+    })
 
-  async updateDeck(deckId: string, updates: { title?: string, description?: string }): Promise<boolean> {
-    try {
-      this.setLoading(true)
-      const updatedDeck = await this.deckService.updateDeck(deckId, updates)
+    // Mutation for updating a deck
+    this.updateDeckMutation = new MobxMutation({
+      queryClient,
+      mutationFn: async ({ id, updates }) => {
+        return this.deckService.updateDeck(id, updates)
+      },
+      onSuccess: (updatedDeck) => {
+        if (!updatedDeck)
+          return
 
-      if (updatedDeck) {
-        // Refresh decks to get the updated data
-        await this.loadDecks()
+        this.queryClient.setQueryData(['decks', userId], (oldData: Decks | undefined) => {
+          if (!oldData)
+            return new Decks()
+          return new Decks(oldData.decks.map(deck =>
+            deck.id === updatedDeck.id ? updatedDeck : deck,
+          ))
+        })
+
+        this.queryClient.setQueryData(['deck', updatedDeck.id], updatedDeck)
+
         this.notificationService.notify('Deck updated successfully')
-        return true
-      }
-      return false
-    }
-    catch (error) {
-      console.error('Failed to update deck:', error)
-      this.notificationService.notify('Failed to update deck')
-      return false
-    }
-    finally {
-      this.setLoading(false)
-    }
-  }
+      },
+      onError: () => {
+        this.notificationService.notify('Failed to update deck')
+      },
+    })
 
-  async deleteDeck(deckId: string): Promise<boolean> {
-    try {
-      this.setLoading(true)
-      const success = await this.deckService.deleteDeck(deckId)
+    // Mutation for deleting a deck
+    this.deleteDeckMutation = new MobxMutation({
+      queryClient,
+      mutationFn: async (deckId) => {
+        return this.deckService.deleteDeck(deckId)
+      },
+      onSuccess: (success, deckId) => {
+        if (!success)
+          return
 
-      if (success) {
-        // Refresh decks to get the updated list
-        await this.loadDecks()
+        // Update the decks query cache to remove the deleted deck
+        this.queryClient.setQueryData(['decks', userId], (oldData: Decks | undefined) => {
+          if (!oldData)
+            return new Decks()
+          return new Decks(oldData.decks.filter(deck => deck.id !== deckId))
+        })
 
-        // Clear currentDeckId if the deleted deck was selected
+        // Remove the single deck from cache
+        this.queryClient.removeQueries({
+          queryKey: ['deck', deckId],
+        })
+
+        // Reset current deck ID if it's the deleted deck
         if (this.currentDeckId === deckId) {
           this.setCurrentDeckId(null)
         }
 
         this.notificationService.notify('Deck deleted successfully')
-      }
-      return success
+      },
+      onError: () => {
+        this.notificationService.notify('Failed to delete deck')
+      },
+    })
+  }
+
+  // Actions
+  setCurrentDeckId(deckId: string | null) {
+    this.currentDeckId = deckId
+
+    if (deckId) {
+      // Update the query key and enable the query
+      this.deckByIdQuery.update({
+        queryKey: ['deck', deckId],
+        enabled: true,
+      })
     }
-    catch (error) {
-      console.error('Failed to delete deck:', error)
-      this.notificationService.notify('Failed to delete deck')
-      return false
-    }
-    finally {
-      this.setLoading(false)
+    else {
+      // Disable the query when no deck is selected
+      this.deckByIdQuery.update({
+        enabled: false,
+      })
     }
   }
 
-  async searchDecks(query: string): Promise<DeckDto[]> {
+  // Public methods for components
+  async loadDecks() {
+    return this.decksQuery.refetch()
+  }
+
+  async loadDeck(deckId: string) {
+    this.setCurrentDeckId(deckId)
+    const result = await this.deckByIdQuery.refetch()
+    return result.data
+  }
+
+  async createDeck(title: string, description: string) {
     try {
-      this.setLoading(true)
-      const userId = this.telegramService.getUserId()
-      const decks = await this.deckService.searchDecks(userId, query)
-      return decks
+      return await this.createDeckMutation.mutate({ title, description })
     }
     catch (error) {
-      console.error('Failed to search decks:', error)
-      this.notificationService.notify('Failed to search decks')
-      return []
+      console.error('Failed to create deck:', error)
+      return null
     }
-    finally {
-      this.setLoading(false)
+  }
+
+  async updateDeck(id: string, updates: Partial<Pick<DeckDto, 'title' | 'description' | 'tags'>>) {
+    try {
+      const result = await this.updateDeckMutation.mutate({ id, updates })
+      return !!result
+    }
+    catch (error) {
+      console.error('Failed to update deck:', error)
+      return false
+    }
+  }
+
+  async deleteDeck(id: string) {
+    try {
+      return await this.deleteDeckMutation.mutate(id)
+    }
+    catch (error) {
+      console.error('Failed to delete deck:', error)
+      return false
     }
   }
 
   filter(query: string) {
-    return this.decks.decks.filter(deck =>
+    const decks = this.decks.decks || []
+    if (!query.trim())
+      return decks
+
+    return decks.filter(deck =>
       deck.title.toLowerCase().includes(query.toLowerCase())
       || deck.description.toLowerCase().includes(query.toLowerCase()),
     )
   }
 
-  async loadDeck(deckId: string): Promise<DeckDto | null> {
-    try {
-      this.setLoading(true)
-      const deck = await this.deckService.getDeckById(deckId)
-
-      if (deck) {
-        this.setCurrentDeckId(deckId)
-      }
-
-      return deck
-    }
-    catch (error) {
-      console.error('Failed to load deck:', error)
-      this.notificationService.notify('Failed to load deck')
-      return null
-    }
-    finally {
-      this.setLoading(false)
-    }
+  // Computed getters
+  get decks() {
+    return this.decksQuery.result.data || new Decks()
   }
 
-  setLoading(isLoading: boolean): void {
-    this.isLoading = isLoading
+  get currentDeck() {
+    return this.deckByIdQuery.result.data
   }
 
-  setCurrentDeckId(deckId: string | null): void {
-    this.currentDeckId = deckId
+  get isLoading() {
+    return (
+      this.decksQuery.result.isLoading
+      || this.deckByIdQuery.result.isLoading
+      || this.createDeckMutation.result.isPending
+      || this.updateDeckMutation.result.isPending
+      || this.deleteDeckMutation.result.isPending
+    )
   }
 
-  get currentDeck(): DeckDto | undefined {
-    if (!this.currentDeckId)
-      return undefined
-    return this.decks.selectDeck(this.currentDeckId)
+  get isFetching() {
+    return this.decksQuery.result.isFetching || this.deckByIdQuery.result.isFetching
   }
 }

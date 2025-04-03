@@ -14,6 +14,7 @@ import { init } from './init'
 import './mockEnv'
 // Импортируем настройку MobX DevTools
 import { setupMobxDevTools } from './devtools'
+import { mobxQueryClient } from './lib/mobx-query'
 import { EnvUnsupported } from './components/env-unsupported'
 
 const root = ReactDOM.createRoot(document.getElementById('root')!)
@@ -35,6 +36,7 @@ try {
       if (import.meta.env.DEV) {
         setupMobxDevTools()
       }
+      mobxQueryClient.mount()
 
       root.render(
         <StrictMode>

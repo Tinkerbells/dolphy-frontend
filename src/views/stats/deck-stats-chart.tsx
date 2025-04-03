@@ -53,8 +53,8 @@ export const DeckStatsChart: React.FC<DeckStatsChartProps> = ({ deck }) => {
   }
 
   return (
-    <Stack spacing="md" mt="md">
-      <Group position="apart">
+    <Stack mt="md">
+      <Group>
         <Text fw={500}>Completion Rate:</Text>
         <Text fw={500}>
           {completionRate}

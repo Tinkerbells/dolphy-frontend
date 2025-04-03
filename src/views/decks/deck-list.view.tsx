@@ -100,14 +100,6 @@ export const DeckListView: React.FC<DeckListViewProps> = ({
               ))}
             </SimpleGrid>
           )}
-
-      {decks.length > 0 && (
-        <Group justify="center">
-          <Button onClick={onCreateClick}>
-            Create New Deck
-          </Button>
-        </Group>
-      )}
     </Stack>
   )
 }
