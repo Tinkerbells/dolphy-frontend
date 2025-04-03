@@ -1,3 +1,4 @@
+// src/index.tsx
 // Required by Inversify at the entry point of the application
 import 'reflect-metadata'
 // Include Telegram UI styles first to allow our code override the package CSS.
@@ -30,8 +31,10 @@ try {
     mockForMacOS: platform === 'macos',
   })
     .then(() => {
-      // Вызываем настройку MobX DevTools после инициализации приложения
-      // setupMobxDevTools()
+      // Включаем MobX DevTools в режиме разработки
+      if (import.meta.env.DEV) {
+        setupMobxDevTools()
+      }
 
       root.render(
         <StrictMode>

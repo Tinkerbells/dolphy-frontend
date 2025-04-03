@@ -1,16 +1,21 @@
+// src/repositories/card-repository.ts
+
 import { injectable } from 'inversify'
 
 import { generateId, getCurrentDateTime } from '@/common/functions'
 
 import type { CardDto } from '../models/cards'
 
+import { Cards } from '../models/cards'
+import { createMockCollection, mockRequest } from '../lib/mock/mock-request'
+
 @injectable()
 export class CardRepository {
-  private cards: CardDto[] = []
+  private mockCardCollection: ReturnType<typeof createMockCollection<CardDto>>
 
   constructor() {
-    // Initialize with mock data
-    this.cards = [
+    // Инициализация начальных карточек
+    const initialCards: CardDto[] = [
       {
         id: 'card1',
         deckId: '1', // Spanish Vocabulary
@@ -69,7 +74,7 @@ export class CardRepository {
       },
     ]
 
-    // Add world capitals cards
+    // Добавляем карточки со столицами мира
     const capitals = [
       { country: 'France', capital: 'Paris' },
       { country: 'Japan', capital: 'Tokyo' },
@@ -79,7 +84,7 @@ export class CardRepository {
     ]
 
     capitals.forEach((item, index) => {
-      this.cards.push({
+      initialCards.push({
         id: `capital${index + 1}`,
         deckId: '3', // World Capitals deck
         front: `What is the capital of ${item.country}?`,
@@ -90,30 +95,41 @@ export class CardRepository {
         tags: ['capitals', item.country.toLowerCase()],
       })
     })
+
+    // Создаем коллекцию с мок-данными
+    this.mockCardCollection = createMockCollection<CardDto>(initialCards)
   }
 
-  async getCards(deckId: string): Promise<CardDto[]> {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 300))
-    return this.cards.filter(card => card.deckId === deckId)
+  /**
+   * Получает все карточки для указанной колоды
+   */
+  async getCards(deckId: string): Promise<Cards> {
+    const cards = await this.mockCardCollection.getAll({ delay: 300 })
+    const data = cards.filter(card => card.deckId === deckId)
+    return new Cards(data)
   }
 
+  /**
+   * Получает карточку по ID
+   */
   async getCardById(id: string): Promise<CardDto | null> {
-    await new Promise(resolve => setTimeout(resolve, 200))
-    const card = this.cards.find(card => card.id === id)
-    return card || null
+    return this.mockCardCollection.getById(id, { delay: 200 })
   }
 
+  /**
+   * Получает карточки, которые пора изучать
+   */
   async getDueCards(deckId: string, limit?: number): Promise<CardDto[]> {
-    await new Promise(resolve => setTimeout(resolve, 250))
-
+    const cards = await this.mockCardCollection.getAll({ delay: 250 })
     const now = new Date().toISOString()
-    let dueCards = this.cards.filter(card =>
+
+    // Фильтруем карточки, которые пора изучать
+    let dueCards = cards.filter(card =>
       card.deckId === deckId
       && (card.status === 'new' || !card.dueDate || card.dueDate <= now),
     )
 
-    // Sort by status priority: new -> learning -> relearning -> review
+    // Сортируем по приоритету статуса: new -> learning -> relearning -> review
     dueCards.sort((a, b) => {
       const statusPriority = {
         new: 0,
@@ -124,63 +140,55 @@ export class CardRepository {
       return statusPriority[a.status] - statusPriority[b.status]
     })
 
+    // Ограничиваем количество, если указан лимит
     if (limit) {
       dueCards = dueCards.slice(0, limit)
     }
 
-    return dueCards
+    return mockRequest({ data: dueCards })
   }
 
+  /**
+   * Создает новую карточку
+   */
   async createCard(card: Omit<CardDto, 'id' | 'created'>): Promise<CardDto> {
-    await new Promise(resolve => setTimeout(resolve, 400))
-
     const newCard: CardDto = {
       id: generateId(),
       created: getCurrentDateTime(),
       ...card,
     }
 
-    this.cards.push(newCard)
-    return newCard
+    return this.mockCardCollection.create(newCard, { delay: 400 })
   }
 
+  /**
+   * Обновляет существующую карточку
+   */
   async updateCard(id: string, updates: Partial<Omit<CardDto, 'id' | 'created' | 'deckId'>>): Promise<CardDto | null> {
-    await new Promise(resolve => setTimeout(resolve, 300))
-
-    const index = this.cards.findIndex(card => card.id === id)
-    if (index === -1)
-      return null
-
-    this.cards[index] = {
-      ...this.cards[index],
-      ...updates,
-    }
-
-    return this.cards[index]
+    return this.mockCardCollection.update(id, updates, { delay: 300 })
   }
 
+  /**
+   * Удаляет карточку
+   */
   async deleteCard(id: string): Promise<boolean> {
-    await new Promise(resolve => setTimeout(resolve, 250))
-
-    const initialLength = this.cards.length
-    this.cards = this.cards.filter(card => card.id !== id)
-
-    return this.cards.length < initialLength
+    return this.mockCardCollection.delete(id, { delay: 250 })
   }
 
+  /**
+   * Создает несколько карточек
+   */
   async bulkCreateCards(cards: Omit<CardDto, 'id' | 'created'>[]): Promise<CardDto[]> {
-    await new Promise(resolve => setTimeout(resolve, 500))
+    const newCards = await Promise.all(
+      cards.map(card => this.createCard(card)),
+    )
 
-    const newCards = cards.map(card => ({
-      id: generateId(),
-      created: getCurrentDateTime(),
-      ...card,
-    }))
-
-    this.cards.push(...newCards)
-    return newCards
+    return mockRequest({ data: newCards, delay: 500 })
   }
 
+  /**
+   * Получает статистику карточек для колоды
+   */
   async getCardStats(deckId: string): Promise<{
     total: number
     new: number
@@ -189,9 +197,8 @@ export class CardRepository {
     relearning: number
     dueNow: number
   }> {
-    await new Promise(resolve => setTimeout(resolve, 200))
-
-    const deckCards = this.cards.filter(card => card.deckId === deckId)
+    const cards = await this.mockCardCollection.getAll({ delay: 200 })
+    const deckCards = cards.filter(card => card.deckId === deckId)
     const now = new Date().toISOString()
 
     return {
@@ -206,5 +213,87 @@ export class CardRepository {
         || card.dueDate <= now,
       ).length,
     }
+  }
+
+  /**
+   * Получает карточки по тегу
+   */
+  async getCardsByTag(deckId: string, tag: string): Promise<CardDto[]> {
+    const cards = await this.mockCardCollection.getAll({ delay: 250 })
+    return cards.filter(
+      card => card.deckId === deckId && card.tags.includes(tag),
+    )
+  }
+
+  /**
+   * Получает все уникальные теги в колоде
+   */
+  async getCardTags(deckId: string): Promise<string[]> {
+    const cards = await this.mockCardCollection.getAll({ delay: 200 })
+    const deckCards = cards.filter(card => card.deckId === deckId)
+
+    const tagsSet = new Set<string>()
+    deckCards.forEach((card) => {
+      card.tags.forEach(tag => tagsSet.add(tag))
+    })
+
+    return Array.from(tagsSet).sort()
+  }
+
+  /**
+   * Удаляет все карточки для указанной колоды
+   */
+  async deleteCardsByDeck(deckId: string): Promise<boolean> {
+    const cards = await this.mockCardCollection.getAll({ delay: 200 })
+    const cardsToDelete = cards.filter(card => card.deckId === deckId)
+
+    let allDeleted = true
+    for (const card of cardsToDelete) {
+      const result = await this.mockCardCollection.delete(card.id, { delay: 50 })
+      if (!result)
+        allDeleted = false
+    }
+
+    return mockRequest({ data: allDeleted, delay: 300 })
+  }
+
+  /**
+   * Сбрасывает статус карточки на "новая"
+   */
+  async resetCardStatus(id: string): Promise<CardDto | null> {
+    return this.mockCardCollection.update(id, {
+      difficulty: 0,
+      status: 'new',
+      dueDate: undefined,
+      lastReviewed: undefined,
+    }, { delay: 200 })
+  }
+
+  /**
+   * Обновляет теги карточки
+   */
+  async updateCardTags(id: string, tags: string[]): Promise<CardDto | null> {
+    return this.mockCardCollection.update(id, { tags }, { delay: 200 })
+  }
+
+  /**
+   * Поиск карточек по тексту
+   */
+  async searchCards(deckId: string, query: string): Promise<CardDto[]> {
+    const cards = await this.mockCardCollection.getAll({ delay: 300 })
+
+    if (!query.trim()) {
+      return cards.filter(card => card.deckId === deckId)
+    }
+
+    const normalizedQuery = query.toLowerCase().trim()
+
+    return cards.filter(card =>
+      card.deckId === deckId && (
+        card.front.toLowerCase().includes(normalizedQuery)
+        || card.back.toLowerCase().includes(normalizedQuery)
+        || card.tags.some(tag => tag.toLowerCase().includes(normalizedQuery))
+      ),
+    )
   }
 }
