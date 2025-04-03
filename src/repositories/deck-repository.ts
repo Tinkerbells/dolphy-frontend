@@ -4,6 +4,8 @@ import { generateId, getCurrentDateTime } from '@/common/functions'
 
 import type { DeckDto } from '../models/decks'
 
+import { Decks } from '../models/decks'
+
 @injectable()
 export class DeckRepository {
   private decks: DeckDto[] = []
@@ -17,7 +19,7 @@ export class DeckRepository {
         description: 'Basic Spanish words and phrases',
         created: '2023-01-15T14:30:00.000Z',
         lastStudied: '2023-02-20T18:45:00.000Z',
-        owner: 'user1',
+        owner: '1',
         tags: ['language', 'spanish', 'beginner'],
         cardCount: 50,
         newCount: 10,
@@ -30,7 +32,7 @@ export class DeckRepository {
         description: 'Core JavaScript concepts and syntax',
         created: '2023-03-05T09:15:00.000Z',
         lastStudied: '2023-03-10T16:20:00.000Z',
-        owner: 'user1',
+        owner: '1',
         tags: ['programming', 'javascript', 'web'],
         cardCount: 45,
         newCount: 5,
@@ -42,7 +44,7 @@ export class DeckRepository {
         title: 'World Capitals',
         description: 'Countries and their capital cities',
         created: '2023-02-10T11:30:00.000Z',
-        owner: 'user1',
+        owner: '1',
         tags: ['geography', 'capitals'],
         cardCount: 30,
         newCount: 30,
@@ -52,10 +54,11 @@ export class DeckRepository {
     ]
   }
 
-  async getDecks(userId: string): Promise<DeckDto[]> {
+  async getDecks(userId: string): Promise<Decks> {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 300))
-    return this.decks.filter(deck => deck.owner === userId)
+    const data = this.decks.filter(deck => deck.owner === userId)
+    return new Decks(data)
   }
 
   async getDeckById(id: string): Promise<DeckDto | null> {

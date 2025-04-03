@@ -31,7 +31,7 @@ try {
   })
     .then(() => {
       // Вызываем настройку MobX DevTools после инициализации приложения
-      setupMobxDevTools()
+      // setupMobxDevTools()
 
       root.render(
         <StrictMode>

@@ -1,10 +1,12 @@
 import React from 'react'
 import { Badge, Button, Card, Group, SimpleGrid, Stack, Text, Title } from '@mantine/core'
 
+import type { DeckDto } from '@/models/decks'
+
 import { formatDate, formatRelativeTime } from '../../lib/datetime'
 
 interface DeckListViewProps {
-  decks: any
+  decks: DeckDto[]
   loading: boolean
   onDeckClick: (deckId: string) => void
   onStudyClick: (deckId: string) => void

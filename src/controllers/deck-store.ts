@@ -27,8 +27,7 @@ export class DeckStore {
     try {
       this.setLoading(true)
       const userId = this.telegramService.getUserId()
-      const decks = await this.deckService.getDecks(userId)
-      this.decks.setDecks(decks)
+      this.decks = await this.deckService.getDecks(userId)
     }
     catch (error) {
       console.error('Failed to load decks:', error)
@@ -127,6 +126,13 @@ export class DeckStore {
     finally {
       this.setLoading(false)
     }
+  }
+
+  filter(query: string) {
+    return this.decks.decks.filter(deck =>
+      deck.title.toLowerCase().includes(query.toLowerCase())
+      || deck.description.toLowerCase().includes(query.toLowerCase()),
+    )
   }
 
   async loadDeck(deckId: string): Promise<DeckDto | null> {

@@ -28,7 +28,7 @@ const DecksPageComponent = observer(({ deckStore }: DecksPageProps) => {
     deckStore.loadDecks()
   }, [deckStore])
 
-  const filteredDecks = deckStore.decks.filter(search)
+  const filteredDecks = deckStore.filter(search)
 
   const handleCreateDeck = async () => {
     const result = await deckStore.createDeck(title, description)

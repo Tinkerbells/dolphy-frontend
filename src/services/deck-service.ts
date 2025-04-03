@@ -2,7 +2,7 @@ import { inject, injectable } from 'inversify'
 
 import { getCurrentDateTime } from '@/common/functions'
 
-import type { DeckDto } from '../models/decks'
+import type { DeckDto, Decks } from '../models/decks'
 import type { DeckRepository } from '../repositories/deck-repository'
 import type { CardRepository } from '../repositories/card-repository'
 
@@ -15,7 +15,7 @@ export class DeckService {
     @inject(SYMBOLS.CardRepository) private cardRepository: CardRepository,
   ) {}
 
-  async getDecks(userId: string): Promise<DeckDto[]> {
+  async getDecks(userId: string): Promise<Decks> {
     return this.deckRepository.getDecks(userId)
   }
 
