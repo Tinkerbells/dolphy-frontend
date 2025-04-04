@@ -3,7 +3,7 @@
 import { observer } from 'mobx-react-lite'
 import { useDisclosure } from '@mantine/hooks'
 import React, { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router'
 import { Button, Container, Group, Modal, Stack, Title } from '@mantine/core'
 
 import type { DeckStore } from '@/controllers/deck-store'

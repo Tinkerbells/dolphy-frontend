@@ -3,7 +3,7 @@
 import { observer } from 'mobx-react-lite'
 import React, { useEffect, useState } from 'react'
 import { ArrowLeft, Check, X } from 'lucide-react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router'
 import { ActionIcon, Button, Card, Container, Group, Progress, Stack, Text, Title } from '@mantine/core'
 
 import type { DeckStore } from '@/controllers/deck-store'

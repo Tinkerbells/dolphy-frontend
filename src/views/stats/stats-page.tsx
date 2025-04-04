@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react'
 import { ArrowLeft } from 'lucide-react'
 import { observer } from 'mobx-react-lite'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { ActionIcon, Button, Card, Container, Group, SimpleGrid, Stack, Text, Title } from '@mantine/core'
 
 import type { DeckStore } from '@/controllers/deck-store'

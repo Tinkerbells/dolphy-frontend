@@ -41,12 +41,14 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-error-boundary": "^5.0.0",
-    "react-router-dom": "^6.23.0",
+    "react-router": "^7.0",
+    "react-router-typesafe-routes": "^2.0.0",
     "recharts": "2",
     "reflect-metadata": "^0.2.2",
     "sonner": "^2.0.3",
     "uuid": "^11.1.0",
-    "vaul": "^1.1.2"
+    "vaul": "^1.1.2",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.11.0",

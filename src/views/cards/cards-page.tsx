@@ -3,7 +3,7 @@
 import { observer } from 'mobx-react-lite'
 import { useDisclosure } from '@mantine/hooks'
 import React, { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router'
 import { ArrowLeft, PlayCircle, Plus, Search, X } from 'lucide-react'
 import { ActionIcon, Button, Container, Group, Modal, Stack, TextInput, Title } from '@mantine/core'
 

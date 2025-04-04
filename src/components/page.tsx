@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from 'react'
 
 import React, { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { hideBackButton, onBackButtonClick, showBackButton } from '@telegram-apps/sdk-react'
 
 export function Page({ children, back = true }: PropsWithChildren<{

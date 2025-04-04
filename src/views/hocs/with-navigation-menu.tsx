@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { BottomNavigation } from '@/views/navigation/bottom-navigation-menu'
+import { BottomNavigation } from '../ui/navigation'
 
 /**
  * Higher-Order Component that wraps any component with the BottomNavigation
