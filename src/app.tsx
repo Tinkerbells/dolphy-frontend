@@ -1,7 +1,7 @@
+import './app.css'
 import React, { Suspense } from 'react'
 import { observer } from 'mobx-react-lite'
 import { ModalsProvider } from '@mantine/modals'
-import { AppRoot } from '@telegram-apps/telegram-ui'
 import { Notifications } from '@mantine/notifications'
 import { withErrorBoundary } from 'react-error-boundary'
 import { QueryClientProvider } from '@tanstack/react-query'
@@ -12,9 +12,7 @@ import { Navigate, Outlet, Route, HashRouter as Router, Routes } from 'react-rou
 
 import { AppProvider } from './di/provider'
 import { mobxQueryClient } from './lib/mobx-query'
-import { Navigation } from './views/navigation/navigation'
 import { compose, ErrorHandler, logError } from './lib/react'
-import { BottomNavigation } from './views/navigation/bottom-navigation-menu'
 
 // Lazy load page components
 const DecksPage = React.lazy(() => import('./pages/decks/decks-page').then(module => ({ default: module.DecksPage })))
@@ -33,7 +31,7 @@ const MainLayout = observer(() => {
   return (
     <AppShell className="root-wrapper">
       <Outlet />
-      <BottomNavigation />
+      <Notifications position="top-center" />
     </AppShell>
   )
 })
@@ -86,13 +84,8 @@ function AppContent() {
     <QueryClientProvider client={mobxQueryClient}>
       <MantineProvider theme={theme} defaultColorScheme={isDark ? 'dark' : 'light'}>
         <ModalsProvider>
-          <Notifications />
-          <AppRoot
-            appearance={isDark ? 'dark' : 'light'}
-          >
-            <AppRouter />
-          </AppRoot>
-          <ReactQueryDevtools initialIsOpen={false} />
+          <AppRouter />
+          <ReactQueryDevtools position="left" initialIsOpen={false} />
         </ModalsProvider>
       </MantineProvider>
     </QueryClientProvider>

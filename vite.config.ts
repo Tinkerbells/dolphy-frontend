@@ -1,4 +1,3 @@
-import swc from 'unplugin-swc'
 import { defineConfig } from 'vite'
 import mkcert from 'vite-plugin-mkcert'
 import react from '@vitejs/plugin-react-swc'
@@ -18,8 +17,13 @@ export default defineConfig({
   },
   plugins: [
     // Используем только один плагин для React с настройками для автоматической трансформации JSX
-    swc.vite(),
-    react(),
+    react({
+      // You can keep your SWC plugins here
+      tsDecorators: true,
+      plugins: [
+        ['@swc/plugin-transform-imports', {}],
+      ],
+    }),
     // Support for TypeScript paths
     tsconfigPaths(),
     // Create SSL certificate for HTTPS development
@@ -68,7 +72,6 @@ export default defineConfig({
       tsconfigRaw: {
         compilerOptions: {
           experimentalDecorators: true,
-          emitDecoratorMetadata: true,
           jsx: 'react-jsx', // Указываем новую трансформацию JSX
         },
       },

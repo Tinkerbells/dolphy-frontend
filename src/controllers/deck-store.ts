@@ -18,6 +18,15 @@ import { Decks } from '../models/decks'
 export class DeckStore {
   currentDeckId: string | null = null
 
+  public searchQuery: string = ''
+
+  public isFormDrawerOpen: boolean = false
+
+  public formData = {
+    title: '',
+    description: '',
+  }
+
   private decksQuery: MobxQuery<Decks, Error>
   private deckByIdQuery: MobxQuery<DeckDto | null, Error>
   private createDeckMutation: MobxMutation<DeckDto, { title: string, description: string }, Error>
@@ -32,10 +41,8 @@ export class DeckStore {
   ) {
     makeAutoObservable(this)
 
-    // Initialize queries and mutations
     const userId = this.telegramService.getUserId()
 
-    // Query for all decks
     this.decksQuery = new MobxQuery({
       queryClient,
       queryKey: ['decks', userId],
@@ -44,7 +51,6 @@ export class DeckStore {
       refetchOnWindowFocus: true,
     })
 
-    // Query for a single deck by ID
     this.deckByIdQuery = new MobxQuery({
       queryClient,
       queryKey: ['deck', ''],
@@ -54,17 +60,15 @@ export class DeckStore {
           return null
         return this.deckService.getDeckById(deckId)
       },
-      enabled: false, // Disabled by default until we have a deck ID
+      enabled: false,
     })
 
-    // Mutation for creating a new deck
     this.createDeckMutation = new MobxMutation({
       queryClient,
       mutationFn: async ({ title, description }) => {
         return this.deckService.createDeck(userId, title, description)
       },
       onSuccess: (newDeck) => {
-        // Update the decks query cache with the new deck
         this.queryClient.setQueryData(['decks', userId], (oldData: Decks | undefined) => {
           if (!oldData)
             return new Decks([newDeck])
@@ -77,7 +81,6 @@ export class DeckStore {
       },
     })
 
-    // Mutation for updating a deck
     this.updateDeckMutation = new MobxMutation({
       queryClient,
       mutationFn: async ({ id, updates }) => {
@@ -104,7 +107,6 @@ export class DeckStore {
       },
     })
 
-    // Mutation for deleting a deck
     this.deleteDeckMutation = new MobxMutation({
       queryClient,
       mutationFn: async (deckId) => {
@@ -114,14 +116,12 @@ export class DeckStore {
         if (!success)
           return
 
-        // Update the decks query cache to remove the deleted deck
         this.queryClient.setQueryData(['decks', userId], (oldData: Decks | undefined) => {
           if (!oldData)
             return new Decks()
           return new Decks(oldData.decks.filter(deck => deck.id !== deckId))
         })
 
-        // Remove the single deck from cache
         this.queryClient.removeQueries({
           queryKey: ['deck', deckId],
         })
@@ -139,26 +139,67 @@ export class DeckStore {
     })
   }
 
-  // Actions
   setCurrentDeckId(deckId: string | null) {
     this.currentDeckId = deckId
 
     if (deckId) {
-      // Update the query key and enable the query
       this.deckByIdQuery.update({
         queryKey: ['deck', deckId],
         enabled: true,
       })
     }
     else {
-      // Disable the query when no deck is selected
       this.deckByIdQuery.update({
         enabled: false,
       })
     }
   }
 
-  // Public methods for components
+  setSearchQuery(query: string) {
+    this.searchQuery = query
+  }
+
+  clearSearchQuery() {
+    this.searchQuery = ''
+  }
+
+  setFormTitle(title: string) {
+    this.formData.title = title
+  }
+
+  setFormDescription(description: string) {
+    this.formData.description = description
+  }
+
+  resetForm() {
+    this.formData = {
+      title: '',
+      description: '',
+    }
+  }
+
+  changeOpen(open: boolean) {
+    this.isFormDrawerOpen = open
+  }
+
+  closeFormDrawer() {
+    this.isFormDrawerOpen = false
+    this.resetForm()
+  }
+
+  async submitDeckForm() {
+    const { title, description } = this.formData
+    const result = await this.createDeck(title, description)
+
+    if (result) {
+      this.resetForm()
+      this.closeFormDrawer()
+      return true
+    }
+
+    return false
+  }
+
   async loadDecks() {
     return this.decksQuery.refetch()
   }
@@ -200,7 +241,7 @@ export class DeckStore {
     }
   }
 
-  filter(query: string) {
+  filter(query: string = this.searchQuery) {
     const decks = this.decks.decks || []
     if (!query.trim())
       return decks
@@ -211,7 +252,6 @@ export class DeckStore {
     )
   }
 
-  // Computed getters
   get decks() {
     return this.decksQuery.result.data || new Decks()
   }
@@ -232,5 +272,9 @@ export class DeckStore {
 
   get isFetching() {
     return this.decksQuery.result.isFetching || this.deckByIdQuery.result.isFetching
+  }
+
+  get filteredDecks() {
+    return this.filter()
   }
 }

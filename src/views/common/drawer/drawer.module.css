@@ -1,0 +1,158 @@
+.trigger {
+  /* Basic trigger button styles */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.overlay {
+  --vaul-overlay-z-index: 199;
+  z-index: var(--vaul-overlay-z-index);
+  pointer-events: auto;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.content {
+  --vaul-radius: var(--mantine-radius-default);
+  --vaul-handler-radius: var(--mantine-radius-default);
+  --vaul-z-index: 199;
+  --vaul-max-height: 96%;
+  --vaul-shadow-none: 0 0 0 rgb(0 0 0 / 0);
+  --vaul-shadow-xs: 0 calc(0.5rem * var(--mantine-scale))
+    calc(0.5rem * var(--mantine-scale)) rgb(0 0 0 / 0.2);
+  --vaul-shadow-sm: 0 calc(1rem * var(--mantine-scale))
+    calc(1rem * var(--mantine-scale)) rgb(0 0 0 / 0.28);
+  --vaul-shadow-md: 0 calc(1.5rem * var(--mantine-scale))
+    calc(1.5rem * var(--mantine-scale)) rgb(0 0 0 / 0.36);
+  --vaul-shadow-lg: 0 calc(2rem * var(--mantine-scale))
+    calc(2rem * var(--mantine-scale)) rgb(0 0 0 / 0.48);
+  --vaul-shadow-xl: 0 calc(3rem * var(--mantine-scale))
+    calc(3rem * var(--mantine-scale)) rgb(0 0 0 / 0.56);
+  --vaul-shadow: var(--vaul-shadow-md);
+  z-index: var(--vaul-z-index);
+  pointer-events: auto;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--mantine-color-body);
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 0 auto;
+  height: 100%;
+  max-height: var(--vaul-max-height);
+  filter: drop-shadow(var(--vaul-shadow));
+}
+
+.content[data-vaul-drawer-direction="bottom"] {
+  border-top-left-radius: var(--vaul-radius);
+  border-top-right-radius: var(--vaul-radius);
+}
+
+.content:focus,
+.content:focus-visible {
+  outline: none;
+  outline-color: transparent;
+  outline-width: 0;
+}
+
+.container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.handle {
+  border-radius: var(--vaul-handler-radius);
+  width: calc(48px * var(--mantine-scale));
+  height: calc(6px * var(--mantine-scale));
+  padding: calc(3px * var(--mantine-scale));
+  background-color: light-dark(
+    var(--mantine-color-gray-4),
+    var(--mantine-color-dark-3)
+  );
+  margin-top: calc(6px * var(--mantine-scale));
+}
+
+.innerContainer {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  padding: var(--mantine-spacing-xs);
+}
+
+.title {
+  text-align: center;
+  line-height: 1;
+  padding: 0;
+  margin: 0;
+  font-weight: 400;
+  font-size: var(--mantine-font-size-md);
+}
+
+.description {
+  font-size: var(--mantine-font-size-sm);
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer {
+  width: 100%;
+  padding: var(--mantine-spacing-xs);
+  background-color: var(--mantine-color-body);
+  border-top: calc(1px * var(--mantine-scale)) solid
+    light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
+}
+
+.footerContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--mantine-spacing-md);
+}
+
+.primaryButton {
+  padding: var(--mantine-spacing-xs) var(--mantine-spacing-md);
+  background-color: var(--mantine-color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--mantine-radius-default);
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.primaryButton:hover {
+  background-color: var(--mantine-color-primary-6);
+}
+
+.secondaryButton {
+  padding: var(--mantine-spacing-xs) var(--mantine-spacing-md);
+  background-color: transparent;
+  color: var(--mantine-color-text);
+  border: 1px solid
+    light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
+  border-radius: var(--mantine-radius-default);
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.secondaryButton:hover {
+  background-color: light-dark(
+    var(--mantine-color-gray-1),
+    var(--mantine-color-dark-6)
+  );
+}

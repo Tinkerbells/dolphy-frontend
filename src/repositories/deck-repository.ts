@@ -51,6 +51,19 @@ export class DeckRepository {
         reviewCount: 0,
         learningCount: 0,
       },
+      {
+        id: '4',
+        title: 'English Vocabulary',
+        description: 'Basic English words and phrases',
+        created: '2023-01-15T14:30:00.000Z',
+        lastStudied: '2023-02-20T18:45:00.000Z',
+        owner: '1',
+        tags: ['language', 'english', 'beginner'],
+        cardCount: 50,
+        newCount: 10,
+        reviewCount: 15,
+        learningCount: 5,
+      },
     ]
   }
 

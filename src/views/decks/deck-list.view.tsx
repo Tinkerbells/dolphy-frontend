@@ -1,8 +1,9 @@
 import React from 'react'
-import { Badge, Button, Card, Group, SimpleGrid, Stack, Text, Title } from '@mantine/core'
+import { Badge, Button, Card, Group, ScrollArea, SimpleGrid, Stack, Text, Title } from '@mantine/core'
 
 import type { DeckDto } from '@/models/decks'
 
+import styles from './deck-list.view.module.css'
 import { formatDate, formatRelativeTime } from '../../lib/datetime'
 
 interface DeckListViewProps {
@@ -25,81 +26,85 @@ export const DeckListView: React.FC<DeckListViewProps> = ({
   }
 
   return (
-    <Stack gap="lg">
-      {decks.length === 0
-        ? (
-            <Stack align="center" gap="md" my="xl">
-              <Text c="dimmed">No decks found</Text>
-              <Button onClick={onCreateClick}>
-                Create your first deck
-              </Button>
-            </Stack>
-          )
-        : (
-            <SimpleGrid cols={{ base: 1, sm: 2 }}>
-              {decks.map(deck => (
-                <Card
-                  key={deck.id}
-                  shadow="sm"
-                  padding="lg"
-                  radius="md"
-                  withBorder
-                  onClick={() => onDeckClick(deck.id)}
-                >
-                  <Stack gap="xs">
-                    <Title order={3}>{deck.title}</Title>
+    <ScrollArea
+      className={styles.scrollArea}
+    >
+      <Stack gap="lg">
+        {decks.length === 0
+          ? (
+              <Stack align="center" gap="md" my="xl">
+                <Text c="dimmed">No decks found</Text>
+                <Button onClick={onCreateClick}>
+                  Create your first deck
+                </Button>
+              </Stack>
+            )
+          : (
+              <SimpleGrid cols={{ base: 1, sm: 2 }}>
+                {decks.map(deck => (
+                  <Card
+                    key={deck.id}
+                    shadow="sm"
+                    padding="lg"
+                    radius="md"
+                    withBorder
+                    onClick={() => onDeckClick(deck.id)}
+                  >
+                    <Stack gap="xs">
+                      <Title order={3}>{deck.title}</Title>
 
-                    {deck.description && (
-                      <Text lineClamp={2} size="sm" c="dimmed">
-                        {deck.description}
-                      </Text>
-                    )}
-
-                    <Group gap="xs" mt="md">
-                      <Badge color="blue">
-                        {deck.cardCount}
-                        {' '}
-                        cards
-                      </Badge>
-                      {(deck.newCount + deck.reviewCount + deck.learningCount) > 0 && (
-                        <Badge color="green">
-                          {deck.newCount + deck.reviewCount + deck.learningCount}
-                          {' '}
-                          due
-                        </Badge>
+                      {deck.description && (
+                        <Text lineClamp={2} size="sm" c="dimmed">
+                          {deck.description}
+                        </Text>
                       )}
-                      {deck.lastStudied && (
-                        <Badge color="gray">
-                          Last studied:
+
+                      <Group gap="xs" mt="md">
+                        <Badge color="blue">
+                          {deck.cardCount}
                           {' '}
-                          {formatRelativeTime(deck.lastStudied)}
+                          cards
                         </Badge>
-                      )}
-                    </Group>
+                        {(deck.newCount + deck.reviewCount + deck.learningCount) > 0 && (
+                          <Badge color="green">
+                            {deck.newCount + deck.reviewCount + deck.learningCount}
+                            {' '}
+                            due
+                          </Badge>
+                        )}
+                        {deck.lastStudied && (
+                          <Badge color="gray">
+                            Last studied:
+                            {' '}
+                            {formatRelativeTime(deck.lastStudied)}
+                          </Badge>
+                        )}
+                      </Group>
 
-                    <Group justify="space-between" mt="md">
-                      <Button
-                        variant="light"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          onStudyClick(deck.id)
-                        }}
-                        disabled={deck.cardCount === 0}
-                      >
-                        Study Now
-                      </Button>
+                      <Group justify="space-between" mt="md">
+                        <Button
+                          variant="light"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            onStudyClick(deck.id)
+                          }}
+                          disabled={deck.cardCount === 0}
+                        >
+                          Study Now
+                        </Button>
 
-                      <Text size="xs" c="dimmed">
-                        Created:
-                        {' '}
-                        {formatDate(deck.created)}
-                      </Text>
-                    </Group>
-                  </Stack>
-                </Card>
-              ))}
-            </SimpleGrid>
-          )}
-    </Stack>
+                        <Text size="xs" c="dimmed">
+                          Created:
+                          {' '}
+                          {formatDate(deck.created)}
+                        </Text>
+                      </Group>
+                    </Stack>
+                  </Card>
+                ))}
+              </SimpleGrid>
+            )}
+      </Stack>
+    </ScrollArea>
   )
 }

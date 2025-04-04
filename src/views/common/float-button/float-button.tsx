@@ -1,6 +1,5 @@
 import type { ButtonProps } from '@mantine/core'
 
-import React from 'react'
 import { Button } from '@mantine/core'
 
 import { classNames } from '@/css/classnames'

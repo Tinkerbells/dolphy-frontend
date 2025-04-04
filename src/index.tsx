@@ -6,6 +6,7 @@ import '@telegram-apps/telegram-ui/dist/styles.css'
 import ReactDOM from 'react-dom/client'
 import React, { StrictMode } from 'react'
 import '@mantine/core/styles.css'
+import '@mantine/notifications/styles.css'
 import { retrieveLaunchParams } from '@telegram-apps/sdk-react'
 
 import App from './app'

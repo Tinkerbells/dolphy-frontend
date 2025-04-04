@@ -22,9 +22,5 @@ export function Page({ children, back = true }: PropsWithChildren<{
     hideBackButton()
   }, [back])
 
-  return (
-    <>
-      {children}
-    </>
-  )
+  return <>{children}</>
 }

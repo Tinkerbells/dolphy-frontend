@@ -9,7 +9,7 @@ import { Container } from 'inversify'
 import { mobxQueryClient } from '@/lib/mobx-query'
 
 import type { TelegramService } from '../services/telegram-service'
-import type { NotificationService } from '../services/notification-service'
+import type { NotificationServiceInterface } from '../services/notification-service'
 
 // Symbols for DI
 import { SYMBOLS } from './symbols'
@@ -24,8 +24,8 @@ import { DeckRepository } from '../repositories/deck-repository'
 import { CardRepository } from '../repositories/card-repository'
 import { TelegramMiniAppService } from '../services/telegram-service'
 import { StudySessionStore } from '../controllers/study-session-store'
+import { NotificationService } from '../services/notification-service'
 import { StudySessionService } from '../services/study-session-service'
-import { MantineNotificationService } from '../services/notification-service'
 import { StudySessionRepository } from '../repositories/study-session-repository'
 
 // Create and configure the container
@@ -39,7 +39,7 @@ container.bind<CardRepository>(SYMBOLS.CardRepository).to(CardRepository).inSing
 container.bind<StudySessionRepository>(SYMBOLS.StudySessionRepository).to(StudySessionRepository).inSingletonScope()
 
 // Register services
-container.bind<NotificationService>(SYMBOLS.NotificationService).to(MantineNotificationService).inSingletonScope()
+container.bind<NotificationServiceInterface>(SYMBOLS.NotificationService).to(NotificationService).inSingletonScope()
 container.bind<TelegramService>(SYMBOLS.TelegramService).to(TelegramMiniAppService).inSingletonScope()
 container.bind<DeckService>(SYMBOLS.DeckService).to(DeckService).inSingletonScope()
 container.bind<CardService>(SYMBOLS.CardService).to(CardService).inSingletonScope()

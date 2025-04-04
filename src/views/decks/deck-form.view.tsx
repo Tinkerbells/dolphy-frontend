@@ -23,6 +23,7 @@ export const DeckFormView: React.FC<DeckFormViewProps> = ({
   return (
     <Stack justify="center">
       <TextInput
+        size="lg"
         label="Deck Title"
         placeholder="Enter deck title"
         value={title}
@@ -31,6 +32,7 @@ export const DeckFormView: React.FC<DeckFormViewProps> = ({
       />
 
       <TextInput
+        size="lg"
         label="Description"
         placeholder="Enter deck description (optional)"
         value={description}

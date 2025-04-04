@@ -1,11 +1,10 @@
 // src/pages/decks/deck-detail-page.tsx
 
-import { ArrowLeft } from 'lucide-react'
 import { observer } from 'mobx-react-lite'
 import { useDisclosure } from '@mantine/hooks'
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { ActionIcon, Button, Container, Group, Modal, Stack, Title } from '@mantine/core'
+import { Button, Container, Group, Modal, Stack, Title } from '@mantine/core'
 
 import type { DeckStore } from '@/controllers/deck-store'
 
@@ -86,9 +85,6 @@ const DeckDetailPageComponent = observer(({ deckStore }: DeckDetailPageProps) =>
       <Container p="md">
         <Stack gap="lg">
           <Group>
-            <ActionIcon variant="light" onClick={() => navigate('/decks')}>
-              <ArrowLeft size={18} />
-            </ActionIcon>
             <Title order={2}>Deck Details</Title>
           </Group>
 
