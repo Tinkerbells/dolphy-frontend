@@ -82,11 +82,10 @@ export class Form<TFieldValues extends FieldValues = FieldValues> {
    *
    * @param name - Имя поля
    * @param props - Свойства поля
-   * @param label - Метка поля (опционально)
    * @returns Экземпляр формы для цепочки вызовов
    */
-  input(name: Path<TFieldValues>, props: FormInputProps, label?: string): Form<TFieldValues> {
-    this.fields.push(new InputField(name, props, label || props.label))
+  input(name: Path<TFieldValues>, props: FormInputProps): Form<TFieldValues> {
+    this.fields.push(new InputField(name, props))
     return this
   }
 
@@ -213,17 +212,20 @@ export class Form<TFieldValues extends FieldValues = FieldValues> {
                   color="secondary"
                   type="button"
                   onClick={handleReset}
-                  disabled={!isDirty || isSubmitting}
+                  disabled={isSubmitting}
                 >
                   {resetText}
                 </Button>
               )}
               {submitText && (
                 <Button
+                  sx={{
+                    minWidth: '100%',
+                  }}
                   variant="contained"
                   color="primary"
                   type="submit"
-                  disabled={!isValid || isSubmitting}
+                  disabled={isSubmitting}
                 >
                   {isSubmitting ? 'Загрузка...' : submitText}
                 </Button>

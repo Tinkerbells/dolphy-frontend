@@ -1,5 +1,4 @@
-import React from 'react'
-import { Button } from '@mantine/core'
+import { Button } from '@mui/material'
 
 interface ErrorHandlerProps {
   error: Error

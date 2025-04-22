@@ -1,11 +1,9 @@
 import { route } from 'react-router-typesafe-routes'
 
-import { env } from '../env'
-
 export const root = route({
-  path: env.BASE_URL.replace('/', ''),
+  path: '',
   children: {
-    'sing-in': route({
+    'sign-in': route({
       path: 'sign-in',
     }),
     'decks': route({

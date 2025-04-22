@@ -1,13 +1,10 @@
 import { defineConfig } from 'vite'
-import mkcert from 'vite-plugin-mkcert'
 import react from '@vitejs/plugin-react-swc'
 import tsconfigPaths from 'vite-tsconfig-paths'
-import { visualizer } from 'rollup-plugin-visualizer'
 import viteCompression from 'vite-plugin-compression'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/tma/',
   css: {
     preprocessorOptions: {
       scss: {
@@ -26,15 +23,6 @@ export default defineConfig({
     }),
     // Support for TypeScript paths
     tsconfigPaths(),
-    // Create SSL certificate for HTTPS development
-    process.env.HTTPS && mkcert(),
-    // Bundle analyzer (open stats.html after build to see bundle size)
-    process.env.ANALYZE && visualizer({
-      open: true,
-      filename: 'stats.html',
-      gzipSize: true,
-      brotliSize: true,
-    }),
     // Compress assets for production
     viteCompression({
       algorithm: 'gzip',
@@ -64,8 +52,6 @@ export default defineConfig({
         },
       },
     },
-    // Generate source maps only in development
-    sourcemap: process.env.NODE_ENV !== 'production',
   },
   optimizeDeps: {
     esbuildOptions: {

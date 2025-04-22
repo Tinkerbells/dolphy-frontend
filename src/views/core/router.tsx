@@ -1,17 +1,16 @@
 import { observer } from 'mobx-react-lite'
-import { Notifications } from '@mantine/notifications'
+import CssBaseline from '@mui/material/CssBaseline'
 import { createBrowserRouter, Navigate, Outlet, RouterProvider } from 'react-router'
 
 import { root } from '@/lib/react-router'
 
-import { signInPageRoute } from '../pages/sign-in.route'
-import { deckDetailPageRoute, decksPageRoute } from '../decks'
+import { signInPageRoute } from '../sign-in/sign-in.route'
 
 const MainLayout = observer(() => {
   return (
     <>
       <Outlet />
-      <Notifications position="top-center" />
+      <CssBaseline />
     </>
   )
 })
@@ -21,11 +20,11 @@ const browserRouter = createBrowserRouter([
     path: '/',
     element: <MainLayout />,
     children: [
-      { index: true, element: <Navigate to={root.decks.$path()} replace /> },
+      { index: true, element: <Navigate to={root['sign-in'].$path()} replace /> },
       {
-        children: [decksPageRoute, deckDetailPageRoute, signInPageRoute],
+        children: [signInPageRoute],
       },
-      { path: '*', element: <Navigate to={root.decks.$path()} replace /> },
+      { path: '*', element: <Navigate to={root['sign-in'].$path()} replace /> },
     ],
   },
 ])

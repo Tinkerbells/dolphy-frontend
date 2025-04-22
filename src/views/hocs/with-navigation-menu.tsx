@@ -1,7 +1,5 @@
 import React from 'react'
 
-import { BottomNavigation } from '../ui/navigation'
-
 /**
  * Higher-Order Component that wraps any component with the BottomNavigation
  *
@@ -15,7 +13,6 @@ export function withBottomNavigation<P extends object>(
     return (
       <>
         <Component {...props} />
-        <BottomNavigation />
       </>
     )
   }

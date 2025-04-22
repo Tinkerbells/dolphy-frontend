@@ -1,7 +1,7 @@
 import type { RouteObject } from 'react-router'
 
 import { createElement, lazy } from 'react'
-import { LoadingOverlay } from '@mantine/core'
+import { CircularProgress } from '@mui/material'
 import { withErrorBoundary } from 'react-error-boundary'
 
 import { root } from '@/lib/react-router'
@@ -13,7 +13,7 @@ const SignInPage = lazy(() =>
 )
 
 const enhance = compose(
-  component => withSuspense(component, { FallbackComponent: LoadingOverlay }),
+  component => withSuspense(component, { FallbackComponent: CircularProgress }),
   component => withBottomNavigation(component),
   component =>
     withErrorBoundary(component, {
@@ -23,6 +23,6 @@ const enhance = compose(
 )
 
 export const signInPageRoute: RouteObject = {
-  path: root['sing-in'].$path(),
+  path: root['sign-in'].$path(),
   element: createElement(enhance(SignInPage)),
 }

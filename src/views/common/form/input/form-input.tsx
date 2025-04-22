@@ -4,8 +4,6 @@ import type { FieldValues, UseControllerProps } from 'react-hook-form'
 import { TextField } from '@mui/material'
 import { Controller } from 'react-hook-form'
 
-import { FormFieldWrapper } from '../form-field-wrapper'
-
 /**
  * Интерфейс свойств компонента FormInput
  */
@@ -25,17 +23,16 @@ export function FormInput<TFieldValues extends FieldValues = FieldValues>({
       name={name}
       control={control}
       render={({ field: { ref, ...field }, fieldState: { error } }) => (
-        <FormFieldWrapper error={error?.message}>
-          <TextField
-            {...field}
-            inputRef={ref}
-            fullWidth
-            error={!!error}
-            variant="outlined"
-            size="medium"
-            {...props}
-          />
-        </FormFieldWrapper>
+        <TextField
+          {...field}
+          inputRef={ref}
+          fullWidth
+          error={!!error}
+          helperText={error?.message}
+          variant="outlined"
+          size="medium"
+          {...props}
+        />
       )}
     />
   )

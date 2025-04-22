@@ -1,5 +1,4 @@
 import { injectable } from 'inversify'
-import { notifications } from '@mantine/notifications'
 
 /**
  * Position types for notifications
@@ -76,7 +75,7 @@ export class NotificationService implements NotificationServiceInterface {
       position: options?.position ?? this.defaultOptions.position,
     }
 
-    return notifications.show(config)
+    return ''
   }
 
   /**
@@ -87,14 +86,11 @@ export class NotificationService implements NotificationServiceInterface {
     if (!id) {
       throw new Error('Notification ID is required')
     }
-
-    notifications.hide(id)
   }
 
   /**
    * Close all active notifications
    */
   public closeAll(): void {
-    notifications.clean()
   }
 }

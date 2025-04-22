@@ -17,10 +17,9 @@ export class InputField<TFieldValues extends FieldValues = FieldValues> extends 
    *
    * @param name - Имя поля в форме
    * @param props - Свойства поля
-   * @param label - Метка поля (опционально)
    */
-  constructor(name: Path<TFieldValues>, props: FormInputProps, label?: string) {
-    super(name, label)
+  constructor(name: Path<TFieldValues>, props: FormInputProps) {
+    super(name)
     this.props = props
   }
 
