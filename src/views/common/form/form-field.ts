@@ -15,12 +15,10 @@ export abstract class FormField<
   TFieldValues extends FieldValues = FieldValues,
 > extends BaseFormField<TFieldValues> {
   name: Path<TFieldValues>
-  label?: string
 
-  constructor(name: Path<TFieldValues>, label?: string) {
+  constructor(name: Path<TFieldValues>) {
     super()
     this.name = name
-    this.label = label
   }
 }
 
@@ -55,7 +53,6 @@ export enum COMPONENT_TYPE {
 export interface Property<FormValues extends FieldValues = FieldValues> {
   type: COMPONENT_TYPE
   name?: Path<FormValues>
-  label?: string
   props: any
 }
 

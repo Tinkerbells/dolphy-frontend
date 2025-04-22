@@ -18,8 +18,6 @@ export type FormInputProps = Omit<TextFieldProps, 'name'>
 export function FormInput<TFieldValues extends FieldValues = FieldValues>({
   name,
   control,
-  label,
-  required,
   ...props
 }: FormInputProps & Omit<UseControllerProps<TFieldValues>, 'defaultValue'>) {
   return (
@@ -27,7 +25,7 @@ export function FormInput<TFieldValues extends FieldValues = FieldValues>({
       name={name}
       control={control}
       render={({ field: { ref, ...field }, fieldState: { error } }) => (
-        <FormFieldWrapper error={error?.message} required={required}>
+        <FormFieldWrapper error={error?.message}>
           <TextField
             {...field}
             inputRef={ref}
