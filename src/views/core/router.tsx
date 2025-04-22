@@ -4,11 +4,13 @@ import { createBrowserRouter, Navigate, Outlet, RouterProvider } from 'react-rou
 
 import { root } from '@/lib/react-router'
 
+import { Header } from '../common'
 import { signInPageRoute } from '../sign-in/sign-in.route'
 
 const MainLayout = observer(() => {
   return (
     <>
+      <Header />
       <Outlet />
       <CssBaseline />
     </>

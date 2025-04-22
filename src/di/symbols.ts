@@ -11,10 +11,10 @@ export const SYMBOLS = {
   NotificationService: Symbol.for('NotificationService'),
   StudySessionService: Symbol.for('StudySessionService'),
   TelegramService: Symbol.for('TelegramService'),
-  UserService: Symbol.for('UserService'),
   DeckService: Symbol.for('DeckService'),
   CardService: Symbol.for('CardService'),
   StudyService: Symbol.for('StudyService'),
+  AuthService: Symbol.for('AuthService'),
 
   // Controllers (MobX Stores)
   DeckStore: Symbol.for('DeckStore'),
