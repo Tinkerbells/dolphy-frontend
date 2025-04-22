@@ -1,6 +1,5 @@
 import './app.css'
 
-import { RouterProvider } from 'react-router'
 import { ModalsProvider } from '@mantine/modals'
 import { withErrorBoundary } from 'react-error-boundary'
 import { QueryClientProvider } from '@tanstack/react-query'
@@ -8,10 +7,10 @@ import { createTheme, MantineProvider } from '@mantine/core'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { isMiniAppDark, useSignal } from '@telegram-apps/sdk-react'
 
-import { AppProvider } from './di/provider'
-import { BrowserRouter } from './views/core'
-import { mobxQueryClient } from './lib/mobx-query'
-import { compose, ErrorHandler, logError } from './lib/react'
+import { BrowserRouter } from '.'
+import { AppProvider } from '../../di/provider'
+import { mobxQueryClient } from '../../lib/mobx-query'
+import { compose, ErrorHandler, logError } from '../../lib/react'
 
 // Create theme
 const theme = createTheme({

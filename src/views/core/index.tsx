@@ -1,7 +1,4 @@
-// src/index.tsx
-// Required by Inversify at the entry point of the application
 import 'reflect-metadata'
-// Include Telegram UI styles first to allow our code override the package CSS.
 import '@telegram-apps/telegram-ui/dist/styles.css'
 import ReactDOM from 'react-dom/client'
 import React, { StrictMode } from 'react'
@@ -14,9 +11,8 @@ import { init } from './init'
 // Mock the environment in case, we are outside Telegram.
 import './mockEnv'
 // Импортируем настройку MobX DevTools
-import { setupMobxDevTools } from './devtools'
-import { mobxQueryClient } from './lib/mobx-query'
-import { EnvUnsupported } from './components/env-unsupported'
+import { setupMobxDevTools } from '../../devtools'
+import { mobxQueryClient } from '../../lib/mobx-query'
 
 const root = ReactDOM.createRoot(document.getElementById('root')!)
 
@@ -47,5 +43,5 @@ try {
     })
 }
 catch (e) {
-  root.render(<EnvUnsupported />)
+  root.render(<div>error with env</div>)
 }
