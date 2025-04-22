@@ -2,6 +2,7 @@ import { Plus, X } from 'lucide-react'
 import { observer } from 'mobx-react-lite'
 import { useNavigate } from 'react-router'
 import { useCallback, useEffect } from 'react'
+import { retrieveRawInitData } from '@telegram-apps/sdk-react'
 import {
   ActionIcon,
   Container,
@@ -19,12 +20,13 @@ import { useService } from '@/di/provider'
 import { Drawer, FloatButton } from '@/views/ui'
 
 import styles from './decks-page.module.css'
-import { DeckFormView } from '../../views/decks/deck-form.view'
-import { DeckListView } from '../../views/decks/deck-list.view'
+import { DeckListView } from '../ui/deck-list.view'
+import { DeckFormView } from '../ui/deck-form.view'
 
 export const DecksPage = observer(() => {
   const store = useService<DeckStore>(SYMBOLS.DeckStore)
   const navigate = useNavigate()
+  const initDataRaw = retrieveRawInitData()
 
   useEffect(() => {
     store.loadDecks()

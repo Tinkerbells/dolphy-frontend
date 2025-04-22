@@ -11,9 +11,9 @@ import {
   Title,
 } from '@mantine/core'
 
-import type { DeckDto } from '../../models/decks'
+import type { DeckDto } from '@/models/decks'
 
-import { formatDate, formatRelativeTime } from '../../lib/datetime'
+import { formatDate, formatRelativeTime } from '@/lib/datetime'
 
 interface DeckDetailViewProps {
   deck: DeckDto

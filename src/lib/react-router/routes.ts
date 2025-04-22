@@ -7,6 +7,11 @@ export const root = route({
   children: {
     decks: route({
       path: 'decks',
+      children: {
+        detail: route({
+          path: 'detail',
+        }),
+      },
     }),
   },
 })

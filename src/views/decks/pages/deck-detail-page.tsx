@@ -1,8 +1,6 @@
-// src/pages/decks/deck-detail-page.tsx
-
 import { observer } from 'mobx-react-lite'
+import { useEffect, useState } from 'react'
 import { useDisclosure } from '@mantine/hooks'
-import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import { Button, Container, Group, Modal, Stack, Title } from '@mantine/core'
 
@@ -10,15 +8,13 @@ import type { DeckStore } from '@/controllers/deck-store'
 
 import { SYMBOLS } from '@/di/symbols'
 import { Page } from '@/components/page'
-import { withDependencies } from '@/di/inject'
-import { DeckFormView } from '@/views/decks/deck-form.view'
-import { DeckDetailView } from '@/views/decks/deck-detail.view'
+import { useService } from '@/di/provider'
 
-interface DeckDetailPageProps {
-  deckStore: DeckStore
-}
+import { DeckFormView } from '../ui/deck-form.view'
+import { DeckDetailView } from '../ui/deck-detail.view'
 
-const DeckDetailPageComponent = observer(({ deckStore }: DeckDetailPageProps) => {
+export const DeckDetailPage = observer(() => {
+  const store = useService<DeckStore>(SYMBOLS.DeckStore)
   const { deckId } = useParams<{ deckId: string }>()
   const navigate = useNavigate()
 
@@ -35,31 +31,30 @@ const DeckDetailPageComponent = observer(({ deckStore }: DeckDetailPageProps) =>
     }
 
     const loadDeck = async () => {
-      const deck = await deckStore.loadDeck(deckId)
+      const deck = await store.loadDeck(deckId)
       if (!deck) {
         navigate('/decks')
         return
       }
 
-      // Инициализация формы редактирования
       setTitle(deck.title)
       setDescription(deck.description)
     }
 
     loadDeck()
-  }, [deckId, navigate, deckStore])
+  }, [deckId, navigate, store])
 
   const handleOpenEditForm = () => {
-    if (deckStore.currentDeck) {
-      setTitle(deckStore.currentDeck.title)
-      setDescription(deckStore.currentDeck.description)
+    if (store.currentDeck) {
+      setTitle(store.currentDeck.title)
+      setDescription(store.currentDeck.description)
     }
     openEditModal()
   }
 
   const handleUpdateDeck = async () => {
     if (deckId) {
-      await deckStore.updateDeck(deckId, {
+      await store.updateDeck(deckId, {
         title,
         description,
       })
@@ -69,14 +64,14 @@ const DeckDetailPageComponent = observer(({ deckStore }: DeckDetailPageProps) =>
 
   const handleDeleteDeck = async () => {
     if (deckId) {
-      const success = await deckStore.deleteDeck(deckId)
+      const success = await store.deleteDeck(deckId)
       if (success) {
         navigate('/decks')
       }
     }
   }
 
-  if (!deckStore.currentDeck) {
+  if (!store.currentDeck) {
     return null
   }
 
@@ -89,8 +84,8 @@ const DeckDetailPageComponent = observer(({ deckStore }: DeckDetailPageProps) =>
           </Group>
 
           <DeckDetailView
-            deck={deckStore.currentDeck}
-            loading={deckStore.isLoading}
+            deck={store.currentDeck}
+            loading={store.isLoading}
             onEditClick={handleOpenEditForm}
             onDeleteClick={openDeleteModal}
             onStudyClick={() => navigate(`/study/${deckId}`)}
@@ -103,7 +98,7 @@ const DeckDetailPageComponent = observer(({ deckStore }: DeckDetailPageProps) =>
           <DeckFormView
             title={title}
             description={description}
-            loading={deckStore.isLoading}
+            loading={store.isLoading}
             onTitleChange={setTitle}
             onDescriptionChange={setDescription}
             onSubmit={handleUpdateDeck}
@@ -116,7 +111,7 @@ const DeckDetailPageComponent = observer(({ deckStore }: DeckDetailPageProps) =>
           <Stack>
             <div>
               Are you sure you want to delete the deck "
-              {deckStore.currentDeck.title}
+              {store.currentDeck.title}
               "?
               <p>This will also delete all cards in this deck. This action cannot be undone.</p>
             </div>
@@ -134,10 +129,3 @@ const DeckDetailPageComponent = observer(({ deckStore }: DeckDetailPageProps) =>
     </Page>
   )
 })
-
-export const DeckDetailPage = withDependencies(
-  DeckDetailPageComponent,
-  {
-    deckStore: SYMBOLS.DeckStore,
-  },
-)

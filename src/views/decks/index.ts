@@ -1,1 +1,1 @@
-export * from './decks-page.route'
+export * from './pages'

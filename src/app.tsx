@@ -9,8 +9,8 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { isMiniAppDark, useSignal } from '@telegram-apps/sdk-react'
 
 import { AppProvider } from './di/provider'
+import { BrowserRouter } from './views/core'
 import { mobxQueryClient } from './lib/mobx-query'
-import { BrowserRouter, browserRouter } from './views/core'
 import { compose, ErrorHandler, logError } from './lib/react'
 
 // Create theme

@@ -3,8 +3,9 @@ import { Badge, Button, Card, Group, ScrollArea, SimpleGrid, Stack, Text, Title 
 
 import type { DeckDto } from '@/models/decks'
 
+import { formatDate, formatRelativeTime } from '@/lib/datetime'
+
 import styles from './deck-list.view.module.css'
-import { formatDate, formatRelativeTime } from '../../lib/datetime'
 
 interface DeckListViewProps {
   decks: DeckDto[]

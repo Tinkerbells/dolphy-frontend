@@ -5,7 +5,7 @@ import { createBrowserRouter, Navigate, Outlet, RouterProvider } from 'react-rou
 
 import { root } from '@/lib/react-router'
 
-import { decksPageRoute } from '../decks'
+import { deckDetailPageRoute, decksPageRoute } from '../decks'
 
 const MainLayout = observer(() => {
   return (
@@ -23,7 +23,7 @@ const browserRouter = createBrowserRouter([
     children: [
       { index: true, element: <Navigate to={root.decks.$path()} replace /> },
       {
-        children: [decksPageRoute],
+        children: [decksPageRoute, deckDetailPageRoute],
       },
       { path: '*', element: <Navigate to={root.decks.$path()} replace /> },
     ],

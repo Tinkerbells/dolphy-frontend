@@ -80,6 +80,7 @@ export default defineConfig({
   publicDir: './public',
   server: {
     // Expose dev server to devices on the network
+    allowedHosts: ['ad0e-138-124-31-188.ngrok-free.app'],
     host: true,
   },
 })
