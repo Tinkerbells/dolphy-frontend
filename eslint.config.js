@@ -7,6 +7,7 @@ export default antfu({
     quotes: 'double',
   },
   rules: {
+    'ts/consistent-type-imports': 'off',
     'no-console': ['warn'],
     'perfectionist/sort-imports': ['error', {
       type: 'line-length',

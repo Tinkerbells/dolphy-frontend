@@ -8,6 +8,7 @@ import { dependencyInjection } from '@wox-team/wox-inject-vite'
 export default defineConfig({
   plugins: [
     // Плагин для обработки DI
+    dependencyInjection(),
     react({
       // Добавляем поддержку декораторов
       tsDecorators: true,
@@ -17,7 +18,6 @@ export default defineConfig({
         },
       },
     }),
-    dependencyInjection(),
     // Support for TypeScript paths
     tsconfigPaths(),
     // Compress assets for production

@@ -1,9 +1,7 @@
-import type { MobxQueryClient } from 'mobx-tanstack-query'
-
 import { makeAutoObservable } from 'mobx'
 import { MobxForm } from 'mobx-react-hook-form'
 import { Injectable } from '@wox-team/wox-inject'
-import { MobxMutation } from 'mobx-tanstack-query'
+import { MobxMutation, MobxQueryClient } from 'mobx-tanstack-query'
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
 
 import type { AuthService } from '@/application/services/auth.service'

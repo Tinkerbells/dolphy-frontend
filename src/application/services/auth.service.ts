@@ -2,8 +2,9 @@ import { Injectable } from '@wox-team/wox-inject'
 
 import type { LoginResponseDto } from '@/domain/auth/dto/login-response.dto'
 import type { AuthEmailLoginDto } from '@/domain/auth/dto/auth-email-login.dto'
-import type { AuthRepository } from '@/domain/auth/repositories/auth.repository'
 import type { AuthRegisterLoginDto } from '@/domain/auth/dto/auth-register-login.dto'
+
+import { AuthRepository } from '@/domain/auth/repositories/auth.repository'
 
 @Injectable()
 export class AuthService {

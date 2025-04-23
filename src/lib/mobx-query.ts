@@ -1,7 +1,5 @@
-// src/di/container.ts
 import { MobxQueryClient } from 'mobx-tanstack-query'
 
-// Create query client with appropriate configuration
 export const mobxQueryClient = new MobxQueryClient({
   defaultOptions: {
     queries: {
