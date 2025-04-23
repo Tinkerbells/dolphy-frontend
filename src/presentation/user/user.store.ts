@@ -1,18 +1,17 @@
 import type { MobxQueryClient } from 'mobx-tanstack-query'
 
 import { makeAutoObservable } from 'mobx'
-import { inject, injectable } from 'inversify'
+import { Injectable } from '@wox-team/wox-inject'
 
 import type { User } from '@/domain/user/user.domain'
 import type { NotificationService } from '@/application/services/notification.service'
 
-import { SYMBOLS } from '@/di/symbols'
 import { localStorage } from '@/utils/local-storage'
 
 /**
  * Хранилище данных о текущем пользователе
  */
-@injectable()
+@Injectable()
 export class UserStore {
   /** Данные текущего пользователя */
   currentUser: User | null = null
@@ -30,8 +29,8 @@ export class UserStore {
    * @param {NotificationService} notificationService - Сервис уведомлений
    */
   constructor(
-    @inject(SYMBOLS.QueryClient) private queryClient: MobxQueryClient,
-    @inject(SYMBOLS.NotificationService) private notificationService: NotificationService,
+    private queryClient: MobxQueryClient,
+    private notificationService: NotificationService,
   ) {
     makeAutoObservable(this)
     this.checkAuth()

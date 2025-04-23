@@ -1,10 +1,10 @@
 import { toast } from 'sonner'
-import { injectable } from 'inversify'
+import { Injectable } from '@wox-team/wox-inject'
 
 /**
  * Сервис для отображения различных типов уведомлений
  */
-@injectable()
+@Injectable()
 export class NotificationService {
   /**
    * Показывает успешное уведомление

@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import viteCompression from 'vite-plugin-compression'
+import { dependencyInjection } from '@wox-team/wox-inject-vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -13,10 +14,17 @@ export default defineConfig({
     },
   },
   plugins: [
+    // Плагин для обработки DI
+    dependencyInjection(),
     // Используем только один плагин для React с настройками для автоматической трансформации JSX
     react({
-      // You can keep your SWC plugins here
+      // Добавляем поддержку декораторов
       tsDecorators: true,
+      babel: {
+        parserOpts: {
+          plugins: ['decorators-legacy'],
+        },
+      },
       plugins: [
         ['@swc/plugin-transform-imports', {}],
       ],

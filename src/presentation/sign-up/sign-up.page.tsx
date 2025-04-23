@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router'
 import { Google } from '@mui/icons-material'
+import { useResolve } from '@wox-team/wox-inject'
 import {
   Box,
   Button,
@@ -10,17 +11,14 @@ import {
   Typography,
 } from '@mui/material'
 
-import { SYMBOLS } from '@/di/symbols'
 import { root } from '@/lib/react-router'
-import { useService } from '@/di/provider'
-
-import type { SignUpStore } from './sign-up.store'
 
 import { SignUpForm } from './sign-up.form'
+import { SignUpStore } from './sign-up.store'
 
 export function SignUpPage() {
   const navigate = useNavigate()
-  const store = useService<SignUpStore>(SYMBOLS.SignUpStore)
+  const store = useResolve(SignUpStore)
 
   // Google auth handler
   const handleGoogleSignUp = () => {

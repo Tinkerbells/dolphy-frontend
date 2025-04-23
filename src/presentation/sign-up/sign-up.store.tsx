@@ -1,21 +1,20 @@
 import type { MobxQueryClient } from 'mobx-tanstack-query'
 
 import { makeAutoObservable } from 'mobx'
-import { inject, injectable } from 'inversify'
 import { MobxForm } from 'mobx-react-hook-form'
+import { Injectable } from '@wox-team/wox-inject'
 import { MobxMutation } from 'mobx-tanstack-query'
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
 
 import type { AuthService } from '@/application/services/auth.service'
 import type { NotificationService } from '@/application/services/notification.service'
 
-import { SYMBOLS } from '@/di/symbols'
 import { AuthRegisterLoginDto } from '@/domain/auth/dto/auth-register-login.dto'
 
 /**
  * Хранилище состояния страницы регистрации
  */
-@injectable()
+@Injectable()
 export class SignUpStore {
   /** Мутация регистрации */
   register: MobxMutation<void, AuthRegisterLoginDto, Error>
@@ -26,17 +25,10 @@ export class SignUpStore {
   /** Флаг отображения пароля */
   showPassword = false
 
-  /**
-   * Создает экземпляр хранилища регистрации
-   *
-   * @param {AuthService} authService - Сервис аутентификации
-   * @param {NotificationService} notificationService - Сервис уведомлений
-   * @param {MobxQueryClient} queryClient - Клиент запросов
-   */
   constructor(
-    @inject(SYMBOLS.AuthService) private authService: AuthService,
-    @inject(SYMBOLS.NotificationService) private notificationService: NotificationService,
-    @inject(SYMBOLS.QueryClient) private queryClient: MobxQueryClient,
+    private authService: AuthService,
+    private notificationService: NotificationService,
+    private queryClient: MobxQueryClient,
   ) {
     // Инициализация мутации регистрации
     this.register = new MobxMutation({

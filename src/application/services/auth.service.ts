@@ -1,17 +1,13 @@
-import { inject, injectable } from 'inversify'
+import { Injectable } from '@wox-team/wox-inject'
 
 import type { LoginResponseDto } from '@/domain/auth/dto/login-response.dto'
 import type { AuthEmailLoginDto } from '@/domain/auth/dto/auth-email-login.dto'
 import type { AuthRepository } from '@/domain/auth/repositories/auth.repository'
 import type { AuthRegisterLoginDto } from '@/domain/auth/dto/auth-register-login.dto'
 
-import { SYMBOLS } from '@/di/symbols'
-
-@injectable()
+@Injectable()
 export class AuthService {
-  constructor(
-    @inject(SYMBOLS.AuthRepository) private authRepository: AuthRepository,
-  ) {}
+  constructor(private authRepository: AuthRepository) {}
 
   async register(createUserDto: AuthRegisterLoginDto): Promise<void> {
     return await this.authRepository.register(createUserDto)

@@ -1,19 +1,18 @@
 import type { MobxQueryClient } from 'mobx-tanstack-query'
 
 import { makeAutoObservable } from 'mobx'
-import { inject, injectable } from 'inversify'
 import { MobxForm } from 'mobx-react-hook-form'
+import { Injectable } from '@wox-team/wox-inject'
 import { MobxMutation } from 'mobx-tanstack-query'
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
 
 import type { AuthService } from '@/application/services/auth.service'
 import type { LoginResponseDto } from '@/domain/auth/dto/login-response.dto'
 
-import { SYMBOLS } from '@/di/symbols'
 import { localStorage } from '@/utils/local-storage'
 import { AuthEmailLoginDto } from '@/domain/auth/dto/auth-email-login.dto'
 
-@injectable()
+@Injectable()
 export class SignInStore {
   login: MobxMutation<LoginResponseDto, AuthEmailLoginDto, Error>
 
@@ -22,8 +21,8 @@ export class SignInStore {
   showPassword = false
 
   constructor(
-    @inject(SYMBOLS.AuthService) private authService: AuthService,
-    @inject(SYMBOLS.QueryClient) private queryClient: MobxQueryClient,
+    private authService: AuthService,
+    private queryClient: MobxQueryClient,
   ) {
     // Инициализация мутации входа
     this.login = new MobxMutation({

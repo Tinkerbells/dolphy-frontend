@@ -1,4 +1,4 @@
-import { injectable } from 'inversify'
+import { Injectable } from '@wox-team/wox-inject'
 
 import type { LoginResponseDto } from '@/domain/auth/dto/login-response.dto'
 import type { AuthEmailLoginDto } from '@/domain/auth/dto/auth-email-login.dto'
@@ -7,7 +7,7 @@ import type { AuthRegisterLoginDto } from '@/domain/auth/dto/auth-register-login
 
 import { Net } from '@/utils/net'
 
-@injectable()
+@Injectable()
 export class AuthNetRepository extends Net implements AuthRepository {
   constructor() {
     super()
