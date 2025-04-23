@@ -1,11 +1,13 @@
 export const SYMBOLS = {
   // Core
   QueryClient: Symbol.for('QueryClient'),
+
   // Repositories
   UserRepository: Symbol.for('UserRepository'),
   DeckRepository: Symbol.for('DeckRepository'),
   CardRepository: Symbol.for('CardRepository'),
   StudySessionRepository: Symbol.for('StudySessionRepository'),
+  AuthRepository: Symbol.for('AuthRepository'),
 
   // Services
   NotificationService: Symbol.for('NotificationService'),
@@ -21,10 +23,7 @@ export const SYMBOLS = {
   CardStore: Symbol.for('CardStore'),
   StudySessionStore: Symbol.for('StudySessionStore'),
   RootStore: Symbol.for('RootStore'),
-
   SignInStore: Symbol.for('SignInStore'),
-  // Существующие символы...
-
-  // Repositories
-  AuthRepository: Symbol.for('AuthRepository'),
+  SignUpStore: Symbol.for('SignUpStore'),
+  UserStore: Symbol.for('UserStore'),
 }

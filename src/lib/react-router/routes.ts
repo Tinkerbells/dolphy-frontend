@@ -6,6 +6,9 @@ export const root = route({
     'sign-in': route({
       path: 'sign-in',
     }),
+    'sign-up': route({
+      path: 'sign-up',
+    }),
     'decks': route({
       path: 'decks',
       children: {
