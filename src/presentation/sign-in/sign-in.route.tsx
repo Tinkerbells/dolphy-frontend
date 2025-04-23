@@ -1,5 +1,6 @@
 import type { RouteObject } from 'react-router'
 
+import { observer } from 'mobx-react-lite'
 import { createElement, lazy } from 'react'
 import { CircularProgress } from '@mui/material'
 import { withErrorBoundary } from 'react-error-boundary'
@@ -18,6 +19,7 @@ const enhance = compose(
       FallbackComponent: ErrorHandler,
       onError: logError,
     }),
+  component => observer(component),
 )
 
 export const signInPageRoute: RouteObject = {

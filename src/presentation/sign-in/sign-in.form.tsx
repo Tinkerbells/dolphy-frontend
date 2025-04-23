@@ -1,27 +1,23 @@
-import { observer } from 'mobx-react-lite'
+import type { MobxForm } from 'mobx-react-hook-form'
+
 import { Controller } from 'react-hook-form'
 import { useMobxForm } from 'mobx-react-hook-form'
-import { Visibility, VisibilityOff } from '@mui/icons-material'
 import {
   Box,
   Button,
-  IconButton,
-  InputAdornment,
   TextField,
 } from '@mui/material'
 
-import { SYMBOLS } from '@/di/symbols'
-import { useService } from '@/di/provider'
-
-import type { SignInStore } from './sign-in.store'
+import type { AuthEmailLoginDto } from '@/domain/auth/dto/auth-email-login.dto'
 
 import styles from './sign-in.module.css'
 
-export const SignInForm = observer(() => {
-  const signInStore = useService<SignInStore>(SYMBOLS.SignInStore)
+interface SignInFormProps {
+  signInForm: MobxForm<AuthEmailLoginDto, any, AuthEmailLoginDto>
+}
 
-  const form = useMobxForm(signInStore.signInForm)
-
+export function SignInForm({ signInForm }: SignInFormProps) {
+  const form = useMobxForm(signInForm)
   return (
     <form onSubmit={form.onSubmit} className={styles.signInForm}>
       <Controller
@@ -50,26 +46,13 @@ export const SignInForm = observer(() => {
           <TextField
             {...field}
             label="Password"
-            type={signInStore.showPassword ? 'text' : 'password'}
+            type="password"
             fullWidth
             margin="normal"
             error={!!error}
             helperText={error?.message}
             autoComplete="current-password"
             id="password"
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={signInStore.togglePasswordVisibility}
-                    edge="end"
-                  >
-                    {signInStore.showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
           />
         )}
       />
@@ -87,4 +70,4 @@ export const SignInForm = observer(() => {
       </Box>
     </form>
   )
-})
+}

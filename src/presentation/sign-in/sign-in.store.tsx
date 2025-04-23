@@ -1,28 +1,20 @@
 import type { MobxQueryClient } from 'mobx-tanstack-query'
 
-import { z } from 'zod'
 import { makeAutoObservable } from 'mobx'
 import { inject, injectable } from 'inversify'
 import { MobxForm } from 'mobx-react-hook-form'
 import { MobxMutation } from 'mobx-tanstack-query'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { classValidatorResolver } from '@hookform/resolvers/class-validator'
 
 import type { AuthService } from '@/application/services/auth.service'
 import type { LoginResponseDto } from '@/domain/auth/dto/login-response.dto'
-import type { AuthEmailLoginDto } from '@/domain/auth/dto/auth-email-login.dto'
 
 import { SYMBOLS } from '@/di/symbols'
 import { localStorage } from '@/utils/local-storage'
-
-// Схема валидации для формы входа
-const signInSchema = z.object({
-  email: z.string().email('Введите корректный email адрес'),
-  password: z.string().min(6, 'Пароль должен содержать минимум 6 символов'),
-})
+import { AuthEmailLoginDto } from '@/domain/auth/dto/auth-email-login.dto'
 
 @injectable()
 export class SignInStore {
-  private readonly queryClient: MobxQueryClient
   login: MobxMutation<LoginResponseDto, AuthEmailLoginDto, Error>
 
   signInForm: MobxForm<AuthEmailLoginDto>
@@ -30,13 +22,9 @@ export class SignInStore {
   showPassword = false
 
   constructor(
-    private authService: AuthService,
-    @inject(SYMBOLS.QueryClient) queryClient: MobxQueryClient,
+    @inject(SYMBOLS.AuthService) private authService: AuthService,
+    @inject(SYMBOLS.QueryClient) private queryClient: MobxQueryClient,
   ) {
-    makeAutoObservable(this)
-
-    this.queryClient = queryClient
-
     // Инициализация мутации входа
     this.login = new MobxMutation({
       queryClient: this.queryClient,
@@ -53,15 +41,21 @@ export class SignInStore {
         email: '',
         password: '',
       },
-      resolver: zodResolver(signInSchema),
+      resolver: classValidatorResolver(AuthEmailLoginDto),
       mode: 'onChange',
       onSubmit: this.handleSignIn,
     })
+
+    makeAutoObservable(this)
   }
 
   handleSignIn = async (data: AuthEmailLoginDto) => {
-    const { mutate } = this.login
-    mutate(data)
+    try {
+      await this.login.mutate(data)
+    }
+    catch (error) {
+      console.error('Login failed:', error)
+    }
   }
 
   togglePasswordVisibility = () => {

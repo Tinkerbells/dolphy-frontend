@@ -14,7 +14,7 @@ abstract class Net {
 
   constructor() {
     if (!this.isAuthorized() && !this._authWhiteList.includes(window.location.pathname)) {
-      this.goToAuth()
+      // this.goToAuth()
     }
   }
 
@@ -123,7 +123,7 @@ abstract class Net {
       // Используем _fetch с параметром skipAuth=true, чтобы избежать добавления
       // авторизационного заголовка с недействительным токеном
       const response = await this._fetch({
-        path: 'refresh',
+        path: 'auth/refresh',
         method: 'POST',
         body: { refresh_token: refreshToken },
         withAuth: true, // Важно! Предотвращает бесконечную рекурсию
