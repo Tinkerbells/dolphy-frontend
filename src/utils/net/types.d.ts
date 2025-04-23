@@ -5,45 +5,20 @@ export interface CustomResponse<T> {
   status: string
 }
 
-export interface NetRequest<T> {
-  promise: Promise<T>
-  isClosed: boolean
-  controller: AbortController
-  abort: () => void
-  updatePromise: <K>(promise: Promise<K>) => NetRequest<K>
-  /** With auto catch */
-  quiet: () => NetRequest<T>
-}
-
 export interface CustomRequest {
   /**
-   * Request address **without** leading slash.
-   * Don't forget the backslash at the end
+   * Путь запроса без начального слеша
    */
   path: string
 
-  /** Serializable send data */
+  /** Данные для отправки */
   body?: any
 
-  /** get | post | patch */
+  /** Метод запроса: get, post, patch и т.д. */
   method?: string
 
+  /** Отправлять ли заголовки */
   withHeaders?: boolean
-
-  /**
-   * If the truth and the same request was already sent,
-   * then the previous one is interrupted and send a new
-   */
-  force?: boolean
-
-  /**
-   * The identifier by which the service will optimize requests.
-   * If the parameter is not specified,
-   * then the request path will be used as the identifier.
-   */
-  key?: string
-
-  controller?: AbortController
 }
 
 export interface AuthTokens {
@@ -52,9 +27,6 @@ export interface AuthTokens {
 }
 
 export interface NetService {
-  goToAuth: () => any
+  goToAuth: () => void
   isAuthorized: () => boolean
-  // logIn: (code: string, controller?: AbortController) => NetRequest<void>
-  // logOut: () => any
-  abortRequests: (keys: RequestKey[]) => any
 }

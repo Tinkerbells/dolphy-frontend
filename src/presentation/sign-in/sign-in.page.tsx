@@ -24,9 +24,7 @@ export function SignInPage() {
         </Typography>
         <Box>
 
-          {/* Sign in form------------------- */}
           <SignInForm />
-          {/* ---------------------- */}
 
           <Divider sx={{ my: 2 }}>or</Divider>
           <Button

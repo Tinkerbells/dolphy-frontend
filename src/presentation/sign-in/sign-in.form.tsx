@@ -8,24 +8,16 @@ import {
 } from '@mui/material'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
 
+import type { AuthEmailLoginDto } from '@/domain/auth/dto/auth-email-login.dto'
+
 import { Form } from '../common/form'
 import styles from './sign-in.module.css'
-
-// Define form schema with validation
-const signInSchema = z.object({
-  email: z.string().email('Please enter a valid email'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-})
-
-// Form data type
-type SignInFormData = z.infer<typeof signInSchema>
 
 export function SignInForm() {
   const [showPassword, setShowPassword] = useState(false)
 
   // Initialize form with react-hook-form
-  const methods = useForm<SignInFormData>({
-    resolver: zodResolver(signInSchema),
+  const methods = useForm<AuthEmailLoginDto>({
     defaultValues: {
       email: '',
       password: '',
@@ -33,7 +25,7 @@ export function SignInForm() {
   })
 
   // Handle form submission
-  const onSubmit = async (data: SignInFormData) => {
+  const onSubmit = async (data: AuthEmailLoginDto) => {
     console.log(data)
   }
 

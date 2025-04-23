@@ -11,17 +11,14 @@ export class AuthNetRepository extends Net implements AuthRepository {
   }
 
   async register(createUserDto: AuthRegisterLoginDto): Promise<void> {
-    const { promise } = this._send<void>({ path: 'register', key: 'auth', body: createUserDto })
-    return promise
+    return this._send<void>({ path: 'register', body: createUserDto })
   }
 
   async login(loginDto: AuthEmailLoginDto): Promise<LoginResponseDto> {
-    const { promise } = this._send<LoginResponseDto>({ path: 'login', key: 'auth', body: loginDto })
-    return promise
+    return this._send<LoginResponseDto>({ path: 'login', body: loginDto })
   }
 
   async logout(): Promise<void> {
-    const { promise } = this._send<void>({ path: 'logout', key: 'auth', method: 'post' })
-    return promise
+    return this._send<void>({ path: 'logout', method: 'post' })
   }
 }
