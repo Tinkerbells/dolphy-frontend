@@ -25,6 +25,7 @@
     ],
     "allowImportingTsExtensions": true,
     "strict": true,
+    "strictPropertyInitialization": false,
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
