@@ -6,17 +6,8 @@ import { dependencyInjection } from '@wox-team/wox-inject-vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  css: {
-    preprocessorOptions: {
-      scss: {
-        api: 'modern',
-      },
-    },
-  },
   plugins: [
     // Плагин для обработки DI
-    dependencyInjection(),
-    // Используем только один плагин для React с настройками для автоматической трансформации JSX
     react({
       // Добавляем поддержку декораторов
       tsDecorators: true,
@@ -25,10 +16,8 @@ export default defineConfig({
           plugins: ['decorators-legacy'],
         },
       },
-      plugins: [
-        ['@swc/plugin-transform-imports', {}],
-      ],
     }),
+    dependencyInjection(),
     // Support for TypeScript paths
     tsconfigPaths(),
     // Compress assets for production
