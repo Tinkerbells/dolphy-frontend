@@ -5,7 +5,6 @@ import { CircularProgress } from '@mui/material'
 import { withErrorBoundary } from 'react-error-boundary'
 
 import { root } from '@/lib/react-router'
-import { withBottomNavigation } from '@/views/hocs'
 import { compose, ErrorHandler, logError, withSuspense } from '@/lib/react'
 
 const SignInPage = lazy(() =>
@@ -14,7 +13,6 @@ const SignInPage = lazy(() =>
 
 const enhance = compose(
   component => withSuspense(component, { FallbackComponent: CircularProgress }),
-  component => withBottomNavigation(component),
   component =>
     withErrorBoundary(component, {
       FallbackComponent: ErrorHandler,

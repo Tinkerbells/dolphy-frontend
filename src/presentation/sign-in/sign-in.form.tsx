@@ -1,78 +1,90 @@
-import { z } from 'zod'
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { observer } from 'mobx-react-lite'
+import { Controller } from 'react-hook-form'
+import { useMobxForm } from 'mobx-react-hook-form'
+import { Visibility, VisibilityOff } from '@mui/icons-material'
 import {
+  Box,
+  Button,
   IconButton,
   InputAdornment,
+  TextField,
 } from '@mui/material'
-import { Visibility, VisibilityOff } from '@mui/icons-material'
 
-import type { AuthEmailLoginDto } from '@/domain/auth/dto/auth-email-login.dto'
+import { SYMBOLS } from '@/di/symbols'
+import { useService } from '@/di/provider'
 
-import { Form } from '../common/form'
+import type { SignInStore } from './sign-in.store'
+
 import styles from './sign-in.module.css'
 
-export function SignInForm() {
-  const [showPassword, setShowPassword] = useState(false)
+export const SignInForm = observer(() => {
+  const signInStore = useService<SignInStore>(SYMBOLS.SignInStore)
 
-  // Initialize form with react-hook-form
-  const methods = useForm<AuthEmailLoginDto>({
-    defaultValues: {
-      email: '',
-      password: '',
-    },
-  })
-
-  // Handle form submission
-  const onSubmit = async (data: AuthEmailLoginDto) => {
-    console.log(data)
-  }
-
-  // Handle Google sign-in
-  const handleGoogleSignIn = async () => {
-
-  }
-
-  // Create sign-in form using Form Builder
-  const FormComponent = new Form(methods, {
-    submitText: 'Sign In',
-    onSubmit,
-  })
-    .input('email', {
-      required: true,
-      fullWidth: true,
-      id: 'email',
-      label: 'Email Address',
-      autoComplete: 'email',
-      autoFocus: true,
-      margin: 'normal',
-      sx: { mb: 2 },
-    })
-    .input('password', {
-      required: true,
-      fullWidth: true,
-      label: 'Password',
-      type: showPassword ? 'text' : 'password',
-      id: 'password',
-      autoComplete: 'current-password',
-      InputProps: {
-        endAdornment: (
-          <InputAdornment position="end">
-            <IconButton
-              aria-label="toggle password visibility"
-              onClick={() => setShowPassword(!showPassword)}
-              edge="end"
-            >
-              {showPassword ? <VisibilityOff /> : <Visibility />}
-            </IconButton>
-          </InputAdornment>
-        ),
-      },
-    })
-    .build()
+  const form = useMobxForm(signInStore.signInForm)
 
   return (
-    <FormComponent className={styles.signInForm} />
+    <form onSubmit={form.onSubmit} className={styles.signInForm}>
+      <Controller
+        name="email"
+        control={form.control}
+        render={({ field, fieldState: { error } }) => (
+          <TextField
+            {...field}
+            label="Email Address"
+            fullWidth
+            margin="normal"
+            error={!!error}
+            helperText={error?.message}
+            autoComplete="email"
+            autoFocus
+            id="email"
+            sx={{ mb: 2 }}
+          />
+        )}
+      />
+
+      <Controller
+        name="password"
+        control={form.control}
+        render={({ field, fieldState: { error } }) => (
+          <TextField
+            {...field}
+            label="Password"
+            type={signInStore.showPassword ? 'text' : 'password'}
+            fullWidth
+            margin="normal"
+            error={!!error}
+            helperText={error?.message}
+            autoComplete="current-password"
+            id="password"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={signInStore.togglePasswordVisibility}
+                    edge="end"
+                  >
+                    {signInStore.showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+        )}
+      />
+
+      <Box sx={{ mt: 3 }}>
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          color="primary"
+          disabled={form.formState.isSubmitting || !form.formState.isValid}
+        >
+          {form.formState.isSubmitting ? 'Вход...' : 'Войти'}
+        </Button>
+      </Box>
+    </form>
   )
-}
+})

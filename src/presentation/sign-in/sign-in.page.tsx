@@ -12,6 +12,12 @@ import { Link } from '@/components/Link/Link'
 import { SignInForm } from './sign-in.form'
 
 export function SignInPage() {
+  // Обработчик входа через Google
+  const handleGoogleSignIn = () => {
+    // Логика для аутентификации через Google
+    console.log('Google sign-in clicked')
+  }
+
   return (
     <Box sx={{ width: '100%', height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
       <Card variant="outlined" sx={{ padding: 4, minWidth: 450 }}>
@@ -23,7 +29,6 @@ export function SignInPage() {
           Sign in
         </Typography>
         <Box>
-
           <SignInForm />
 
           <Divider sx={{ my: 2 }}>or</Divider>
@@ -32,6 +37,7 @@ export function SignInPage() {
             variant="outlined"
             startIcon={<Google />}
             sx={{ mb: 3, py: 1.5 }}
+            onClick={handleGoogleSignIn}
           >
             Sign in with Google
           </Button>

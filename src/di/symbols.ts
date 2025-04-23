@@ -21,4 +21,10 @@ export const SYMBOLS = {
   CardStore: Symbol.for('CardStore'),
   StudySessionStore: Symbol.for('StudySessionStore'),
   RootStore: Symbol.for('RootStore'),
+
+  SignInStore: Symbol.for('SignInStore'),
+  // Существующие символы...
+
+  // Repositories
+  AuthRepository: Symbol.for('AuthRepository'),
 }
