@@ -9,7 +9,7 @@ import { root } from '@/lib/react-router'
 import { compose, ErrorHandler, logError, withSuspense } from '@/lib/react'
 
 const SignInPage = lazy(() =>
-  import('./sign-in.page.tsx').then(module => ({ default: module.SignInPage })),
+  import('./sign-in.page.tsx').then(module => ({ default: observer(module.SignInPage) })),
 )
 
 const enhance = compose(
@@ -19,7 +19,6 @@ const enhance = compose(
       FallbackComponent: ErrorHandler,
       onError: logError,
     }),
-  component => observer(component),
 )
 
 export const signInPageRoute: RouteObject = {

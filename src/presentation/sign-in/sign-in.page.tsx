@@ -17,7 +17,7 @@ import type { SignInStore } from './sign-in.store'
 
 import { SignInForm } from './sign-in.form'
 
-export const SignInPage = observer(() => {
+export function SignInPage() {
   const store = useService<SignInStore>(SYMBOLS.SignInStore)
   // Google auth handler
   const handleGoogleSignIn = () => {
@@ -82,4 +82,4 @@ export const SignInPage = observer(() => {
       </Card>
     </Box>
   )
-})
+}
