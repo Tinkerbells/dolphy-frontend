@@ -6,10 +6,10 @@ import { MobxForm } from 'mobx-react-hook-form'
 import { MobxMutation } from 'mobx-tanstack-query'
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
 
-import type { AuthService } from '@/application/services/auth.service'
-import type { NotificationService } from '@/application/services/notification.service'
+import type { Authenticate } from '@/application/auth/authenticate'
+import type { NotificationService } from '@/infrastructure/services/notification.service'
 
-import { SYMBOLS } from '@/di/symbols'
+import { Symbols } from '@/di'
 import { AuthRegisterLoginDto } from '@/domain/auth/dto/auth-register-login.dto'
 
 /**
@@ -34,9 +34,9 @@ export class SignUpStore {
    * @param {MobxQueryClient} queryClient - Клиент запросов
    */
   constructor(
-    @inject(SYMBOLS.AuthService) private authService: AuthService,
-    @inject(SYMBOLS.NotificationService) private notificationService: NotificationService,
-    @inject(SYMBOLS.QueryClient) private queryClient: MobxQueryClient,
+    @inject(Symbols.Authenticate) private authService: Authenticate,
+    @inject(Symbols.NotificationService) private notificationService: NotificationService,
+    @inject(Symbols.QueryClient) private queryClient: MobxQueryClient,
   ) {
     // Инициализация мутации регистрации
     this.register = new MobxMutation({

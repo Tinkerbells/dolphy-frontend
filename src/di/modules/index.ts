@@ -1,3 +1,3 @@
-export * from './auth'
-export * from './notification'
-export * from './query-client'
+export * from './auth.module'
+export * from './notification.module'
+export * from './query-client.module'

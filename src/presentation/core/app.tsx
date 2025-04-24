@@ -4,15 +4,17 @@ import { withErrorBoundary } from 'react-error-boundary'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
+import { queryClient } from '@/utils/query-client'
+
 import { BrowserRouter } from '.'
-import { AppProvider } from '../../di/provider'
-import { mobxQueryClient } from '../../lib/mobx-query'
-import { compose, ErrorHandler, logError } from '../../lib/react'
 
 import '@fontsource/roboto/300.css'
 import '@fontsource/roboto/400.css'
 import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
+
+import { AppProvider } from '../../di/provider'
+import { compose, ErrorHandler, logError } from './react'
 
 // Enhance components with error boundary
 const enhance = compose(component =>
@@ -24,7 +26,7 @@ const enhance = compose(component =>
 
 function AppContent() {
   return (
-    <QueryClientProvider client={mobxQueryClient}>
+    <QueryClientProvider client={queryClient}>
       <BrowserRouter />
       <ReactQueryDevtools position="left" initialIsOpen={false} />
     </QueryClientProvider>

@@ -9,8 +9,8 @@ import { classValidatorResolver } from '@hookform/resolvers/class-validator'
 import type { Authenticate } from '@/application/auth/authenticate'
 import type { LoginResponseDto } from '@/domain/auth/dto/login-response.dto'
 
+import { Symbols } from '@/di'
 import { localStorage } from '@/utils/local-storage'
-import { AuthSymbols, QueryClientSymbols } from '@/di/modules'
 import { AuthEmailLoginDto } from '@/domain/auth/dto/auth-email-login.dto'
 
 @injectable()
@@ -22,8 +22,8 @@ export class SignInStore {
   showPassword = false
 
   constructor(
-    @inject(AuthSymbols.Authenticate) private authenticate: Authenticate,
-    @inject(QueryClientSymbols.QueryClient) private queryClient: MobxQueryClient,
+    @inject(Symbols.Authenticate) private authenticate: Authenticate,
+    @inject(Symbols.QueryClient) private queryClient: MobxQueryClient,
   ) {
     // Инициализация мутации входа
     this.login = new MobxMutation({

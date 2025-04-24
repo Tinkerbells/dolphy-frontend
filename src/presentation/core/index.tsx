@@ -3,17 +3,17 @@ import ReactDOM from 'react-dom/client'
 import React, { StrictMode } from 'react'
 
 import App from './app'
-import { env } from '../../lib/env'
+import { env } from '../../utils/env'
 import { setupMobxDevTools } from '../../devtools'
-import { mobxQueryClient } from '../../lib/mobx-query'
+import { queryClient } from '../../utils/query-client'
 
 const root = ReactDOM.createRoot(document.getElementById('root')!)
 
-if (env.NODE_ENV === 'development') {
+if (env.isDevelopment()) {
   setupMobxDevTools()
 }
 
-mobxQueryClient.mount()
+queryClient.mount()
 
 root.render(
   <StrictMode>

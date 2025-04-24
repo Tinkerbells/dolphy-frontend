@@ -9,15 +9,15 @@ import {
   Typography,
 } from '@mui/material'
 
+import { Symbols } from '@/di'
 import { useService } from '@/di/provider'
-import { AuthSymbols } from '@/di/modules'
 
 import type { SignInStore } from './sign-in.store'
 
 import { SignInForm } from './sign-in.form'
 
 export function SignInPage() {
-  const store = useService<SignInStore>(AuthSymbols.SignInStore)
+  const store = useService<SignInStore>(Symbols.SignInStore)
   // Google auth handler
   const handleGoogleSignIn = () => {
     // TODO: replace with real Google auth logic

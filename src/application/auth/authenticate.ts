@@ -6,13 +6,13 @@ import type { NotificationPort } from '@/domain/notification/notification.port'
 import type { AuthRepository } from '@/domain/auth/repositories/auth.repository'
 import type { AuthRegisterLoginDto } from '@/domain/auth/dto/auth-register-login.dto'
 
-import { SYMBOLS } from '@/di/symbols'
+import { Symbols } from '@/di'
 
 @injectable()
 export class Authenticate {
   constructor(
-    @inject(SYMBOLS.AuthRepository) private authRepository: AuthRepository,
-    @inject(SYMBOLS.NotificationService) private notificationService: NotificationPort,
+    @inject(Symbols.AuthRepository) private authRepository: AuthRepository,
+    @inject(Symbols.NotificationService) private notificationService: NotificationPort,
   ) {}
 
   async register(createUserDto: AuthRegisterLoginDto): Promise<void> {

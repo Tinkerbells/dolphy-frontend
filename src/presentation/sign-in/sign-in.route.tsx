@@ -5,8 +5,7 @@ import { createElement, lazy } from 'react'
 import { CircularProgress } from '@mui/material'
 import { withErrorBoundary } from 'react-error-boundary'
 
-import { root } from '@/lib/react-router'
-import { compose, ErrorHandler, logError, withSuspense } from '@/lib/react'
+import { compose, ErrorHandler, logError, root, withSuspense } from '../core'
 
 const SignInPage = lazy(() =>
   import('./sign-in.page.tsx').then(module => ({ default: observer(module.SignInPage) })),

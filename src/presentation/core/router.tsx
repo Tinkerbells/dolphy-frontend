@@ -3,9 +3,8 @@ import { observer } from 'mobx-react-lite'
 import CssBaseline from '@mui/material/CssBaseline'
 import { createBrowserRouter, Navigate, Outlet, RouterProvider } from 'react-router'
 
-import { root } from '@/lib/react-router'
-
 import { Header } from '../common'
+import { root } from './react-router'
 import { signInPageRoute } from '../sign-in/sign-in.route'
 import { signUpPageRoute } from '../sign-up/sign-up.route'
 
