@@ -14,26 +14,31 @@ export const DIProvider: React.FC<{ children: React.ReactNode }> = ({ children }
   )
 }
 
-// Combined provider that includes all contexts
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Get instances from the container
-  // const telegramService = container.get<TelegramService>(SYMBOLS.TelegramService)
-
   return (
     <DIProvider>
       {children}
     </DIProvider>
   )
 }
-// Hook to access the container
+
+/**
+ * Хук для доступа к контейнеру DI
+ * @returns Инстанс контейнера
+ */
 export function useContainer() {
   const context = useContext(InversifyContext)
   if (!context) {
-    throw new Error('useContainer must be used within DIProvider')
+    throw new Error('useContainer должен использоваться внутри DIProvider')
   }
   return context
 }
 
+/**
+ * Хук для получения сервиса по его идентификатору
+ * @param serviceIdentifier Символ идентификатора сервиса
+ * @returns Инстанс запрошенного сервиса
+ */
 export function useService<T>(serviceIdentifier: symbol): T {
   const container = useContainer()
   return container.get<T>(serviceIdentifier)
