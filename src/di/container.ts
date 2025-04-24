@@ -1,7 +1,7 @@
 import 'reflect-metadata'
 import { Container } from 'inversify'
 
-import { authModule } from './modules/auth.module'
+import { authModule, notificationModule, queryClientModule } from './modules'
 
 const container = new Container({
   autobind: true,
@@ -10,6 +10,8 @@ const container = new Container({
 
 container.load(
   authModule,
+  notificationModule,
+  queryClientModule,
 )
 
 export { container }

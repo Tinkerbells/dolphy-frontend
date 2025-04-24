@@ -10,9 +10,9 @@ import {
   Typography,
 } from '@mui/material'
 
-import { SYMBOLS } from '@/di/symbols'
 import { root } from '@/lib/react-router'
 import { useService } from '@/di/provider'
+import { AuthSymbols } from '@/di/modules'
 
 import type { SignUpStore } from './sign-up.store'
 
@@ -20,7 +20,7 @@ import { SignUpForm } from './sign-up.form'
 
 export function SignUpPage() {
   const navigate = useNavigate()
-  const store = useService<SignUpStore>(SYMBOLS.SignUpStore)
+  const store = useService<SignUpStore>(AuthSymbols.SignUpStore)
 
   // Google auth handler
   const handleGoogleSignUp = () => {

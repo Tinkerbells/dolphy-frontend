@@ -1,5 +1,4 @@
 import { useEffect } from 'react'
-import { observer } from 'mobx-react-lite'
 import { Google } from '@mui/icons-material'
 import {
   Box,
@@ -10,15 +9,15 @@ import {
   Typography,
 } from '@mui/material'
 
-import { SYMBOLS } from '@/di/symbols'
 import { useService } from '@/di/provider'
+import { AuthSymbols } from '@/di/modules'
 
 import type { SignInStore } from './sign-in.store'
 
 import { SignInForm } from './sign-in.form'
 
 export function SignInPage() {
-  const store = useService<SignInStore>(SYMBOLS.SignInStore)
+  const store = useService<SignInStore>(AuthSymbols.SignInStore)
   // Google auth handler
   const handleGoogleSignIn = () => {
     // TODO: replace with real Google auth logic

@@ -6,32 +6,34 @@ import { MobxForm } from 'mobx-react-hook-form'
 import { MobxMutation } from 'mobx-tanstack-query'
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
 
-import type { AuthService } from '@/application/services/auth.service'
+import type { Authenticate } from '@/application/auth/authenticate'
 import type { LoginResponseDto } from '@/domain/auth/dto/login-response.dto'
 
-import { SYMBOLS } from '@/di/symbols'
 import { localStorage } from '@/utils/local-storage'
+import { AuthSymbols, QueryClientSymbols } from '@/di/modules'
 import { AuthEmailLoginDto } from '@/domain/auth/dto/auth-email-login.dto'
 
 @injectable()
 export class SignInStore {
-  login: MobxMutation<LoginResponseDto, AuthEmailLoginDto, Error>
+  login: MobxMutation<LoginResponseDto | undefined, AuthEmailLoginDto, Error>
 
   signInForm: MobxForm<AuthEmailLoginDto>
 
   showPassword = false
 
   constructor(
-    @inject(SYMBOLS.AuthService) private authService: AuthService,
-    @inject(SYMBOLS.QueryClient) private queryClient: MobxQueryClient,
+    @inject(AuthSymbols.Authenticate) private authenticate: Authenticate,
+    @inject(QueryClientSymbols.QueryClient) private queryClient: MobxQueryClient,
   ) {
     // Инициализация мутации входа
     this.login = new MobxMutation({
       queryClient: this.queryClient,
-      mutationFn: dto => this.authService.login(dto),
+      mutationFn: dto => this.authenticate.login(dto),
       onSuccess: (data) => {
-        localStorage.setPrimitive('access_token', data.token)
-        localStorage.setPrimitive('refresh_token', data.refreshToken)
+        if (data) {
+          localStorage.setPrimitive('access_token', data.token)
+          localStorage.setPrimitive('refresh_token', data.refreshToken)
+        }
       },
     })
 
