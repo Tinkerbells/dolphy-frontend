@@ -1,12 +1,5 @@
 // src/mobx-devtools-setup.ts
 
-import type { SignInStore } from '@/presentation/sign-in/sign-in.store'
-import type { SignUpStore } from '@/presentation/sign-up/sign-up.store'
-
-import { AuthSymbols } from '@/di/modules'
-
-import { container } from '../di/container'
-
 // Получаем экземпляры хранилищ из контейнера
 // const signInStore = container.get<SignInStore>(AuthSymbols.SignInStore)
 // const signUpStore = container.get<SignUpStore>(AuthSymbols.SignUpStore)

@@ -6,16 +6,15 @@ import { MobxForm } from 'mobx-react-hook-form'
 import { MobxMutation } from 'mobx-tanstack-query'
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
 
-import type { Authenticate } from '@/application/auth/authenticate'
-import type { LoginResponseDto } from '@/domain/auth/dto/login-response.dto'
+import type { LoginResponseDto } from '@/domain'
+import type { Authenticate } from '@/application'
 
 import { Symbols } from '@/di'
-import { localStorage } from '@/utils/local-storage'
 import { AuthEmailLoginDto } from '@/domain/auth/dto/auth-email-login.dto'
 
 @injectable()
 export class SignInStore {
-  login: MobxMutation<LoginResponseDto | undefined, AuthEmailLoginDto, Error>
+  login: MobxMutation<LoginResponseDto, AuthEmailLoginDto, Error>
 
   signInForm: MobxForm<AuthEmailLoginDto>
 
@@ -25,26 +24,18 @@ export class SignInStore {
     @inject(Symbols.Authenticate) private authenticate: Authenticate,
     @inject(Symbols.QueryClient) private queryClient: MobxQueryClient,
   ) {
-    // Инициализация мутации входа
     this.login = new MobxMutation({
       queryClient: this.queryClient,
       mutationFn: dto => this.authenticate.login(dto),
-      onSuccess: (data) => {
-        if (data) {
-          localStorage.setPrimitive('access_token', data.token)
-          localStorage.setPrimitive('refresh_token', data.refreshToken)
-        }
-      },
     })
 
-    // Инициализация формы с использованием MobxForm
     this.signInForm = new MobxForm<AuthEmailLoginDto>({
       defaultValues: {
         email: '',
         password: '',
       },
       resolver: classValidatorResolver(AuthEmailLoginDto),
-      mode: 'onChange',
+      mode: 'onBlur',
       onSubmit: this.handleSignIn,
     })
 

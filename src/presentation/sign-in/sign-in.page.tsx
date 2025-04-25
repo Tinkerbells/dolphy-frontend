@@ -18,11 +18,6 @@ import { SignInForm } from './sign-in.form'
 
 export function SignInPage() {
   const store = useService<SignInStore>(Symbols.SignInStore)
-  // Google auth handler
-  const handleGoogleSignIn = () => {
-    // TODO: replace with real Google auth logic
-    console.log('Google sign‑in clicked')
-  }
 
   useEffect(() => {
     if (store.login.result.isSuccess) {
@@ -60,7 +55,6 @@ export function SignInPage() {
             variant="outlined"
             startIcon={<Google />}
             sx={{ mb: 3, py: 1.5 }}
-            onClick={handleGoogleSignIn}
           >
             Sign in with Google
           </Button>

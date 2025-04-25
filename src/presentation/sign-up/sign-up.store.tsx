@@ -6,48 +6,26 @@ import { MobxForm } from 'mobx-react-hook-form'
 import { MobxMutation } from 'mobx-tanstack-query'
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
 
-import type { Authenticate } from '@/application/auth/authenticate'
-import type { NotificationService } from '@/infrastructure/services/notification.service'
+import type { Authenticate } from '@/application'
 
 import { Symbols } from '@/di'
-import { AuthRegisterLoginDto } from '@/domain/auth/dto/auth-register-login.dto'
+import { AuthRegisterLoginDto } from '@/domain'
 
-/**
- * Хранилище состояния страницы регистрации
- */
 @injectable()
 export class SignUpStore {
-  /** Мутация регистрации */
   register: MobxMutation<void, AuthRegisterLoginDto, Error>
 
-  /** Форма регистрации */
   signUpForm: MobxForm<AuthRegisterLoginDto>
 
-  /** Флаг отображения пароля */
   showPassword = false
 
-  /**
-   * Создает экземпляр хранилища регистрации
-   *
-   * @param {AuthService} authService - Сервис аутентификации
-   * @param {NotificationService} notificationService - Сервис уведомлений
-   * @param {MobxQueryClient} queryClient - Клиент запросов
-   */
   constructor(
     @inject(Symbols.Authenticate) private authService: Authenticate,
-    @inject(Symbols.NotificationService) private notificationService: NotificationService,
     @inject(Symbols.QueryClient) private queryClient: MobxQueryClient,
   ) {
-    // Инициализация мутации регистрации
     this.register = new MobxMutation({
       queryClient: this.queryClient,
       mutationFn: dto => this.authService.register(dto),
-      onSuccess: () => {
-        this.notificationService.success('Регистрация успешна', 'Пожалуйста, войдите в систему.')
-      },
-      onError: (error) => {
-        this.notificationService.error('Ошибка регистрации', error.message)
-      },
     })
 
     // Инициализация формы с использованием MobxForm
@@ -66,11 +44,6 @@ export class SignUpStore {
     makeAutoObservable(this)
   }
 
-  /**
-   * Обработчик отправки формы регистрации
-   *
-   * @param {AuthRegisterDto} data - Данные формы регистрации
-   */
   handleSignUp = async (data: AuthRegisterLoginDto) => {
     try {
       await this.register.mutate(data)
@@ -80,9 +53,6 @@ export class SignUpStore {
     }
   }
 
-  /**
-   * Переключает видимость пароля
-   */
   togglePasswordVisibility = () => {
     this.showPassword = !this.showPassword
   }

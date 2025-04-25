@@ -1,5 +1,5 @@
 export { mockRequest } from './mock-request'
-export { Net } from './net'
 export { FetchMethod, ResponseCode } from './net-enums'
 export { NetError } from './net-error'
+export { NetService } from './net.service'
 export * from './types.d'

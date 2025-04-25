@@ -1,21 +1,26 @@
+import type { PersistPort } from '@/domain'
+
+import { env } from '@/utils/env'
+
 import type { AuthTokens, CustomRequest, CustomResponse } from './types'
 
-import { env } from '../env'
 import { NetError } from './net-error'
-import { localStorage } from '../local-storage'
+import { LocalStorageService } from '../local-storage'
 import { FetchMethod, ResponseCode } from './net-enums'
 
-abstract class Net {
+abstract class NetService {
   protected readonly ORIGIN = env.get('VITE_API_URL')
   private readonly ACCESS = 'access_token'
   private readonly REFRESH = 'refresh_token'
-
+  private persistService: PersistPort
   private _authWhiteList = ['/', '/auth/', '/courses/']
 
-  constructor() {
+  constructor(
+  ) {
     if (!this.isAuthorized() && !this._authWhiteList.includes(window.location.pathname)) {
       // this.goToAuth()
     }
+    this.persistService = new LocalStorageService()
   }
 
   /**
@@ -99,7 +104,7 @@ abstract class Net {
 
     // Добавляем заголовок авторизации только если не указано skipAuth
     if (!skipAuth) {
-      headers.push(['Authorization', `Bearer ${localStorage.getAsString(this.ACCESS)}`])
+      headers.push(['Authorization', `Bearer ${this.persistService.getAsString(this.ACCESS)}`])
     }
 
     return headers
@@ -112,7 +117,7 @@ abstract class Net {
    */
   async refresh(): Promise<boolean> {
     try {
-      const refreshToken = localStorage.getAsString(this.REFRESH)
+      const refreshToken = this.persistService.getAsString(this.REFRESH)
 
       if (!refreshToken) {
         console.error('Refresh token не найден')
@@ -140,8 +145,8 @@ abstract class Net {
       const tokens: AuthTokens = responseBody
 
       // Сохраняем новые токены
-      localStorage.setPrimitive(this.ACCESS, tokens.access_token)
-      localStorage.setPrimitive(this.REFRESH, tokens.refresh_token)
+      this.persistService.setPrimitive(this.ACCESS, tokens.access_token)
+      this.persistService.setPrimitive(this.REFRESH, tokens.refresh_token)
 
       return true
     }
@@ -164,7 +169,7 @@ abstract class Net {
    * Проверяет, авторизован ли пользователь
    */
   isAuthorized(): boolean {
-    return localStorage.has(this.ACCESS) && localStorage.has(this.REFRESH)
+    return this.persistService.has(this.ACCESS) && localStorage.has(this.REFRESH)
   }
 
   /**
@@ -182,4 +187,4 @@ abstract class Net {
   }
 }
 
-export { Net }
+export { NetService }

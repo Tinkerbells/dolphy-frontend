@@ -1,8 +1,8 @@
 import { ContainerModule } from 'inversify'
 
-import type { NotificationPort } from '@/domain/notification/notification.port'
+import type { NotificationPort } from '@/domain'
 
-import { NotificationService } from '@/infrastructure/services/notification.service'
+import { NotificationService } from '@/infrastructure'
 
 import { Symbols } from '../symbols'
 

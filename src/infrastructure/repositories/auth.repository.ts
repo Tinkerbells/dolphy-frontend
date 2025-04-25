@@ -1,14 +1,11 @@
 import { injectable } from 'inversify'
 
-import type { LoginResponseDto } from '@/domain/auth/dto/login-response.dto'
-import type { AuthEmailLoginDto } from '@/domain/auth/dto/auth-email-login.dto'
-import type { AuthRepository } from '@/domain/auth/repositories/auth.repository'
-import type { AuthRegisterLoginDto } from '@/domain/auth/dto/auth-register-login.dto'
+import type { AuthEmailLoginDto, AuthRegisterLoginDto, AuthRepository, LoginResponseDto } from '@/domain'
 
-import { Net } from '@/utils/net'
+import { NetService } from '../services/net/net.service'
 
 @injectable()
-export class AuthNetRepository extends Net implements AuthRepository {
+export class AuthNetRepository extends NetService implements AuthRepository {
   constructor() {
     super()
   }
