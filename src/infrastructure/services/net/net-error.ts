@@ -4,6 +4,7 @@ export interface NetErrorInitializer {
   code: ResponseCode
   status: string
   detail?: any
+  validationErrors?: Record<string, string> // Добавляем для хранения ошибок валидации
 }
 
 /**
@@ -13,12 +14,14 @@ class NetError extends Error {
   code: ResponseCode
   status: string
   detail?: any
+  validationErrors?: Record<string, string> // Новое поле для ошибок валидации
 
   constructor(options: NetErrorInitializer) {
     super(options.status)
     this.code = options.code
     this.status = options.status
     this.detail = options.detail
+    this.validationErrors = options.validationErrors
   }
 
   get isAbort(): boolean {
@@ -42,7 +45,14 @@ class NetError extends Error {
       ? JSON.stringify(value.detail || value)
       : String(value)).slice(0, 100)
   }
+
+  hasValidationErrorFor(field: string): boolean {
+    return !!(this.validationErrors && this.validationErrors[field])
+  }
+
+  getValidationErrorFor(field: string): string | undefined {
+    return this.validationErrors?.[field]
+  }
 }
 
 export { NetError }
-

@@ -12,7 +12,7 @@ abstract class NetService {
   protected readonly ORIGIN = env.get('VITE_API_URL')
   private readonly ACCESS = 'access_token'
   private readonly REFRESH = 'refresh_token'
-  private persistService: PersistPort
+  private persistService: PersistPort = new LocalStorageService()
   private _authWhiteList = ['/', '/auth/', '/courses/']
 
   constructor(
@@ -20,7 +20,6 @@ abstract class NetService {
     if (!this.isAuthorized() && !this._authWhiteList.includes(window.location.pathname)) {
       // this.goToAuth()
     }
-    this.persistService = new LocalStorageService()
   }
 
   /**
@@ -51,6 +50,7 @@ abstract class NetService {
         code: response.status,
         status: (responseBody as any).error_code || response.statusText,
         detail: (responseBody as any).detail,
+        validationErrors: responseBody.errors,
       })
     }
     catch (error) {
@@ -62,8 +62,10 @@ abstract class NetService {
       }
 
       throw new NetError({
-        code: ResponseCode.FETCH_ERROR,
-        status: (error as Error).message,
+        code: (error as NetError).code,
+        status: (error as NetError).status,
+        detail: (error as NetError).detail,
+        validationErrors: (error as NetError).validationErrors,
       })
     }
   }
@@ -169,7 +171,7 @@ abstract class NetService {
    * Проверяет, авторизован ли пользователь
    */
   isAuthorized(): boolean {
-    return this.persistService.has(this.ACCESS) && localStorage.has(this.REFRESH)
+    return this.persistService.has(this.ACCESS) && this.persistService.has(this.REFRESH)
   }
 
   /**

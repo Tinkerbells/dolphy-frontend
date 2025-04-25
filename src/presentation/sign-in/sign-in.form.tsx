@@ -8,7 +8,7 @@ import {
   TextField,
 } from '@mui/material'
 
-import type { AuthEmailLoginDto } from '@/domain/auth/dto/auth-email-login.dto'
+import type { AuthEmailLoginDto } from '@/domain'
 
 import styles from './sign-in.module.css'
 
@@ -18,6 +18,7 @@ interface SignInFormProps {
 
 export function SignInForm({ signInForm }: SignInFormProps) {
   const form = useMobxForm(signInForm)
+
   return (
     <form onSubmit={form.onSubmit} className={styles.signInForm}>
       <Controller
@@ -65,7 +66,7 @@ export function SignInForm({ signInForm }: SignInFormProps) {
           color="primary"
           disabled={form.formState.isSubmitting || !form.formState.isValid}
         >
-          {form.formState.isSubmitting ? 'Вход...' : 'Войти'}
+          {form.formState.isSubmitting ? 'Sign in...' : 'Sign in'}
         </Button>
       </Box>
     </form>

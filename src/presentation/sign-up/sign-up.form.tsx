@@ -100,7 +100,7 @@ export function SignUpForm({ signUpForm }: SignUpFormProps) {
           color="primary"
           disabled={form.formState.isSubmitting || !form.formState.isValid}
         >
-          {form.formState.isSubmitting ? 'Регистрация...' : 'Зарегистрироваться'}
+          {form.formState.isSubmitting ? 'Sign up...' : 'Sign up'}
         </Button>
       </Box>
     </form>

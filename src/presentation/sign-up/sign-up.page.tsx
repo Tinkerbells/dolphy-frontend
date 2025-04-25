@@ -11,22 +11,16 @@ import {
 } from '@mui/material'
 
 import { Symbols } from '@/di'
-import { root } from '@/lib/react-router'
 import { useService } from '@/di/provider'
 
 import type { SignUpStore } from './sign-up.store'
 
+import { root } from '../core'
 import { SignUpForm } from './sign-up.form'
 
 export function SignUpPage() {
   const navigate = useNavigate()
   const store = useService<SignUpStore>(Symbols.SignUpStore)
-
-  // Google auth handler
-  const handleGoogleSignUp = () => {
-    // TODO: replace with real Google auth logic
-    console.log('Google sign‑up clicked')
-  }
 
   useEffect(() => {
     if (store.register.result.isSuccess) {
@@ -67,7 +61,6 @@ export function SignUpPage() {
             variant="outlined"
             startIcon={<Google />}
             sx={{ mb: 3, py: 1.5 }}
-            onClick={handleGoogleSignUp}
           >
             Sign up with Google
           </Button>

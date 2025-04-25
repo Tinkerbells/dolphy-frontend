@@ -6,15 +6,17 @@ import { MobxForm } from 'mobx-react-hook-form'
 import { MobxMutation } from 'mobx-tanstack-query'
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
 
+import type { NetError } from '@/infrastructure'
 import type { LoginResponseDto } from '@/domain'
 import type { Authenticate } from '@/application'
 
 import { Symbols } from '@/di'
+import { ResponseCode } from '@/infrastructure'
 import { AuthEmailLoginDto } from '@/domain/auth/dto/auth-email-login.dto'
 
 @injectable()
 export class SignInStore {
-  login: MobxMutation<LoginResponseDto, AuthEmailLoginDto, Error>
+  login: MobxMutation<LoginResponseDto | undefined, AuthEmailLoginDto, Error>
 
   signInForm: MobxForm<AuthEmailLoginDto>
 
@@ -35,7 +37,7 @@ export class SignInStore {
         password: '',
       },
       resolver: classValidatorResolver(AuthEmailLoginDto),
-      mode: 'onBlur',
+      mode: 'onChange',
       onSubmit: this.handleSignIn,
     })
 
@@ -43,12 +45,7 @@ export class SignInStore {
   }
 
   handleSignIn = async (data: AuthEmailLoginDto) => {
-    try {
-      await this.login.mutate(data)
-    }
-    catch (error) {
-      console.error('Login failed:', error)
-    }
+    await this.login.mutate(data)
   }
 
   togglePasswordVisibility = () => {

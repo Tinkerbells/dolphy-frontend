@@ -13,4 +13,5 @@ export enum ResponseCode {
   AUTH_ERROR = 401,
   COOKIES_EXPIRED = 403,
   NOT_FOUND = 404,
+  VALIDATION_ERROR = 422,
 };
