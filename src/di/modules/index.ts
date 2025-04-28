@@ -1,4 +1,5 @@
 export * from './auth.module'
+export * from './navigation.module'
 export * from './notification.module'
 export * from './persist.module'
 export * from './query-client.module'

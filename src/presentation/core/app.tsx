@@ -16,7 +16,6 @@ import '@fontsource/roboto/700.css'
 import { AppProvider } from '../../di/provider'
 import { compose, ErrorHandler, logError } from './react'
 
-// Enhance components with error boundary
 const enhance = compose(component =>
   withErrorBoundary(component, {
     FallbackComponent: ErrorHandler,
@@ -33,7 +32,6 @@ function AppContent() {
   )
 }
 
-// Root provider component
 const App = enhance(() => (
   <AppProvider>
     <AppContent />

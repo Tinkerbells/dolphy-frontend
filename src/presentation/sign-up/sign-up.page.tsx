@@ -24,7 +24,6 @@ export function SignUpPage() {
 
   useEffect(() => {
     if (store.register.result.isSuccess) {
-      // Навигация на страницу входа после успешной регистрации
       navigate(root['sign-in'].$path())
     }
   }, [store.register.result.isSuccess, navigate])
