@@ -5,6 +5,7 @@ import { createBrowserRouter, Navigate, Outlet, RouterProvider } from 'react-rou
 
 import { Header } from '../common'
 import { root } from './react-router'
+import { decksPageRoute } from '../decks/decks.route'
 import { signInPageRoute } from '../sign-in/sign-in.route'
 import { signUpPageRoute } from '../sign-up/sign-up.route'
 
@@ -26,7 +27,7 @@ const browserRouter = createBrowserRouter([
     children: [
       { index: true, element: <Navigate to={root['sign-in'].$path()} replace /> },
       {
-        children: [signInPageRoute, signUpPageRoute],
+        children: [signInPageRoute, signUpPageRoute, decksPageRoute],
       },
       { path: '*', element: <Navigate to={root['sign-in'].$path()} replace /> },
     ],

@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { useNavigate } from 'react-router'
 import { Google } from '@mui/icons-material'
 import {
   Box,
@@ -14,14 +15,16 @@ import { useService } from '@/di/provider'
 
 import type { SignInStore } from './sign-in.store'
 
+import { root } from '../core'
 import { SignInForm } from './sign-in.form'
 
 export function SignInPage() {
+  const navigate = useNavigate()
   const store = useService<SignInStore>(Symbols.SignInStore)
 
   useEffect(() => {
     if (store.login.result.isSuccess) {
-      console.log('Success')
+      navigate(root.decks.$path())
     }
   }, [store.login.result.isSuccess])
 

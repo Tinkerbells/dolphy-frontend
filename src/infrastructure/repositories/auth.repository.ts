@@ -1,6 +1,7 @@
 import { injectable } from 'inversify'
 
-import type { AuthEmailLoginDto, AuthRegisterLoginDto, AuthRepository, LoginResponseDto } from '@/domain'
+import type { NullableType } from '@/utils'
+import type { AuthEmailLoginDto, AuthRegisterLoginDto, AuthRepository, LoginResponseDto, User } from '@/domain'
 
 import { NetService } from '../services/net/net.service'
 
@@ -8,6 +9,10 @@ import { NetService } from '../services/net/net.service'
 export class AuthNetRepository extends NetService implements AuthRepository {
   constructor() {
     super()
+  }
+
+  async me(): Promise<NullableType<User>> {
+    return this._send<NullableType<User>>({ path: 'auth/me', method: 'get' })
   }
 
   async register(createUserDto: AuthRegisterLoginDto): Promise<void> {

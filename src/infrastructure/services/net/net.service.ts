@@ -13,7 +13,7 @@ abstract class NetService {
   private readonly ACCESS = 'access_token'
   private readonly REFRESH = 'refresh_token'
   private persistService: PersistPort = new LocalStorageService()
-  private _authWhiteList = ['/', '/auth/', '/courses/']
+  private _authWhiteList = ['/', '/decks/', '/courses/']
 
   constructor(
   ) {
@@ -78,36 +78,29 @@ abstract class NetService {
     body,
     method = FetchMethod.get,
     withHeaders = true,
-     withAuth = false,
-  }: CustomRequest & { withAuth?: boolean }): Promise<Response> {
+    isRefresh = false,
+  }: CustomRequest & { isRefresh?: boolean }): Promise<Response> {
     const url = `${this.ORIGIN}/api/v1/${path}`
 
-    if (!body || method === FetchMethod.get) {
+    if (method === FetchMethod.get) {
       return withHeaders
-        ? fetch(url, { headers: this._makeHeaders(withAuth) })
+        ? fetch(url, { headers: this._makeHeaders(isRefresh) })
         : fetch(url)
     }
 
     return fetch(url, {
       method,
-      headers: this._makeHeaders(withAuth),
+      headers: this._makeHeaders(isRefresh),
       body: JSON.stringify(body),
     })
   }
 
-  /**
-   * Создает заголовки для запроса
-   * @param skipAuth - Если true, то заголовок авторизации не добавляется
-   */
-  private _makeHeaders(skipAuth = false): HeadersInit {
+  private _makeHeaders(isRefresh = false): HeadersInit {
     const headers: HeadersInit = [
       ['Content-Type', 'application/json;charset=utf-8'],
     ]
 
-    // Добавляем заголовок авторизации только если не указано skipAuth
-    if (!skipAuth) {
-      headers.push(['Authorization', `Bearer ${this.persistService.getAsString(this.ACCESS)}`])
-    }
+    headers.push(['Authorization', `Bearer ${this.persistService.getAsString(isRefresh ? this.REFRESH : this.ACCESS)}`])
 
     return headers
   }
@@ -127,13 +120,12 @@ abstract class NetService {
         return false
       }
 
-      // Используем _fetch с параметром skipAuth=true, чтобы избежать добавления
+      // Используем _fetch с параметром withAuth=true, чтобы избежать добавления
       // авторизационного заголовка с недействительным токеном
       const response = await this._fetch({
         path: 'auth/refresh',
-        method: 'POST',
-        body: { refresh_token: refreshToken },
-        withAuth: true, // Важно! Предотвращает бесконечную рекурсию
+        method: 'post',
+        isRefresh: true, // Важно! Предотвращает бесконечную рекурсию
       })
 
       const responseBody = await response.json()
@@ -147,8 +139,8 @@ abstract class NetService {
       const tokens: AuthTokens = responseBody
 
       // Сохраняем новые токены
-      this.persistService.setPrimitive(this.ACCESS, tokens.access_token)
-      this.persistService.setPrimitive(this.REFRESH, tokens.refresh_token)
+      this.persistService.setPrimitive(this.ACCESS, tokens.token)
+      this.persistService.setPrimitive(this.REFRESH, tokens.refreshToken)
 
       return true
     }
@@ -164,7 +156,7 @@ abstract class NetService {
    */
   goToAuth() {
     const path = '/sign-in'
-    window.location.assign(this.ORIGIN + path)
+    window.location.assign(path)
   }
 
   /**

@@ -5,7 +5,7 @@ export class User {
   socialId?: string | null
   firstName: string | null
   lastName: string | null
-  // TODO fix any typeings
+  // TODO fix any typings
   photo?: any | null
   role?: any | null
   status?: any | null

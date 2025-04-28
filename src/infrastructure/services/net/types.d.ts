@@ -22,8 +22,8 @@ export interface CustomRequest {
 }
 
 export interface AuthTokens {
-  refresh_token: string
-  access_token: string
+  token: string
+  refreshToken: string
 }
 
 export interface NetService {
