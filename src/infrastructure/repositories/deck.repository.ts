@@ -1,6 +1,7 @@
 import { injectable } from 'inversify'
 
-import type { CreateDeckDto, Deck, DeckRepository, FindAllDecksDto, UpdateDeckDto } from '@/domain'
+import type { PaginationResponseDto } from '@/utils'
+import type { CreateDeckDto, Deck, DeckRepository, UpdateDeckDto } from '@/domain'
 
 import { NetService } from '../services/net/net.service'
 
@@ -10,7 +11,7 @@ export class DeckNetRepository extends NetService implements DeckRepository {
     super()
   }
 
-  async findAll(): Promise<FindAllDecksDto> {
+  async findAll(): Promise<PaginationResponseDto<Deck>> {
     return this._send({ path: 'decks', method: 'get' })
   }
 

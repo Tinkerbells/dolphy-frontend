@@ -1,4 +1,5 @@
 export * from './auth.module'
+export * from './decks.module'
 export * from './notification.module'
 export * from './persist.module'
 export * from './profile.module'

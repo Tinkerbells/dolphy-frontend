@@ -37,7 +37,6 @@ abstract class NetService {
         const refreshSuccess = await this._refreshToken()
         if (!refreshSuccess) {
           // Если обновление не удалось, перенаправляем на страницу авторизации
-          this.goToAuth()
           throw new NetError({
             code: ResponseCode.AUTH_ERROR,
             status: 'Ошибка авторизации',
@@ -69,6 +68,7 @@ abstract class NetService {
       })
     }
     catch (error) {
+      console.log(error)
       if (!navigator.onLine) {
         throw new NetError({
           code: ResponseCode.FETCH_ERROR,

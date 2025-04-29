@@ -1,11 +1,18 @@
 import { ContainerModule } from 'inversify'
 
-import { Profile } from '@/application/profile'
-import { ProfileStore } from '@/presentation/profile'
+import type { DeckRepository } from '@/domain'
+
+import { Decks } from '@/application'
+import { DeckNetRepository } from '@/infrastructure'
+import { DecksStore } from '@/presentation/decks/decks.store'
 
 import { Symbols } from '../symbols'
 
-export const profileModule = new ContainerModule((options) => {
-  options.bind(Symbols.Profile).to(Profile).inSingletonScope()
-  options.bind(Symbols.ProfileStore).to(ProfileStore).inSingletonScope()
+/**
+ * Модуль для регистрации сервисов колод в контейнере DI
+ */
+export const decksModule = new ContainerModule((options) => {
+  options.bind<DeckRepository>(Symbols.DeckRepository).to(DeckNetRepository).inSingletonScope()
+  options.bind(Symbols.Decks).to(Decks).inSingletonScope()
+  options.bind(Symbols.DecksStore).to(DecksStore).inSingletonScope()
 })

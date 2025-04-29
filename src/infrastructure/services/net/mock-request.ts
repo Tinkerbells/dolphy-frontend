@@ -1,4 +1,4 @@
-import type { Milliseconds } from '@/types/primitive.types'
+import type { Milliseconds } from '@/utils/types/primitive.type'
 
 /**
  * Создает задержку указанной длительности

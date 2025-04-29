@@ -1,10 +1,12 @@
+import type { PaginationResponseDto } from '@/utils'
+
 import type { Deck } from '../deck.domain'
-import type { CreateDeckDto, FindAllDecksDto, UpdateDeckDto } from '../dto'
+import type { CreateDeckDto, UpdateDeckDto } from '../dto'
 
 export interface DeckRepository {
-  findAll: () => Promise<FindAllDecksDto>
-  findById: (id: string) => Promise<Deck>
+  findAll: () => Promise<PaginationResponseDto<Deck>>
+  findById: (id: Deck['id']) => Promise<Deck>
   create: (data: CreateDeckDto) => Promise<Deck>
-  update: (id: string, data: UpdateDeckDto) => Promise<Deck>
-  remove: (id: string) => Promise<void>
+  update: (id: Deck['id'], data: UpdateDeckDto) => Promise<Deck>
+  remove: (id: Deck['id']) => Promise<void>
 }

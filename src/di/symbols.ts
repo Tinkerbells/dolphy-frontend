@@ -5,6 +5,8 @@ export const Symbols = {
   Profile: Symbol.for('Profile'),
   ProfileStore: Symbol.for('ProfileStore'),
   DeckRepository: Symbol.for('DeckRepository'),
+  Decks: Symbol.for('Decks'),
+  DecksStore: Symbol.for('DecksStore'),
   SignInStore: Symbol.for('SignInStore'),
   SignUpStore: Symbol.for('SignUpStore'),
   NotificationService: Symbol.for('NotificationService'),
