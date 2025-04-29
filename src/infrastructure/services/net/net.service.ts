@@ -1,3 +1,5 @@
+import { jwtDecode } from 'jwt-decode'
+
 import type { PersistPort } from '@/domain'
 
 import { env } from '@/utils/env'
@@ -28,7 +30,17 @@ abstract class NetService {
   protected async _send<T>(request: CustomRequest): Promise<T> {
     try {
       // Не пытаемся повторно выполнить запрос refresh
-      const isRefreshRequest = request.path === 'refresh'
+      const isRefreshRequest = request.path === 'auth/refresh'
+
+      console.log('Is expired :', this._isTokenExpired())
+
+      if (this._isTokenExpired() && !isRefreshRequest) {
+        const refreshSuccess = await this.refresh()
+        if (refreshSuccess) {
+          // Повторяем запрос с новым токеном
+          return this._send<T>(request)
+        }
+      }
 
       const response = await this._fetch(request)
       const responseBody = await response.json()
@@ -37,14 +49,14 @@ abstract class NetService {
         return responseBody
       }
 
-      // Если ошибка авторизации и это не запрос refresh, пробуем обновить токен
-      if (response.status === ResponseCode.AUTH_ERROR && !isRefreshRequest) {
-        const refreshSuccess = await this.refresh()
-        if (refreshSuccess) {
-          // Повторяем запрос с новым токеном
-          return this._send<T>(request)
-        }
-      }
+      // // Если ошибка авторизации и это не запрос refresh, пробуем обновить токен
+      // if (response.status === ResponseCode.AUTH_ERROR && !isRefreshRequest) {
+      //   const refreshSuccess = await this.refresh()
+      //   if (refreshSuccess) {
+      //     // Повторяем запрос с новым токеном
+      //     return this._send<T>(request)
+      //   }
+      // }
 
       throw new NetError({
         code: response.status,
@@ -178,6 +190,24 @@ abstract class NetService {
    */
   protected _isResponseOk(res: CustomResponse<any>): boolean {
     return this._isStatusOk(res.code) && res.data !== undefined
+  }
+
+  protected _isTokenExpired() {
+    const token = this.persistService.getAsString(this.ACCESS)
+
+    if (!token)
+      return true
+
+    try {
+      const decodedToken = jwtDecode(token)
+      const currentTime = Date.now() / 1000
+      return decodedToken.exp! < currentTime
+    }
+
+    catch (error) {
+      console.error('Error decoding token:', error)
+      return true
+    }
   }
 }
 

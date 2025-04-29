@@ -34,6 +34,7 @@
     "class-validator": "^0.14.1",
     "eruda": "^3.4.1",
     "inversify": "^7.3.0",
+    "jwt-decode": "^4.0.0",
     "lucide-react": "^0.486.0",
     "mobx": "^6.13.7",
     "mobx-devtools": "^0.9.27",

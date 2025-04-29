@@ -45,8 +45,6 @@ export const AuthHeader: React.FC<AuthHeaderProps> = ({
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
 
-  console.log(!profile.result.data, profile.result.isFetching)
-
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
   }
