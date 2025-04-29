@@ -11,13 +11,14 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Skeleton,
   Toolbar,
   Tooltip,
   Typography,
   useTheme,
 } from '@mui/material'
 
-import type { Authenticate } from '@/application'
+import type { ProfileStore } from '@/presentation/profile'
 
 import { Symbols } from '@/di'
 import { useService } from '@/di/provider'
@@ -32,19 +33,19 @@ const CenteredNavigation = styled(Box)(() => ({
 
 interface AuthHeaderProps {
   notificationCount?: number
-  username?: string
 }
 
 export const AuthHeader: React.FC<AuthHeaderProps> = ({
   notificationCount = 0,
-  username = '',
 }) => {
   const theme = useTheme()
   const navigate = useNavigate()
-  const authenticate = useService<Authenticate>(Symbols.Authenticate)
+  const { profile, logout } = useService<ProfileStore>(Symbols.ProfileStore)
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
+
+  console.log(!profile.result.data, profile.result.isFetching)
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
@@ -56,7 +57,7 @@ export const AuthHeader: React.FC<AuthHeaderProps> = ({
 
   const handleLogout = async () => {
     try {
-      await authenticate.logout()
+      await logout.mutate()
       navigate(root['sign-in'].$path())
     }
     catch (error) {
@@ -64,9 +65,6 @@ export const AuthHeader: React.FC<AuthHeaderProps> = ({
     }
     handleClose()
   }
-
-  // Get first letter for avatar
-  const avatarLetter = username ? username.charAt(0).toUpperCase() : 'D'
 
   return (
     <AppBar position="static" color="default" elevation={0}>
@@ -105,9 +103,14 @@ export const AuthHeader: React.FC<AuthHeaderProps> = ({
               aria-haspopup="true"
               aria-expanded={open ? 'true' : undefined}
             >
-              <Avatar sx={{ bgcolor: theme.palette.primary.main, width: 36, height: 36 }}>
-                {avatarLetter}
-              </Avatar>
+              {!profile.result.data && profile.result.isFetching
+                ? <Skeleton variant="circular" width={36} height={36} />
+                : (
+
+                    <Avatar sx={{ bgcolor: theme.palette.primary.main, width: 36, height: 36 }}>
+                      {profile.result.data?.firstChar}
+                    </Avatar>
+                  )}
             </IconButton>
           </Tooltip>
         </Box>

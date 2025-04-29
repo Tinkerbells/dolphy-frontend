@@ -8,7 +8,7 @@ import { useService } from '@/di/provider'
 import type { ProfileStore } from '../profile'
 
 export function DecksPage() {
-  const profileStore = useService<ProfileStore>(Symbols.ProfileStore)
+  const { profile } = useService<ProfileStore>(Symbols.ProfileStore)
 
   return (
     <Box
@@ -21,7 +21,7 @@ export function DecksPage() {
         alignItems: 'center',
       }}
     >
-      {profileStore.user?.firstName}
+      {profile?.result.data?.fullName}
     </Box>
   )
 }

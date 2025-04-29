@@ -14,7 +14,10 @@ import { AuthEmailLoginDto } from '@/domain/auth/dto/auth-email-login.dto'
 
 @injectable()
 export class SignInStore {
-  login: MobxMutation<LoginResponseDto | undefined, AuthEmailLoginDto, Error>
+  login: MobxMutation<LoginResponseDto | undefined, AuthEmailLoginDto, Error> = new MobxMutation({
+    queryClient: this.queryClient,
+    mutationFn: dto => this.authenticate.login(dto),
+  })
 
   signInForm: MobxForm<AuthEmailLoginDto>
 
@@ -24,11 +27,6 @@ export class SignInStore {
     @inject(Symbols.Authenticate) private authenticate: Authenticate,
     @inject(Symbols.QueryClient) private queryClient: MobxQueryClient,
   ) {
-    this.login = new MobxMutation({
-      queryClient: this.queryClient,
-      mutationFn: dto => this.authenticate.login(dto),
-    })
-
     this.signInForm = new MobxForm<AuthEmailLoginDto>({
       defaultValues: {
         email: '',
@@ -43,7 +41,12 @@ export class SignInStore {
   }
 
   handleSignIn = async (data: AuthEmailLoginDto) => {
-    await this.login.mutate(data)
+    try {
+      await this.login.mutate(data)
+    }
+    catch (error) {
+      console.error('Login failed:', error)
+    }
   }
 
   togglePasswordVisibility = () => {

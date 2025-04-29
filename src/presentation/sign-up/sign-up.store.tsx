@@ -13,7 +13,10 @@ import { AuthRegisterLoginDto } from '@/domain'
 
 @injectable()
 export class SignUpStore {
-  register: MobxMutation<void, AuthRegisterLoginDto, Error>
+  register: MobxMutation<void, AuthRegisterLoginDto, Error> = new MobxMutation({
+    queryClient: this.queryClient,
+    mutationFn: dto => this.authService.register(dto),
+  })
 
   signUpForm: MobxForm<AuthRegisterLoginDto>
 
@@ -23,12 +26,6 @@ export class SignUpStore {
     @inject(Symbols.Authenticate) private authService: Authenticate,
     @inject(Symbols.QueryClient) private queryClient: MobxQueryClient,
   ) {
-    this.register = new MobxMutation({
-      queryClient: this.queryClient,
-      mutationFn: dto => this.authService.register(dto),
-    })
-
-    // Инициализация формы с использованием MobxForm
     this.signUpForm = new MobxForm<AuthRegisterLoginDto>({
       defaultValues: {
         email: '',

@@ -2,10 +2,11 @@ import type { MobxQueryClient } from 'mobx-tanstack-query'
 
 import { makeAutoObservable } from 'mobx'
 import { inject, injectable } from 'inversify'
-import { MobxQuery } from 'mobx-tanstack-query'
+import { MobxMutation, MobxQuery } from 'mobx-tanstack-query'
 
 import type { User } from '@/domain'
 import type { NullableType } from '@/utils'
+import type { Authenticate } from '@/application'
 import type { Profile } from '@/application/profile'
 
 import { Symbols } from '@/di'
@@ -17,31 +18,19 @@ import { Symbols } from '@/di'
 export class ProfileStore {
   /** Данные текущего пользователя */
 
-  isProfileLoading: boolean = true
-
   private profileKey: string = 'profile'
 
-  currentUser: User | null = null
+  public profile: MobxQuery<NullableType<User>, Error> = new MobxQuery({ queryClient: this.queryClient, queryKey: [this.profileKey], queryFn: async () => {
+    return await this.profileService.get()
+  }, retry: 3 })
 
-  private getProfile: MobxQuery<NullableType<User>, Error> = new MobxQuery({ queryClient: this.queryClient, queryKey: [this.profileKey], queryFn: async () => {
-    return await this.profile.get()
-  }, onDone: (data) => {
-    this.setUser(data)
-    this.isProfileLoading = false
-  } })
+  public logout: MobxMutation<void, void, Error> = new MobxMutation({ queryClient: this.queryClient, mutationFn: () => this.authenticate.logout() })
 
   constructor(
-    @inject(Symbols.Profile) private profile: Profile,
+    @inject(Symbols.Profile) private profileService: Profile,
+    @inject(Symbols.Authenticate) private authenticate: Authenticate,
     @inject(Symbols.QueryClient) private queryClient: MobxQueryClient,
   ) {
     makeAutoObservable(this)
-  }
-
-  public get user() {
-    return this.currentUser
-  }
-
-  private setUser(user: User | null) {
-    this.currentUser = user
   }
 }

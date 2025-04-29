@@ -13,23 +13,12 @@ export class User {
   updatedAt: string
   deletedAt: string
 
-  constructor(data: Partial<User>) {
-    this.id = data.id!
-    this.email = data.email ?? null
-    this.provider = data.provider!
-    this.socialId = data.socialId ?? null
-    this.firstName = data.firstName ?? null
-    this.lastName = data.lastName ?? null
-    this.photo = data.photo ?? null
-    this.role = data.role ?? null
-    this.status = data.status ?? null
-    this.createdAt = data.createdAt!
-    this.updatedAt = data.updatedAt!
-    this.deletedAt = data.deletedAt!
-  }
-
   get fullName(): string {
     return [this.firstName, this.lastName].filter(Boolean).join(' ')
+  }
+
+  get firstChar(): string {
+    return this.firstName?.charAt(0) || 'U'
   }
 
   // Example: Parse createdAt to Date object
