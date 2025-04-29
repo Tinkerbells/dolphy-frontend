@@ -1,8 +1,7 @@
 import { inject, injectable } from 'inversify'
 
-import type { User } from '@/domain'
 import type { NullableType } from '@/utils'
-import type { AuthRepository } from '@/domain/auth/repositories/auth.repository'
+import type { AuthRepository, User } from '@/domain'
 
 import { Symbols } from '@/di'
 

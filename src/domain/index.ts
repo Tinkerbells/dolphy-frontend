@@ -1,4 +1,5 @@
 export * from './auth'
+export * from './decks'
 export * from './notification'
 export * from './persist'
 export * from './user'
