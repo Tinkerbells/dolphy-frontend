@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
+import { observer } from 'mobx-react-lite'
 import { styled } from '@mui/material/styles'
 import LogoutIcon from '@mui/icons-material/Logout'
 import NotificationsIcon from '@mui/icons-material/Notifications'
@@ -35,7 +36,7 @@ interface AuthHeaderProps {
   notificationCount?: number
 }
 
-export const AuthHeader: React.FC<AuthHeaderProps> = ({
+export const AuthHeader: React.FC<AuthHeaderProps> = observer(({
   notificationCount = 0,
 }) => {
   const theme = useTheme()
@@ -130,4 +131,4 @@ export const AuthHeader: React.FC<AuthHeaderProps> = ({
       </Toolbar>
     </AppBar>
   )
-}
+})

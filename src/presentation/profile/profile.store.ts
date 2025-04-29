@@ -22,7 +22,7 @@ export class ProfileStore {
 
   public profile: MobxQuery<NullableType<User>, Error> = new MobxQuery({ queryClient: this.queryClient, queryKey: [this.profileKey], queryFn: async () => {
     return await this.profileService.get()
-  }, retry: 3 })
+  } })
 
   public logout: MobxMutation<void, void, Error> = new MobxMutation({ queryClient: this.queryClient, mutationFn: () => this.authenticate.logout() })
 

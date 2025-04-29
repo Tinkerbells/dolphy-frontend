@@ -32,14 +32,18 @@ abstract class NetService {
       // Не пытаемся повторно выполнить запрос refresh
       const isRefreshRequest = request.path === 'auth/refresh'
 
-      console.log('Is expired :', this._isTokenExpired())
-
-      if (this._isTokenExpired() && !isRefreshRequest) {
-        const refreshSuccess = await this.refresh()
-        if (refreshSuccess) {
-          // Повторяем запрос с новым токеном
-          return this._send<T>(request)
+      // Проверяем, истек ли токен и требуется ли обновление
+      if (this._isTokenExpired() && this.isAuthorized()) {
+        const refreshSuccess = await this._refreshToken()
+        if (!refreshSuccess) {
+          // Если обновление не удалось, перенаправляем на страницу авторизации
+          this.goToAuth()
+          throw new NetError({
+            code: ResponseCode.AUTH_ERROR,
+            status: 'Ошибка авторизации',
+          })
         }
+        // После успешного обновления токена продолжаем выполнение запроса
       }
 
       const response = await this._fetch(request)
@@ -49,14 +53,13 @@ abstract class NetService {
         return responseBody
       }
 
-      // // Если ошибка авторизации и это не запрос refresh, пробуем обновить токен
-      // if (response.status === ResponseCode.AUTH_ERROR && !isRefreshRequest) {
-      //   const refreshSuccess = await this.refresh()
-      //   if (refreshSuccess) {
-      //     // Повторяем запрос с новым токеном
-      //     return this._send<T>(request)
-      //   }
-      // }
+      if (response.status === ResponseCode.AUTH_ERROR && !isRefreshRequest) {
+        const refreshSuccess = await this._refreshToken()
+        if (refreshSuccess) {
+          // Повторяем запрос с новым токеном
+          return this._send<T>(request)
+        }
+      }
 
       throw new NetError({
         code: response.status,
@@ -122,7 +125,7 @@ abstract class NetService {
    *
    * @returns {Promise<boolean>} Результат обновления токенов (успех/неудача)
    */
-  async refresh(): Promise<boolean> {
+  private async _refreshToken(): Promise<boolean> {
     try {
       const refreshToken = this.persistService.getAsString(this.REFRESH)
 
@@ -194,10 +197,6 @@ abstract class NetService {
 
   protected _isTokenExpired() {
     const token = this.persistService.getAsString(this.ACCESS)
-
-    if (!token)
-      return true
-
     try {
       const decodedToken = jwtDecode(token)
       const currentTime = Date.now() / 1000

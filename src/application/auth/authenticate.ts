@@ -29,7 +29,6 @@ export class Authenticate {
   async login(loginDto: AuthEmailLoginDto): Promise<LoginResponseDto | undefined> {
     try {
       const res = await this.authRepository.login(loginDto)
-      this.notify.success('You\'ve login')
       this.persistService.setPrimitive('access_token', res.token)
       this.persistService.setPrimitive('refresh_token', res.refreshToken)
       return res
