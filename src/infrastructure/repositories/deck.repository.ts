@@ -24,7 +24,7 @@ export class DeckNetRepository extends NetService implements DeckRepository {
   }
 
   async update(id: Deck['id'], data: UpdateDeckDto): Promise<Deck> {
-    return this._send({ path: `decks/${id}`, method: 'patch', body: data })
+    return this._send({ path: `decks/${id}`, method: 'PATCH', body: data })
   }
 
   async remove(id: Deck['id']): Promise<void> {
