@@ -19,5 +19,6 @@ export default antfu({
         ignore: ['README.md'],
       },
     ],
+    'symbol-description': ['off'],
   },
 })

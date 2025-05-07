@@ -59,6 +59,9 @@ importers:
       inversify:
         specifier: ^7.3.0
         version: 7.3.0(reflect-metadata@0.2.2)
+      inversiland:
+        specifier: ^0.6.2
+        version: 0.6.2
       jwt-decode:
         specifier: ^4.0.0
         version: 4.0.0
@@ -107,6 +110,9 @@ importers:
       sonner:
         specifier: ^2.0.3
         version: 2.0.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      ts-serializable:
+        specifier: ^4.2.0
+        version: 4.2.0(reflect-metadata@0.2.2)
       uuid:
         specifier: ^11.1.0
         version: 11.1.0
@@ -728,6 +734,24 @@ packages:
 
   '@inversifyjs/reflect-metadata-utils@1.1.0':
     resolution: {integrity: sha512-jmuAuC3eL1GnFAYfJGJOMKRDL9q1mgzOyrban6zxfM8Yg1FUHsj25h27bW2G7p8X1Amvhg3MLkaOuogszkrofA==}
+    peerDependencies:
+      reflect-metadata: 0.2.2
+
+  '@inversiland/common@1.4.0':
+    resolution: {integrity: sha512-Fgx8rwSeNvV/yBGXiDwpRiNTv61eDf0stzTAFpHzezP5GJ4OcFKAZwBKdMCoTVLGLtmZ+Ywntn3OZtLQL2Isuw==}
+
+  '@inversiland/core@1.3.5':
+    resolution: {integrity: sha512-Zt3FRU4FZupWVvKOCCKSt4M3PdLK5ZwxtGIo8QEXjxTd6YpaPcM3Zj1OMXkT8p1uoUCoezIYMC4W+QaA8DDE9w==}
+    peerDependencies:
+      reflect-metadata: ^0.2.2
+
+  '@inversiland/inversify@6.1.5':
+    resolution: {integrity: sha512-QqUlhEkwRGiUKulrn/jw9l9tO3bbpWg1SfLacZQmc5XxDRhd8aOQy4oHmvPmRnO6z4SsBbXCzlNuOWgPaOB6mg==}
+    peerDependencies:
+      reflect-metadata: ^0.2.2
+
+  '@inversiland/metadata@0.2.5':
+    resolution: {integrity: sha512-W2gUFeF6Vuoef9RRaapJGdk+Ws7uGjEAAiEbERkkPHXZPMSs/qFUeSL2n2LokEZJ4oiQZOpDO+AkrwMnaHm+wQ==}
     peerDependencies:
       reflect-metadata: 0.2.2
 
@@ -2646,6 +2670,9 @@ packages:
     peerDependencies:
       reflect-metadata: ~0.2.2
 
+  inversiland@0.6.2:
+    resolution: {integrity: sha512-DJErdRjv5lC0bF0nE8J5Aw836w/JfkeKQYFq4VyCT7hnIcjB2vUhKCwWJR7a0+7lLO2GalvH0rz3eX2PF1OX0w==}
+
   ip@1.1.9:
     resolution: {integrity: sha512-cyRxvOEpNHNtchU3Ln9KC/auJgup87llfQpQ+t5ghoC/UhL16SWzbueiCsdTnWmqAWl7LadfuwhlqmtOaqMHdQ==}
 
@@ -3850,6 +3877,11 @@ packages:
     peerDependencies:
       typescript: '>=4.8.4'
 
+  ts-serializable@4.2.0:
+    resolution: {integrity: sha512-AfDZRO0DAY/2AMw/FHPKYwqhvBU7t+BYHem9s+YL/ChpoM7ucS5wUjI0Jrxeo8gk4/TxLBGuDJ4lZyIUoYb2pQ==}
+    peerDependencies:
+      reflect-metadata: '>=0.1.0'
+
   tsconfck@3.1.5:
     resolution: {integrity: sha512-CLDfGgUp7XPswWnezWwsCRxNmgQjhYq3VXHM0/XIRxhVrKw0M1if9agzryh1QS3nxjCROvV+xWxoJO1YctzzWg==}
     engines: {node: ^18 || >=20}
@@ -4762,6 +4794,25 @@ snapshots:
       '@inversifyjs/common': 1.5.0
 
   '@inversifyjs/reflect-metadata-utils@1.1.0(reflect-metadata@0.2.2)':
+    dependencies:
+      reflect-metadata: 0.2.2
+
+  '@inversiland/common@1.4.0': {}
+
+  '@inversiland/core@1.3.5(reflect-metadata@0.2.2)':
+    dependencies:
+      '@inversiland/common': 1.4.0
+      '@inversiland/metadata': 0.2.5(reflect-metadata@0.2.2)
+      reflect-metadata: 0.2.2
+
+  '@inversiland/inversify@6.1.5(reflect-metadata@0.2.2)':
+    dependencies:
+      '@inversiland/common': 1.4.0
+      '@inversiland/core': 1.3.5(reflect-metadata@0.2.2)
+      '@inversiland/metadata': 0.2.5(reflect-metadata@0.2.2)
+      reflect-metadata: 0.2.2
+
+  '@inversiland/metadata@0.2.5(reflect-metadata@0.2.2)':
     dependencies:
       reflect-metadata: 0.2.2
 
@@ -6866,6 +6917,13 @@ snapshots:
       '@inversifyjs/core': 5.1.0(reflect-metadata@0.2.2)
       reflect-metadata: 0.2.2
 
+  inversiland@0.6.2:
+    dependencies:
+      '@inversiland/common': 1.4.0
+      '@inversiland/inversify': 6.1.5(reflect-metadata@0.2.2)
+      '@inversiland/metadata': 0.2.5(reflect-metadata@0.2.2)
+      reflect-metadata: 0.2.2
+
   ip@1.1.9: {}
 
   is-array-buffer@3.0.5:
@@ -8289,6 +8347,10 @@ snapshots:
   ts-api-utils@2.1.0(typescript@5.8.2):
     dependencies:
       typescript: 5.8.2
+
+  ts-serializable@4.2.0(reflect-metadata@0.2.2):
+    dependencies:
+      reflect-metadata: 0.2.2
 
   tsconfck@3.1.5(typescript@5.8.2):
     optionalDependencies:

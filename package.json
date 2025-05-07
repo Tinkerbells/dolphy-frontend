@@ -34,6 +34,7 @@
     "class-validator": "^0.14.1",
     "eruda": "^3.4.1",
     "inversify": "^7.3.0",
+    "inversiland": "^0.6.2",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.486.0",
     "mobx": "^6.13.7",
@@ -50,6 +51,7 @@
     "recharts": "2",
     "reflect-metadata": "^0.2.2",
     "sonner": "^2.0.3",
+    "ts-serializable": "^4.2.0",
     "uuid": "^11.1.0",
     "vaul": "^1.1.2",
     "zod": "^3.24.2"
