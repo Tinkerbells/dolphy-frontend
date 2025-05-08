@@ -56,9 +56,6 @@ importers:
       eruda:
         specifier: ^3.4.1
         version: 3.4.1
-      inversify:
-        specifier: ^7.3.0
-        version: 7.3.0(reflect-metadata@0.2.2)
       inversiland:
         specifier: ^0.6.2
         version: 0.6.2
@@ -717,25 +714,6 @@ packages:
   '@humanwhocodes/retry@0.4.2':
     resolution: {integrity: sha512-xeO57FpIu4p1Ri3Jq/EXq4ClRm86dVF2z/+kvFnyqVYRavTZmaFaUBbWCOuuTh0o/g7DSsk6kc2vrS4Vl5oPOQ==}
     engines: {node: '>=18.18'}
-
-  '@inversifyjs/common@1.5.0':
-    resolution: {integrity: sha512-Qj5BELk11AfI2rgZEAaLPmOftmQRLLmoCXgAjmaF0IngQN5vHomVT5ML7DZ3+CA5fgGcEVMcGbUDAun+Rz+oNg==}
-
-  '@inversifyjs/container@1.7.0':
-    resolution: {integrity: sha512-M1CHnZ4r4N6zDleC2NNNjS0xMpipHSubEft8NDtzaOpmfGJ2nxgxbIES61xwhA0Y5kAV/jC2STx0pfPG7cyhAA==}
-    peerDependencies:
-      reflect-metadata: ~0.2.2
-
-  '@inversifyjs/core@5.1.0':
-    resolution: {integrity: sha512-mxawKEUmRAwQeNGymf2WucPNEnyWnaGMTi2cOyIq9/zqMbo8LpXh8OFkGvJciFWznC6fDnP27O80u+sY/JjU9g==}
-
-  '@inversifyjs/prototype-utils@0.1.0':
-    resolution: {integrity: sha512-lNz1yyajMRDXBHLvJsYYX81FcmeD15e5Qz1zAZ/3zeYTl+u7ZF/GxNRKJzNOloeMPMtuR8BnvzHA1SZxjR+J9w==}
-
-  '@inversifyjs/reflect-metadata-utils@1.1.0':
-    resolution: {integrity: sha512-jmuAuC3eL1GnFAYfJGJOMKRDL9q1mgzOyrban6zxfM8Yg1FUHsj25h27bW2G7p8X1Amvhg3MLkaOuogszkrofA==}
-    peerDependencies:
-      reflect-metadata: 0.2.2
 
   '@inversiland/common@1.4.0':
     resolution: {integrity: sha512-Fgx8rwSeNvV/yBGXiDwpRiNTv61eDf0stzTAFpHzezP5GJ4OcFKAZwBKdMCoTVLGLtmZ+Ywntn3OZtLQL2Isuw==}
@@ -2664,11 +2642,6 @@ packages:
   internmap@2.0.3:
     resolution: {integrity: sha512-5Hh7Y1wQbvY5ooGgPbDaL5iYLAPzMTUrjMulskHLH6wnv/A+1q5rgEaiuqEjB+oxGXIVZs1FF+R/KPN3ZSQYYg==}
     engines: {node: '>=12'}
-
-  inversify@7.3.0:
-    resolution: {integrity: sha512-mrnIXv4mV1wAPEDPPRFlNLMuQyYnjQCxpbHR06zN+v4hke4Q4CIBXpySNId716GuQK6JL+6hwQkOXt9wbvZP4Q==}
-    peerDependencies:
-      reflect-metadata: ~0.2.2
 
   inversiland@0.6.2:
     resolution: {integrity: sha512-DJErdRjv5lC0bF0nE8J5Aw836w/JfkeKQYFq4VyCT7hnIcjB2vUhKCwWJR7a0+7lLO2GalvH0rz3eX2PF1OX0w==}
@@ -4771,31 +4744,6 @@ snapshots:
   '@humanwhocodes/retry@0.3.1': {}
 
   '@humanwhocodes/retry@0.4.2': {}
-
-  '@inversifyjs/common@1.5.0': {}
-
-  '@inversifyjs/container@1.7.0(reflect-metadata@0.2.2)':
-    dependencies:
-      '@inversifyjs/common': 1.5.0
-      '@inversifyjs/core': 5.1.0(reflect-metadata@0.2.2)
-      '@inversifyjs/reflect-metadata-utils': 1.1.0(reflect-metadata@0.2.2)
-      reflect-metadata: 0.2.2
-
-  '@inversifyjs/core@5.1.0(reflect-metadata@0.2.2)':
-    dependencies:
-      '@inversifyjs/common': 1.5.0
-      '@inversifyjs/prototype-utils': 0.1.0
-      '@inversifyjs/reflect-metadata-utils': 1.1.0(reflect-metadata@0.2.2)
-    transitivePeerDependencies:
-      - reflect-metadata
-
-  '@inversifyjs/prototype-utils@0.1.0':
-    dependencies:
-      '@inversifyjs/common': 1.5.0
-
-  '@inversifyjs/reflect-metadata-utils@1.1.0(reflect-metadata@0.2.2)':
-    dependencies:
-      reflect-metadata: 0.2.2
 
   '@inversiland/common@1.4.0': {}
 
@@ -6909,13 +6857,6 @@ snapshots:
       side-channel: 1.1.0
 
   internmap@2.0.3: {}
-
-  inversify@7.3.0(reflect-metadata@0.2.2):
-    dependencies:
-      '@inversifyjs/common': 1.5.0
-      '@inversifyjs/container': 1.7.0(reflect-metadata@0.2.2)
-      '@inversifyjs/core': 5.1.0(reflect-metadata@0.2.2)
-      reflect-metadata: 0.2.2
 
   inversiland@0.6.2:
     dependencies:

@@ -116,6 +116,7 @@ export class HttpClient implements HttpClientPort {
 
     const headers: HeadersInit = [
       ['Content-Type', 'application/json;charset=utf-8'],
+      ['x-custom-lang', 'ru'],
     ]
 
     headers.push(['Authorization', `Bearer ${token}`])
