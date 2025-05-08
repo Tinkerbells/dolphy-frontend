@@ -2,10 +2,12 @@ import { jwtDecode } from 'jwt-decode'
 import { inject, injectable } from 'inversiland'
 
 import type { EnvPort } from '@/core/domain/ports/env.port'
+import type { I18nPort } from '@/core/domain/ports/i18n.port'
 import type { PersistStoragePort } from '@/core/domain/ports/persist-storage.port'
 import type { HttpClientPort, HttpRequest } from '@/core/domain/ports/http-client.port'
 
 import { EnvPortToken } from '@/core/domain/ports/env.port'
+import { I18nPortToken } from '@/core/domain/ports/i18n.port'
 import { FetchMethod, ResponseCode } from '@/core/domain/enums/http.enum'
 import { PersistStoragePortToken } from '@/core/domain/ports/persist-storage.port'
 
@@ -24,6 +26,7 @@ export class HttpClient implements HttpClientPort {
   constructor(
     @inject(PersistStoragePortToken) private readonly persistService: PersistStoragePort,
     @inject(EnvPortToken) private readonly env: EnvPort<ViteEnvironmentVariables>,
+    @inject(I18nPortToken) private readonly i18n: I18nPort,
   ) {
     // if (!this.isAuthorized() && !this._authWhiteList.includes(window.location.pathname)) {
     //   this.goToAuth()
@@ -113,10 +116,11 @@ export class HttpClient implements HttpClientPort {
 
   private _makeHeaders(isRefresh = false): HeadersInit {
     const token = this.persistService.getAsString(isRefresh ? this.REFRESH_TOKEN : this.ACCESS_TOKEN)
+    const lang = this.i18n.getCurrentLanguage()
 
     const headers: HeadersInit = [
       ['Content-Type', 'application/json;charset=utf-8'],
-      ['x-custom-lang', 'ru'],
+      ['x-custom-lang', lang],
     ]
 
     headers.push(['Authorization', `Bearer ${token}`])

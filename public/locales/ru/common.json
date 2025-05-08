@@ -1,0 +1,88 @@
+{
+  "app": {
+    "name": "Dolphy",
+    "title": "Приложение для карточек"
+  },
+  "navigation": {
+    "home": "Главная",
+    "myDecks": "Мои колоды",
+    "marketplace": "Маркетплейс",
+    "statistics": "Статистика",
+    "settings": "Настройки"
+  },
+  "actions": {
+    "add": "Добавить",
+    "edit": "Редактировать",
+    "delete": "Удалить",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "confirm": "Подтвердить",
+    "back": "Назад",
+    "next": "Далее",
+    "search": "Поиск",
+    "filter": "Фильтр",
+    "sort": "Сортировка",
+    "view": "Просмотр",
+    "create": "Создать",
+    "update": "Обновить",
+    "remove": "Удалить"
+  },
+  "common": {
+    "loading": "Загрузка...",
+    "error": "Ошибка",
+    "success": "Успешно",
+    "noResults": "Результаты не найдены",
+    "notFound": "Не найдено",
+    "warning": "Предупреждение",
+    "information": "Информация",
+    "yes": "Да",
+    "no": "Нет",
+    "and": "и",
+    "or": "или",
+    "all": "Все",
+    "none": "Ничего",
+    "more": "Больше",
+    "less": "Меньше",
+    "today": "Сегодня",
+    "yesterday": "Вчера",
+    "tomorrow": "Завтра",
+    "now": "Сейчас",
+    "later": "Позже"
+  },
+  "time": {
+    "seconds": "секунд",
+    "minutes": "минут",
+    "hours": "часов",
+    "days": "дней",
+    "weeks": "недель",
+    "months": "месяцев",
+    "years": "лет",
+    "ago": "назад",
+    "in": "через"
+  },
+  "dates": {
+    "dateFormat": "DD.MM.YYYY",
+    "shortDateFormat": "DD.MM.YY",
+    "longDateFormat": "D MMMM YYYY",
+    "timeFormat": "HH:mm",
+    "dateTimeFormat": "DD.MM.YYYY HH:mm"
+  },
+  "errors": {
+    "somethingWentWrong": "Что-то пошло не так",
+    "pageNotFound": "Страница не найдена",
+    "unauthorized": "Не авторизован",
+    "forbidden": "Доступ запрещен",
+    "badRequest": "Некорректный запрос",
+    "sessionExpired": "Сессия истекла",
+    "connectionError": "Ошибка соединения",
+    "offlineMode": "Вы находитесь в автономном режиме",
+    "tryAgain": "Попробуйте снова",
+    "refresh": "Обновить"
+  },
+  "language": {
+    "title": "Язык",
+    "english": "Английский",
+    "russian": "Русский",
+    "change": "Изменить язык"
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "app": {
+    "name": "Dolphy",
+    "title": "Flashcards App"
+  },
+  "navigation": {
+    "home": "Home",
+    "myDecks": "My Decks",
+    "marketplace": "Marketplace",
+    "statistics": "Statistics",
+    "settings": "Settings"
+  },
+  "actions": {
+    "add": "Add",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "view": "View",
+    "create": "Create",
+    "update": "Update",
+    "remove": "Remove"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "noResults": "No results found",
+    "notFound": "Not found",
+    "warning": "Warning",
+    "information": "Information",
+    "yes": "Yes",
+    "no": "No",
+    "and": "and",
+    "or": "or",
+    "all": "All",
+    "none": "None",
+    "more": "More",
+    "less": "Less",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "tomorrow": "Tomorrow",
+    "now": "Now",
+    "later": "Later"
+  },
+  "time": {
+    "seconds": "seconds",
+    "minutes": "minutes",
+    "hours": "hours",
+    "days": "days",
+    "weeks": "weeks",
+    "months": "months",
+    "years": "years",
+    "ago": "ago",
+    "in": "in"
+  },
+  "dates": {
+    "dateFormat": "MM/DD/YYYY",
+    "shortDateFormat": "MM/DD/YY",
+    "longDateFormat": "MMMM D, YYYY",
+    "timeFormat": "h:mm A",
+    "dateTimeFormat": "MM/DD/YYYY h:mm A"
+  },
+  "errors": {
+    "somethingWentWrong": "Something went wrong",
+    "pageNotFound": "Page not found",
+    "unauthorized": "Unauthorized",
+    "forbidden": "Forbidden",
+    "badRequest": "Bad request",
+    "sessionExpired": "Session expired",
+    "connectionError": "Connection error",
+    "offlineMode": "You are in offline mode",
+    "tryAgain": "Try again",
+    "refresh": "Refresh"
+  },
+  "language": {
+    "title": "Language",
+    "english": "English",
+    "russian": "Russian",
+    "change": "Change language"
+  }
+}

@@ -10,7 +10,7 @@ import {
   Typography,
 } from '@mui/material'
 
-import { useInjected } from '@/core/presentation/react'
+import { useService } from '@/core/presentation/react'
 import { root } from '@/core/presentation/navigation/routes'
 
 import { SignUpForm } from './sign-up.form'

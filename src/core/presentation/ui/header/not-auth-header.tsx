@@ -9,7 +9,9 @@ import {
   useTheme,
 } from '@mui/material'
 
+import { useTranslate } from '../../hooks'
 import { root } from '../../navigation/routes'
+import { LanguageSwitcher } from '../language-switcher'
 
 const CenteredNavigation = styled(Box)(() => ({
   flexGrow: 1,
@@ -18,6 +20,7 @@ const CenteredNavigation = styled(Box)(() => ({
 }))
 
 export const NotAuthHeader: React.FC = () => {
+  const { t } = useTranslate(['common', 'auth'])
   const theme = useTheme()
   const navigate = useNavigate()
 
@@ -42,7 +45,7 @@ export const NotAuthHeader: React.FC = () => {
             mr: 2,
           }}
         >
-          Dolphy
+          {t('app.name')}
         </Typography>
 
         <CenteredNavigation>
@@ -50,13 +53,15 @@ export const NotAuthHeader: React.FC = () => {
         </CenteredNavigation>
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <LanguageSwitcher />
+
           <Button
             variant="outlined"
             color="primary"
             onClick={handleSignIn}
             size="small"
           >
-            Sign In
+            {t('auth:signIn.submit')}
           </Button>
           <Button
             variant="contained"
@@ -64,7 +69,7 @@ export const NotAuthHeader: React.FC = () => {
             onClick={handleSignUp}
             size="small"
           >
-            Sign Up
+            {t('auth:signUp.submit')}
           </Button>
         </Box>
       </Toolbar>

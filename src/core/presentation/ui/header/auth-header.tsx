@@ -12,14 +12,15 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  Skeleton,
   Toolbar,
   Tooltip,
   Typography,
   useTheme,
 } from '@mui/material'
 
+import { useTranslate } from '../../hooks'
 import { root } from '../../navigation/routes'
+import { LanguageSwitcher } from '../language-switcher'
 
 const CenteredNavigation = styled(Box)(() => ({
   flexGrow: 1,
@@ -34,6 +35,7 @@ interface AuthHeaderProps {
 export const AuthHeader: React.FC<AuthHeaderProps> = observer(({
   notificationCount = 0,
 }) => {
+  const { t } = useTranslate(['common', 'auth'])
   const theme = useTheme()
   const navigate = useNavigate()
   // const { profile, logout } = useService<ProfileStore>(Symbols.ProfileStore)
@@ -73,15 +75,17 @@ export const AuthHeader: React.FC<AuthHeaderProps> = observer(({
             mr: 2,
           }}
         >
-          Dolphy
+          {t('app.name')}
         </Typography>
 
         <CenteredNavigation>
-          {/* В будущем здесь могут быть пункты навигации */}
+          {/* Навигационные элементы могут быть добавлены здесь */}
         </CenteredNavigation>
 
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Tooltip title="Notifications">
+          <LanguageSwitcher />
+
+          <Tooltip title={t('navigation.notifications', 'Notifications')}>
             <IconButton size="large" color="inherit" sx={{ mr: 1 }}>
               <Badge badgeContent={notificationCount} color="error">
                 <NotificationsIcon />
@@ -89,7 +93,7 @@ export const AuthHeader: React.FC<AuthHeaderProps> = observer(({
             </IconButton>
           </Tooltip>
 
-          <Tooltip title="Account settings">
+          <Tooltip title={t('navigation.settings', 'Account settings')}>
             <IconButton
               onClick={handleClick}
               size="small"
@@ -105,6 +109,9 @@ export const AuthHeader: React.FC<AuthHeaderProps> = observer(({
               {/*         {profile.result.data?.firstChar} */}
               {/*       </Avatar> */}
               {/*     )} */}
+              <Avatar sx={{ bgcolor: theme.palette.primary.main, width: 36, height: 36 }}>
+                U
+              </Avatar>
             </IconButton>
           </Tooltip>
         </Box>
@@ -120,7 +127,7 @@ export const AuthHeader: React.FC<AuthHeaderProps> = observer(({
         >
           <MenuItem onClick={handleLogout}>
             <LogoutIcon fontSize="small" sx={{ mr: 1 }} />
-            Logout
+            {t('auth:logout.title')}
           </MenuItem>
         </Menu>
       </Toolbar>

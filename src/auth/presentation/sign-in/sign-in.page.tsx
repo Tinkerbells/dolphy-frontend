@@ -12,16 +12,16 @@ import {
 } from '@mui/material'
 
 import { AuthModule } from '@/auth/auth-module'
-import { root } from '@/core/presentation/navigation/routes'
+import { useTranslate } from '@/core/presentation/hooks'
 
 import { SignInForm } from './sign-in.form'
 import { SignInStore } from './sign-in.store'
 
 export function SignInPage() {
+  const { t } = useTranslate(['auth', 'common'])
   const navigate = useNavigate()
 
   const container = getModuleContainer(AuthModule)
-
   const store = container.getProvided(SignInStore)
 
   useEffect(() => {
@@ -48,13 +48,13 @@ export function SignInPage() {
           variant="h4"
           sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
         >
-          Sign in
+          {t('auth:signIn.title')}
         </Typography>
 
         <Box>
           <SignInForm signInForm={store.signInForm} />
 
-          <Divider sx={{ my: 2 }}>or</Divider>
+          <Divider sx={{ my: 2 }}>{t('auth:signIn.or')}</Divider>
 
           <Button
             fullWidth
@@ -62,18 +62,18 @@ export function SignInPage() {
             startIcon={<Google />}
             sx={{ mb: 3, py: 1.5 }}
           >
-            Sign in with Google
+            {t('auth:signIn.signInWithGoogle')}
           </Button>
 
           <Box sx={{ textAlign: 'center' }}>
             <Typography variant="body2" color="text.secondary">
-              Don't have an account?
+              {t('auth:signIn.noAccount')}
               {' '}
               <Link
                 href="/sign-up"
                 style={{ color: 'primary.main', textDecoration: 'none' }}
               >
-                Sign Up
+                {t('auth:signIn.signUp')}
               </Link>
             </Typography>
           </Box>
