@@ -11,23 +11,25 @@ import {
   Typography,
 } from '@mui/material'
 
-import AppModule from '@/app-module'
 import { AuthModule } from '@/auth/auth-module'
+import { root } from '@/core/presentation/navigation/routes'
 
-import { SignInStore, SignInStoreToken } from './sign-in.store'
+import { SignInForm } from './sign-in.form'
+import { SignInStore } from './sign-in.store'
 
 export function SignInPage() {
   const navigate = useNavigate()
 
-  const container = getModuleContainer(AppModule)
+  const container = getModuleContainer(AuthModule)
 
-  console.log(container.isProvided(SignInStore))
+  const store = container.getProvided(SignInStore)
 
-  // useEffect(() => {
-  //   if (store.login.result.isSuccess) {
-  //     navigate(root.decks.$path())
-  //   }
-  // }, [store.login.result.isSuccess])
+  useEffect(() => {
+    if (store.login.result.isSuccess) {
+      console.log('success')
+      // navigate(root.decks.$path())
+    }
+  }, [store.login.result.isSuccess])
 
   return (
     <Box
@@ -50,7 +52,7 @@ export function SignInPage() {
         </Typography>
 
         <Box>
-          {/* <SignInForm signInForm={store.signInForm} /> */}
+          <SignInForm signInForm={store.signInForm} />
 
           <Divider sx={{ my: 2 }}>or</Divider>
 

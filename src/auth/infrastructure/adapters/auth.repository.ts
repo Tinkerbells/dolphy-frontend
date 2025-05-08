@@ -1,5 +1,4 @@
-import { inject } from 'inversiland'
-import { injectable } from 'inversify'
+import { inject, injectable } from 'inversiland'
 
 import type { HttpClientPort } from '@/core/domain/ports/http-client.port'
 import type { AuthEmailLoginDto } from '@/auth/domain/dto/auth-email-login.dto'

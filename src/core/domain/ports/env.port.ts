@@ -1,10 +1,10 @@
-export const EnvPortToken = Symbol()
+export const EnvPortToken = Symbol('EnvPort')
 
 /**
  * Интерфейс сервиса окружения, предоставляющего доступ к переменным окружения
  * @template T - Тип структуры переменных окружения
  */
-export default interface EnvPort<T extends Record<string, any>> {
+export interface EnvPort<T extends Record<string, any>> {
   /**
    * Получить конкретную переменную окружения по ключу
    *

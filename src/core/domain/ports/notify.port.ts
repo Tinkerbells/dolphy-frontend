@@ -1,4 +1,4 @@
-export const NotifyPortToken = Symbol()
+export const NotifyPortToken = Symbol('NotifyPort')
 
 export interface NotifyPort {
   success: (message: string, description?: string) => void

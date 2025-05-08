@@ -34,7 +34,7 @@ export class User extends Serializable {
   @jsonProperty(String)
   updatedAt: string
 
-  @jsonProperty(String)
+  @jsonProperty(String, null)
   deletedAt: string
 
   @jsonIgnore()

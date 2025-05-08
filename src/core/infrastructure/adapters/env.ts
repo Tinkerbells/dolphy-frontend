@@ -1,14 +1,14 @@
 import { validateSync } from 'class-validator'
 import { plainToClass } from 'class-transformer'
 
-import type EnvPort from '@/core/domain/ports/env.port'
+import type { EnvPort } from '@/core/domain/ports/env.port'
 
 import { ViteEnvironmentVariables } from '../models/vite-env'
 
 /**
  * Сервис для загрузки и валидации переменных окружения Vite
  */
-export class ViteEnvironmentService implements EnvPort<ViteEnvironmentVariables> {
+export class ViteEnvironmentAdapter implements EnvPort<ViteEnvironmentVariables> {
   private readonly envConfig: ViteEnvironmentVariables
 
   constructor() {

@@ -1,7 +1,7 @@
 import { jwtDecode } from 'jwt-decode'
 import { inject, injectable } from 'inversiland'
 
-import type EnvPort from '@/core/domain/ports/env.port'
+import type { EnvPort } from '@/core/domain/ports/env.port'
 import type { PersistStoragePort } from '@/core/domain/ports/persist-storage.port'
 import type { HttpClientPort, HttpRequest } from '@/core/domain/ports/http-client.port'
 
@@ -25,9 +25,9 @@ export class HttpClient implements HttpClientPort {
     @inject(PersistStoragePortToken) private readonly persistService: PersistStoragePort,
     @inject(EnvPortToken) private readonly env: EnvPort<ViteEnvironmentVariables>,
   ) {
-    if (!this.isAuthorized() && !this._authWhiteList.includes(window.location.pathname)) {
-      this.goToAuth()
-    }
+    // if (!this.isAuthorized() && !this._authWhiteList.includes(window.location.pathname)) {
+    //   this.goToAuth()
+    // }
   }
 
   public async get<T>(req: HttpRequest): Promise<T> {
@@ -127,7 +127,7 @@ export class HttpClient implements HttpClientPort {
     try {
       const refreshToken = this.persistService.getAsString(this.REFRESH_TOKEN)
       if (!refreshToken) {
-        this.goToAuth()
+        // this.goToAuth()
         return false
       }
 
@@ -140,7 +140,7 @@ export class HttpClient implements HttpClientPort {
       const data = await response.json()
 
       if (!response.ok) {
-        this.goToAuth()
+        // this.goToAuth()
         return false
       }
 
@@ -153,7 +153,7 @@ export class HttpClient implements HttpClientPort {
     }
     catch (error) {
       console.error('Ошибка при обновлении токенов:', error)
-      this.goToAuth()
+      // this.goToAuth()
       return false
     }
   }

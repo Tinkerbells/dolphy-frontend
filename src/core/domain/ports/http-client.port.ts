@@ -1,4 +1,4 @@
-export const HttpClientPortToken = Symbol()
+export const HttpClientPortToken = Symbol('HttpClientPort')
 
 export interface HttpRequest {
   path: string

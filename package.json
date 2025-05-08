@@ -33,7 +33,6 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "eruda": "^3.4.1",
-    "inversify": "^7.3.0",
     "inversiland": "^0.6.2",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.486.0",

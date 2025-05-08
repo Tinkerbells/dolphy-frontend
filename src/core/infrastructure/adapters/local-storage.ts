@@ -1,6 +1,6 @@
-import { injectable } from 'inversify'
+import { injectable } from 'inversiland'
 
-import type { PersistPort } from '@/domain/persist/persist.port'
+import type { PersistStoragePort } from '@/core/domain/ports/persist-storage.port'
 
 /**
  * Ошибка сервиса локального хранилища
@@ -16,7 +16,7 @@ export class LocalStorageError extends Error {
  * Сервис для работы с localStorage, реализующий PersistPort
  */
 @injectable()
-export class LocalStorageAdapter implements PersistPort {
+export class LocalStorageAdapter implements PersistStoragePort {
   /**
    * Получает данные из localStorage
    *

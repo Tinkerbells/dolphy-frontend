@@ -1,4 +1,4 @@
-export const PersistStoragePortToken = Symbol()
+export const PersistStoragePortToken = Symbol('PersistStoragePort')
 /**
  * Интерфейс для работы с постоянным хранилищем данных
  */
