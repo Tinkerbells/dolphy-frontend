@@ -14,6 +14,7 @@ import { EnvPortToken } from '@/core/domain/ports/env.port'
 
 import type { ViteEnvironmentVariables } from '../models/vite-env'
 
+export const I18nStorageKey = 'i18n_language'
 /**
  * Адаптер для работы с i18next
  */
@@ -36,6 +37,8 @@ export class I18nAdapter implements I18nPort {
       .use(LanguageDetector)
       .use(initReactI18next)
       .init({
+        cleanCode: true,
+        load: 'languageOnly',
         fallbackLng: this.getAvailableLanguages(),
         ns: ['common', 'auth', 'validation', 'decks', 'cards', 'notes'],
         defaultNS: 'common',
@@ -45,7 +48,7 @@ export class I18nAdapter implements I18nPort {
         },
         detection: {
           order: ['localStorage', 'navigator'],
-          lookupLocalStorage: 'i18nextLng',
+          lookupLocalStorage: I18nStorageKey,
         },
         react: {
           useSuspense: true,
@@ -57,7 +60,7 @@ export class I18nAdapter implements I18nPort {
 
     i18n.on('languageChanged', (lang: string) => {
       this.notifyLanguageChanged(lang)
-      localStorage.setItem('i18nextLng', lang)
+      localStorage.setItem(I18nStorageKey, lang)
     })
   }
 

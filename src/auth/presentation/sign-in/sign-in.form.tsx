@@ -1,6 +1,7 @@
 import type { MobxForm } from 'mobx-react-hook-form'
 
 import { Controller } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { useMobxForm } from 'mobx-react-hook-form'
 import {
   Box,
@@ -17,6 +18,7 @@ interface SignInFormProps {
 }
 
 export function SignInForm({ signInForm }: SignInFormProps) {
+  const { t } = useTranslation(['auth', 'validation'])
   const form = useMobxForm(signInForm)
 
   return (
@@ -27,11 +29,11 @@ export function SignInForm({ signInForm }: SignInFormProps) {
         render={({ field, fieldState: { error } }) => (
           <TextField
             {...field}
-            label="Email Address"
+            label={t('signIn.email')}
             fullWidth
             margin="normal"
             error={!!error}
-            helperText={error?.message}
+            helperText={error?.message && t(error.message, { ns: 'validation', defaultValue: error.message })}
             autoComplete="email"
             autoFocus
             id="email"
@@ -46,12 +48,12 @@ export function SignInForm({ signInForm }: SignInFormProps) {
         render={({ field, fieldState: { error } }) => (
           <TextField
             {...field}
-            label="Password"
+            label={t('signIn.password')}
             type="password"
             fullWidth
             margin="normal"
             error={!!error}
-            helperText={error?.message}
+            helperText={error?.message && t(error.message, { ns: 'validation', defaultValue: error.message })}
             autoComplete="current-password"
             id="password"
           />
@@ -66,7 +68,7 @@ export function SignInForm({ signInForm }: SignInFormProps) {
           color="primary"
           disabled={form.formState.isSubmitting || !form.formState.isValid}
         >
-          {form.formState.isSubmitting ? 'Sign in...' : 'Sign in'}
+          {form.formState.isSubmitting ? t('common:common.loading') : t('signIn.submit')}
         </Button>
       </Box>
     </form>

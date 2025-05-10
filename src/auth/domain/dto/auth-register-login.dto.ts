@@ -1,10 +1,10 @@
-// import { Transform } from 'class-transformer'
+import { Transform } from 'class-transformer'
 import { IsEmail, IsNotEmpty, MinLength } from 'class-validator'
 
-// import { lowerCaseTransformer } from '@/utils/transformers/lower-case.transformer'
+import { lowerCaseTransformer } from '@/utils/transformers/lower-case.transformer'
 
 export class AuthRegisterLoginDto {
-  // @Transform(lowerCaseTransformer)
+  @Transform(lowerCaseTransformer)
   @IsEmail()
   email: string
 

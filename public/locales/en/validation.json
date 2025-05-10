@@ -1,0 +1,6 @@
+{
+  "form": {
+    "email": "Email must be email",
+    "empty": "This field is required"
+  }
+}
