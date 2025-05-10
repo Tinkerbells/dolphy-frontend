@@ -81,8 +81,8 @@
   },
   "language": {
     "title": "Language",
-    "english": "English",
-    "russian": "Russian",
+    "en": "English",
+    "ru": "Russian",
     "change": "Change language"
   }
 }

@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
-import { useNavigate } from 'react-router'
+// import { useNavigate } from 'react-router'
 import { Google } from '@mui/icons-material'
+import { useTranslation } from 'react-i18next'
 import { getModuleContainer } from 'inversiland'
 import {
   Box,
@@ -12,21 +13,19 @@ import {
 } from '@mui/material'
 
 import { AuthModule } from '@/auth/auth-module'
-import { useTranslate } from '@/core/presentation/hooks'
 
 import { SignInForm } from './sign-in.form'
 import { SignInStore } from './sign-in.store'
 
 export function SignInPage() {
-  const { t } = useTranslate(['auth', 'common'])
-  const navigate = useNavigate()
+  const { t } = useTranslation(['auth', 'common'])
+  // const navigate = useNavigate()
 
   const container = getModuleContainer(AuthModule)
   const store = container.getProvided(SignInStore)
 
   useEffect(() => {
     if (store.login.result.isSuccess) {
-      console.log('success')
       // navigate(root.decks.$path())
     }
   }, [store.login.result.isSuccess])

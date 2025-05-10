@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router'
 import { styled } from '@mui/material/styles'
+import { useTranslation } from 'react-i18next'
 import {
   AppBar,
   Box,
@@ -9,7 +10,6 @@ import {
   useTheme,
 } from '@mui/material'
 
-import { useTranslate } from '../../hooks'
 import { root } from '../../navigation/routes'
 import { LanguageSwitcher } from '../language-switcher'
 
@@ -20,7 +20,7 @@ const CenteredNavigation = styled(Box)(() => ({
 }))
 
 export const NotAuthHeader: React.FC = () => {
-  const { t } = useTranslate(['common', 'auth'])
+  const { t } = useTranslation(['common', 'auth'])
   const theme = useTheme()
   const navigate = useNavigate()
 

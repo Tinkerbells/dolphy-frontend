@@ -1,3 +1,5 @@
+import type { TFunction } from 'i18next'
+
 import i18n from 'i18next'
 import Backend from 'i18next-http-backend'
 import { inject, injectable } from 'inversiland'
@@ -7,7 +9,7 @@ import LanguageDetector from 'i18next-browser-languagedetector'
 import type { EnvPort } from '@/core/domain/ports/env.port'
 import type { I18nPort } from '@/core/domain/ports/i18n.port'
 
-import { Locale } from '@/core/domain/enums/locales.enum'
+import { Locales } from '@/core/domain/enums/locales.enum'
 import { EnvPortToken } from '@/core/domain/ports/env.port'
 
 import type { ViteEnvironmentVariables } from '../models/vite-env'
@@ -22,19 +24,19 @@ export class I18nAdapter implements I18nPort {
   constructor(
     @inject(EnvPortToken) private readonly env: EnvPort<ViteEnvironmentVariables>,
   ) {
-    this.initI18n()
+    this.init()
   }
 
   /**
    * Инициализирует i18next
    */
-  private async initI18n(): Promise<void> {
+  private async init(): Promise<void> {
     await i18n
       .use(Backend)
       .use(LanguageDetector)
       .use(initReactI18next)
       .init({
-        fallbackLng: 'en',
+        fallbackLng: this.getAvailableLanguages(),
         ns: ['common', 'auth', 'validation', 'decks', 'cards', 'notes'],
         defaultNS: 'common',
         debug: this.env.isDevelopment(),
@@ -59,23 +61,21 @@ export class I18nAdapter implements I18nPort {
     })
   }
 
-  t(key: string): string {
-    return i18n.t(key)
-  }
+  public t: TFunction = i18n.t.bind(i18n)
 
-  async changeLanguage(lang: string): Promise<void> {
+  public async changeLanguage(lang: string): Promise<void> {
     await i18n.changeLanguage(lang)
   }
 
-  getCurrentLanguage(): string {
+  public getCurrentLanguage(): string {
     return i18n.language
   }
 
-  getAvailableLanguages(): string[] {
-    return Object.values(Locale)
+  public getAvailableLanguages(): string[] {
+    return Object.values(Locales)
   }
 
-  onLanguageChanged(callback: (lang: string) => void): void {
+  public onLanguageChanged(callback: (lang: string) => void): void {
     this.languageChangedCallbacks.push(callback)
   }
 

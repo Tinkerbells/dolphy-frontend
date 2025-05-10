@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { observer } from 'mobx-react-lite'
 import { styled } from '@mui/material/styles'
+import { useTranslation } from 'react-i18next'
 import LogoutIcon from '@mui/icons-material/Logout'
 import NotificationsIcon from '@mui/icons-material/Notifications'
 import {
@@ -18,7 +19,6 @@ import {
   useTheme,
 } from '@mui/material'
 
-import { useTranslate } from '../../hooks'
 import { root } from '../../navigation/routes'
 import { LanguageSwitcher } from '../language-switcher'
 
@@ -35,7 +35,7 @@ interface AuthHeaderProps {
 export const AuthHeader: React.FC<AuthHeaderProps> = observer(({
   notificationCount = 0,
 }) => {
-  const { t } = useTranslate(['common', 'auth'])
+  const { t } = useTranslation(['common', 'auth'])
   const theme = useTheme()
   const navigate = useNavigate()
   // const { profile, logout } = useService<ProfileStore>(Symbols.ProfileStore)

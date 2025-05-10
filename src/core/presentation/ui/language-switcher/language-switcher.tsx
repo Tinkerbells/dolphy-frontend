@@ -1,5 +1,6 @@
 import React from 'react'
 import { observer } from 'mobx-react-lite'
+import { useTranslation } from 'react-i18next'
 import LanguageIcon from '@mui/icons-material/Language'
 import {
   Box,
@@ -10,23 +11,15 @@ import {
   Tooltip,
 } from '@mui/material'
 
-import type { I18nPort } from '@/core/domain/ports/i18n.port'
-
-import { I18nPortToken } from '@/core/domain/ports/i18n.port'
-
-import { useInjected } from '../../react'
-import { useTranslate } from '../../hooks'
+import { getCountryFlag } from './get-country-flag'
 
 /**
  * Компонент для переключения языка в выпадающем списке
  */
 export const LanguageSwitcher: React.FC = observer(() => {
-  const { t, getCurrentLanguage, getAvailableLanguages, changeLanguage } = useTranslate('common')
+  const { t, i18n: { changeLanguage, language: currentLanguage, languages } } = useTranslation('common')
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
-
-  const languages = getAvailableLanguages()
-  const currentLanguage = getCurrentLanguage()
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
@@ -64,13 +57,15 @@ export const LanguageSwitcher: React.FC = observer(() => {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        {languages.map(language => (
+        {languages?.map(language => (
           <MenuItem
             key={language}
             onClick={() => handleLanguageSelect(language)}
             selected={currentLanguage === language}
           >
-            {t(`language.${language === 'en' ? 'english' : 'russian'}`)}
+            {getCountryFlag(language)}
+            &nbsp;
+            {t(`language.${language}`)}
           </MenuItem>
         ))}
       </Menu>
@@ -82,26 +77,17 @@ export const LanguageSwitcher: React.FC = observer(() => {
  * Компонент для переключения языка в виде кнопок
  */
 export const LanguageSwitcherButtons: React.FC = observer(() => {
-  const { t } = useTranslate()
-  const i18nService = useInjected<I18nPort>(I18nPortToken)
-
-  const languages = i18nService.getAvailableLanguages()
-  const currentLanguage = i18nService.getCurrentLanguage()
-
-  const handleLanguageSelect = (languageCode: string) => {
-    i18nService.changeLanguage(languageCode)
-  }
-
+  const { t, i18n: { language: currentLanguage, languages, changeLanguage } } = useTranslation('common')
   return (
     <Box sx={{ display: 'flex', gap: 1 }}>
-      {languages.map(language => (
+      {languages?.map(language => (
         <Button
           key={language}
           variant={currentLanguage === language ? 'contained' : 'outlined'}
           size="small"
-          onClick={() => handleLanguageSelect(language)}
+          onClick={() => changeLanguage(language)}
         >
-          {t(`language.${language === 'en' ? 'english' : 'russian'}`)}
+          {t(`language.${language}`)}
         </Button>
       ))}
     </Box>

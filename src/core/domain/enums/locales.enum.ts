@@ -1,6 +1,6 @@
-export const Locale = {
+export const Locales = {
   English: 'en',
   Russian: 'ru',
 } as const
 
-export type LocaleKey = keyof typeof Locale
+export type LocaleKey = keyof typeof Locales
