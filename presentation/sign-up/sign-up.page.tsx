@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router'
 import { Google } from '@mui/icons-material'
+import { useTranslation } from 'react-i18next'
 import {
   Box,
   Button,
@@ -10,17 +11,16 @@ import {
   Typography,
 } from '@mui/material'
 
-import { Symbols } from '@/di'
-import { useService } from '@/di/provider'
+import { root } from '@/core/presentation/navigation/routes'
+import { useInjected } from '@/core/presentation/react/provider'
 
-import type { SignUpStore } from './sign-up.store'
-
-import { root } from '../core'
 import { SignUpForm } from './sign-up.form'
+import { SignUpStore } from './sign-up.store'
 
 export function SignUpPage() {
+  const { t } = useTranslation(['auth', 'common'])
   const navigate = useNavigate()
-  const store = useService<SignUpStore>(Symbols.SignUpStore)
+  const store = useInjected<SignUpStore>(SignUpStore)
 
   useEffect(() => {
     if (store.register.result.isSuccess) {
@@ -45,7 +45,7 @@ export function SignUpPage() {
           variant="h4"
           sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
         >
-          Sign up
+          {t('auth:signUp.title')}
         </Typography>
 
         <Box>
@@ -53,7 +53,7 @@ export function SignUpPage() {
             signUpForm={store.signUpForm}
           />
 
-          <Divider sx={{ my: 2 }}>or</Divider>
+          <Divider sx={{ my: 2 }}>{t('auth:signUp.or')}</Divider>
 
           <Button
             fullWidth
@@ -61,18 +61,18 @@ export function SignUpPage() {
             startIcon={<Google />}
             sx={{ mb: 3, py: 1.5 }}
           >
-            Sign up with Google
+            {t('auth:signUp.signUpWithGoogle')}
           </Button>
 
           <Box sx={{ textAlign: 'center' }}>
             <Typography variant="body2" color="text.secondary">
-              Already have an account?
+              {t('auth:signUp.haveAccount')}
               {' '}
               <Link
                 href="/sign-in"
                 style={{ color: 'primary.main', textDecoration: 'none' }}
               >
-                Sign In
+                {t('auth:signUp.signIn')}
               </Link>
             </Typography>
           </Box>

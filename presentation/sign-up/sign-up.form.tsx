@@ -1,6 +1,7 @@
 import type { MobxForm } from 'mobx-react-hook-form'
 
 import { Controller } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { useMobxForm } from 'mobx-react-hook-form'
 import {
   Box,
@@ -8,15 +9,12 @@ import {
   TextField,
 } from '@mui/material'
 
-import type { AuthRegisterLoginDto } from '@/domain/auth/dto/auth-register-login.dto'
-
-import styles from './sign-up.module.css'
-
 interface SignUpFormProps {
   signUpForm: MobxForm<AuthRegisterLoginDto, any, AuthRegisterLoginDto>
 }
 
 export function SignUpForm({ signUpForm }: SignUpFormProps) {
+  const { t } = useTranslation(['auth', 'validation'])
   const form = useMobxForm(signUpForm)
 
   return (
@@ -27,11 +25,11 @@ export function SignUpForm({ signUpForm }: SignUpFormProps) {
         render={({ field, fieldState: { error } }) => (
           <TextField
             {...field}
-            label="First Name"
+            label={t('signUp.firstName')}
             fullWidth
             margin="normal"
             error={!!error}
-            helperText={error?.message}
+            helperText={error?.message && t(error.message, { ns: 'validation', defaultValue: error.message })}
             autoFocus
             id="firstName"
             sx={{ mb: 2 }}
@@ -45,11 +43,11 @@ export function SignUpForm({ signUpForm }: SignUpFormProps) {
         render={({ field, fieldState: { error } }) => (
           <TextField
             {...field}
-            label="Last Name"
+            label={t('signUp.lastName')}
             fullWidth
             margin="normal"
             error={!!error}
-            helperText={error?.message}
+            helperText={error?.message && t(error.message, { ns: 'validation', defaultValue: error.message })}
             id="lastName"
             sx={{ mb: 2 }}
           />
@@ -62,11 +60,11 @@ export function SignUpForm({ signUpForm }: SignUpFormProps) {
         render={({ field, fieldState: { error } }) => (
           <TextField
             {...field}
-            label="Email Address"
+            label={t('signUp.email')}
             fullWidth
             margin="normal"
             error={!!error}
-            helperText={error?.message}
+            helperText={error?.message && t(error.message, { ns: 'validation', defaultValue: error.message })}
             autoComplete="email"
             id="email"
             sx={{ mb: 2 }}
@@ -80,12 +78,12 @@ export function SignUpForm({ signUpForm }: SignUpFormProps) {
         render={({ field, fieldState: { error } }) => (
           <TextField
             {...field}
-            label="Password"
+            label={t('signUp.password')}
             type="password"
             fullWidth
             margin="normal"
             error={!!error}
-            helperText={error?.message}
+            helperText={error?.message && t(error.message, { ns: 'validation', defaultValue: error.message })}
             autoComplete="new-password"
             id="password"
           />
@@ -100,7 +98,7 @@ export function SignUpForm({ signUpForm }: SignUpFormProps) {
           color="primary"
           disabled={form.formState.isSubmitting || !form.formState.isValid}
         >
-          {form.formState.isSubmitting ? 'Sign up...' : 'Sign up'}
+          {form.formState.isSubmitting ? t('common:common.loading') : t('signUp.submit')}
         </Button>
       </Box>
     </form>
