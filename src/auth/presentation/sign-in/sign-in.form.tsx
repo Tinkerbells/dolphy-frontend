@@ -1,76 +1,46 @@
-import type { MobxForm } from 'mobx-react-hook-form'
+import MuiForms from 'mui-forms'
+// src/auth/presentation/sign-in/sign-in.form.tsx
+import { useEffect } from 'react'
+import { Box } from '@mui/material'
+import { observer } from 'mobx-react-lite'
 
-import { Controller } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-import { useMobxForm } from 'mobx-react-hook-form'
-import {
-  Box,
-  Button,
-  TextField,
-} from '@mui/material'
-
-import type { AuthEmailLoginDto } from '@/auth/domain/dto/auth-email-login.dto'
+import { useInjected } from '@/core/presentation/react'
 
 import styles from './sign-in.module.css'
+import { SignInStore } from './sign-in.store'
+import { useSignInSchema } from './sign-in.schema'
 
-interface SignInFormProps {
-  signInForm: MobxForm<AuthEmailLoginDto, any, AuthEmailLoginDto>
-}
+export const SignInForm = observer(() => {
+  // const store = useInjected<SignInStore>(SignInStore)
+  const schema = useSignInSchema()
+  console.log(schema)
 
-export function SignInForm({ signInForm }: SignInFormProps) {
-  const { t } = useTranslation(['auth', 'validation'])
-  const form = useMobxForm(signInForm)
+  useEffect(() => {
+    // Reset form error when component mounts
+    // if (store.login.error) {
+    //   store.login.reset()
+    // }
+  }, [])
+
+  const handleSubmit = (formData: any) => {
+    console.log(formData)
+    // store.handleSignIn(formData)
+  }
 
   return (
-    <form onSubmit={form.onSubmit} className={styles.signInForm}>
-      <Controller
-        name="email"
-        control={form.control}
-        render={({ field, fieldState: { error } }) => (
-          <TextField
-            {...field}
-            label={t('signIn.email')}
-            fullWidth
-            margin="normal"
-            error={!!error}
-            helperText={error?.message && t(error.message, { ns: 'validation', defaultValue: error.message })}
-            autoComplete="email"
-            autoFocus
-            id="email"
-            sx={{ mb: 2 }}
-          />
-        )}
+    <Box className={styles.signInForm}>
+      <MuiForms
+        schema={schema}
+        onSubmit={handleSubmit}
+        config={{
+          size: 'medium',
+          variant: 'outlined',
+          loader: {
+            enabled: true,
+            color: 'primary',
+          },
+        }}
       />
-
-      <Controller
-        name="password"
-        control={form.control}
-        render={({ field, fieldState: { error } }) => (
-          <TextField
-            {...field}
-            label={t('signIn.password')}
-            type="password"
-            fullWidth
-            margin="normal"
-            error={!!error}
-            helperText={error?.message && t(error.message, { ns: 'validation', defaultValue: error.message })}
-            autoComplete="current-password"
-            id="password"
-          />
-        )}
-      />
-
-      <Box sx={{ mt: 3 }}>
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          color="primary"
-          disabled={form.formState.isSubmitting || !form.formState.isValid}
-        >
-          {form.formState.isSubmitting ? t('common:common.loading') : t('signIn.submit')}
-        </Button>
-      </Box>
-    </form>
+    </Box>
   )
-}
+})

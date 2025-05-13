@@ -44,6 +44,7 @@
     "mobx-react-hook-form": "^2.1.1",
     "mobx-react-lite": "^4.1.0",
     "mobx-tanstack-query": "^4.3.4",
+    "mui-forms": "^2.0.22",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-error-boundary": "^5.0.0",
