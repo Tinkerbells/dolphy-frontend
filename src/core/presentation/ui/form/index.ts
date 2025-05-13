@@ -1,2 +1,2 @@
-export * from './form'
-
+export type { FormConfig } from './fields'
+export { FormBuilder } from './form-builder'

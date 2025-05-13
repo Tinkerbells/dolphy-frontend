@@ -14,9 +14,9 @@ import {
   Switch,
 } from '@mui/material'
 
-import type { FormInputProps } from './common'
+import type { FormInputProps } from './index'
 
-import { useFormContext } from '../../providers'
+import { useFormContext } from '../form-builder'
 
 export interface FormInputSwitchProps {
   switchProps?: SwitchProps
@@ -35,7 +35,7 @@ export function FormInputSwitch<TFieldValues extends FieldValues = FieldValues>(
   formGroupProps,
   formControlLabelProps,
   helperText,
-  gridProps,
+  gridProps = { size: 12 },
 }: Props<TFieldValues>) {
   const { control } = useFormContext<TFieldValues>()
 

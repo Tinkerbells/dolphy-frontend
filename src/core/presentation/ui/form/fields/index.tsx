@@ -1,10 +1,25 @@
-import type { FieldValues } from 'react-hook-form'
+import type { GridProps } from '@mui/material'
+import type { FieldValues, Path, RegisterOptions } from 'react-hook-form'
 
-import type { FormInputCheckboxProps, FormInputCustomProps, FormInputManyOptionSingleChoiceProps, FormInputMultiCheckboxProps, FormInputProps, FormInputRadioProps, FormInputSelectProps, FormInputSwitchProps, FormInputTextProps } from './inputs'
+import type { FormInputTextProps } from './text'
+import type { FormInputRadioProps } from './radio'
+import type { FormInputSelectProps } from './select'
+import type { FormInputCustomProps } from './custom'
+import type { FormInputSwitchProps } from './switch'
+import type { FormInputCheckboxProps } from './checkbox'
+import type { FormInputMultiCheckboxProps } from './multi-checkbox'
+import type { FormInputManyOptionSingleChoiceProps } from './many-option-single-choice'
 
-import { FormInputCheckbox, FormInputCustom, FormInputManyOptionSingleChoice, FormInputMultiCheckbox, FormInputRadio, FormInputSelect, FormInputSwitch, FormInputText } from './inputs'
+import { FormInputText } from './text'
+import { FormInputRadio } from './radio'
+import { FormInputSelect } from './select'
+import { FormInputCustom } from './custom'
+import { FormInputSwitch } from './switch'
+import { FormInputCheckbox } from './checkbox'
+import { FormInputMultiCheckbox } from './multi-checkbox'
+import { FormInputManyOptionSingleChoice } from './many-option-single-choice'
 
-export function FormInput<TFieldValues extends FieldValues = FieldValues>({ type, config }: Config<TFieldValues>) {
+export function FormField<TFieldValues extends FieldValues = FieldValues>({ type, config }: FormConfig<TFieldValues>) {
   switch (type) {
     case 'select': {
       const { control, ...restProps } = config as unknown as SelectConfig<TFieldValues>['config']
@@ -47,6 +62,7 @@ export function FormInput<TFieldValues extends FieldValues = FieldValues>({ type
 interface InputControl<TFieldValues extends FieldValues = FieldValues> {
   control: FormInputProps<TFieldValues>
 }
+
 interface SelectConfig<TFieldValues extends FieldValues = FieldValues> {
   type: 'select'
   config: InputControl<TFieldValues> & FormInputSelectProps
@@ -88,7 +104,7 @@ interface ManyOptionSingleChoiceConfig<TFieldValues extends FieldValues = FieldV
   config: InputControl<TFieldValues> & FormInputManyOptionSingleChoiceProps
 }
 
-export type Config<TFieldValues extends FieldValues = FieldValues> =
+export type FormConfig<TFieldValues extends FieldValues = FieldValues> =
   | TextConfig<TFieldValues>
   | SelectConfig<TFieldValues>
   | RadioConfig<TFieldValues>
@@ -97,3 +113,15 @@ export type Config<TFieldValues extends FieldValues = FieldValues> =
   | SwitchConfig<TFieldValues>
   | ManyOptionSingleChoiceConfig<TFieldValues>
   | MultiCheckboxConfig<TFieldValues>
+
+export interface FormInputProps<TFieldValues extends FieldValues = FieldValues> {
+  name: Path<TFieldValues>
+  label: string
+  rules?: Omit<RegisterOptions<TFieldValues>, 'valueAsNumber' | 'valueAsDate' | 'setValueAs' | 'disabled'>
+  gridProps?: GridProps
+}
+
+export interface SelectOption {
+  label: string
+  value: string
+}

@@ -4,7 +4,7 @@ import type { ControllerFieldState, ControllerRenderProps, FieldValues, Path, Us
 import { Grid } from '@mui/material'
 import { Controller } from 'react-hook-form'
 
-import { useFormContext } from '../../providers'
+import { useFormContext } from '../form-builder'
 
 export interface CustomRenderArgs<TFieldValues extends FieldValues> {
   field: ControllerRenderProps<TFieldValues, Path<TFieldValues>>
@@ -23,7 +23,7 @@ export function FormInputCustom<TFieldValues extends FieldValues = FieldValues>(
   name,
   children,
   rules,
-  gridProps,
+  gridProps = { size: 12 },
 }: FormInputCustomProps<TFieldValues>) {
   const { control } = useFormContext<TFieldValues>()
 

@@ -5,9 +5,9 @@ import { useMemo } from 'react'
 import { Controller } from 'react-hook-form'
 import { Grid, MenuItem, TextField } from '@mui/material'
 
-import type { FormInputProps, SelectOption } from './common'
+import type { FormInputProps, SelectOption } from './index'
 
-import { useFormContext } from '../../providers'
+import { useFormContext } from '../form-builder'
 
 export interface FormInputSelectProps {
   options: SelectOption[]
@@ -24,7 +24,7 @@ export function FormInputSelect<TFieldValues extends FieldValues = FieldValues>(
   options,
   inputProps,
   native = false,
-  gridProps,
+  gridProps = { size: 12 },
 }: Props<TFieldValues>) {
   const { control } = useFormContext<TFieldValues>()
 

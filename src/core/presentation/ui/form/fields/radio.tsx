@@ -15,9 +15,9 @@ import {
   RadioGroup,
 } from '@mui/material'
 
-import type { FormInputProps, SelectOption } from './common'
+import type { FormInputProps, SelectOption } from './index'
 
-import { useFormContext } from '../../providers'
+import { useFormContext } from '../form-builder'
 
 export interface FormInputRadioProps {
   options: (SelectOption & {

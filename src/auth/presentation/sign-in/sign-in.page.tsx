@@ -19,7 +19,6 @@ export function SignInPage() {
   // const navigate = useNavigate()
 
   const store = useInjected<SignInStore>(SignInStore)
-  console.log('@@@@@@@@@@', store.signInForm)
 
   // useEffect(() => {
   //   if (store.login.result.isSuccess) {

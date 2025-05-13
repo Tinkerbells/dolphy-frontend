@@ -1,3 +1,4 @@
+import i18next from 'i18next'
 import { Transform } from 'class-transformer'
 import { IsEmail, IsNotEmpty } from 'class-validator'
 
@@ -5,7 +6,7 @@ import { lowerCaseTransformer } from '@/utils/transformers/lower-case.transforme
 
 export class AuthEmailLoginDto {
   @Transform(lowerCaseTransformer)
-  @IsEmail({}, { message: 'form.email' })
+  @IsEmail({}, { message: i18next.t('validation:form.email') })
   @IsNotEmpty({ message: 'form.empty' })
   email: string
 

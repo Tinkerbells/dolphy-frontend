@@ -14,9 +14,9 @@ import {
   Typography,
 } from '@mui/material'
 
-import type { FormInputProps } from './common'
+import type { FormInputProps } from './index'
 
-import { useFormContext } from '../../providers'
+import { useFormContext } from '../form-builder'
 
 export interface FormInputMultiCheckboxProps {
   options: {
@@ -38,7 +38,7 @@ export function FormInputMultiCheckbox<TFieldValues extends FieldValues = FieldV
   name,
   label,
   options,
-  gridProps,
+  gridProps = { size: 12 },
   globalCheckboxProps,
   globalGridProps,
   rules,

@@ -14,9 +14,9 @@ import {
   Typography,
 } from '@mui/material'
 
-import type { FormInputProps } from './common'
+import type { FormInputProps } from './index'
 
-import { useFormContext } from '../../providers'
+import { useFormContext } from '../form-builder'
 
 export interface FormInputManyOptionSingleChoiceProps {
   options: {
@@ -39,7 +39,7 @@ export function FormInputManyOptionSingleChoice<TFieldValues extends FieldValues
   label,
   rules,
   options,
-  gridProps,
+  gridProps = { size: 12 },
   globalGridProps,
   globalCheckboxProps,
   helperText,

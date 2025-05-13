@@ -4,9 +4,9 @@ import type { TextFieldProps } from '@mui/material'
 import { Controller } from 'react-hook-form'
 import { Grid, TextField } from '@mui/material'
 
-import type { FormInputProps } from './common'
+import type { FormInputProps } from './index'
 
-import { useFormContext } from '../../providers'
+import { useFormContext } from '../form-builder'
 
 export interface FormInputTextProps {
   textFieldProps?: TextFieldProps
@@ -19,7 +19,7 @@ export function FormInputText<TFieldValues extends FieldValues = FieldValues>({
   rules,
   label,
   textFieldProps,
-  gridProps,
+  gridProps = { size: 12 },
 }: Props<TFieldValues>) {
   const { control } = useFormContext<TFieldValues>()
   return (
@@ -31,7 +31,7 @@ export function FormInputText<TFieldValues extends FieldValues = FieldValues>({
         render={({ field: { onChange, value = '', onBlur }, fieldState: { error } }) => (
           <TextField
             {...textFieldProps}
-            helperText={error ? error.message || ' ' : textFieldProps?.helperText || ' '}
+            helperText={error ? error.message : (textFieldProps?.helperText || undefined)}
             error={!!error}
             onChange={onChange}
             value={value}

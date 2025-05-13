@@ -11,9 +11,9 @@ import {
   Grid,
 } from '@mui/material'
 
-import type { FormInputProps } from './common'
+import type { FormInputProps } from './index'
 
-import { useFormContext } from '../../providers'
+import { useFormContext } from '../form-builder'
 
 export interface FormInputCheckboxProps {
   formControlProps?: FormControlProps
@@ -30,7 +30,7 @@ export function FormInputCheckbox<TFieldValues extends FieldValues = FieldValues
   formControlProps,
   checkboxProps,
   helperText,
-  gridProps,
+  gridProps = { size: 12 },
 }: Props<TFieldValues>) {
   const { control } = useFormContext<TFieldValues>()
 
