@@ -54,7 +54,6 @@ export const NotAuthHeader: React.FC = () => {
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <LanguageSwitcher />
-
           <Button
             variant="outlined"
             color="primary"
