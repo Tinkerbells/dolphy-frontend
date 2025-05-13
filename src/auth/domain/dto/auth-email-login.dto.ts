@@ -6,10 +6,16 @@ import { lowerCaseTransformer } from '@/utils/transformers/lower-case.transforme
 
 export class AuthEmailLoginDto {
   @Transform(lowerCaseTransformer)
-  @IsEmail({}, { message: i18next.t('validation:form.email') })
-  @IsNotEmpty({ message: 'form.empty' })
+  @IsEmail({}, {
+    message: () => i18next.t('validation:form.email'),
+  })
+  @IsNotEmpty({
+    message: () => i18next.t('validation:form.empty'),
+  })
   email: string
 
-  @IsNotEmpty({ message: 'form.empty' })
+  @IsNotEmpty({
+    message: () => i18next.t('validation:form.empty'),
+  })
   password: string
 }
