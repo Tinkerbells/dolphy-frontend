@@ -1,21 +1,29 @@
-import type { FC } from 'react'
+import type { MobxForm } from 'mobx-react-hook-form'
 
 import { useEffect } from 'react'
-import { observer } from 'mobx-react-lite'
 import { Box, Button } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 
 import type { AuthEmailLoginDto } from '@/auth/domain/dto/auth-email-login.dto'
 import type { Config } from '@/core/presentation/ui/form/components/form-input'
 
+import { compose } from '@/core/presentation/react'
 import { Form } from '@/core/presentation/ui/form/form'
-import { useInjected } from '@/core/presentation/react/provider'
+import { withForm } from '@/core/presentation/ui/form/components'
 
 import styles from './sign-in.module.css'
-import { SignInStore } from './sign-in.store'
 
-export const SignInForm: FC = observer(() => {
-  const store = useInjected<SignInStore>(SignInStore)
+interface SignInFormProps {
+  signInForm: MobxForm<AuthEmailLoginDto, any, AuthEmailLoginDto>
+}
+
+const enhance = compose<SignInFormProps>(component =>
+  (props) => {
+    return withForm(component, props.signInForm)(props)
+  },
+)
+
+export const SignInForm = enhance(({ signInForm }: SignInFormProps) => {
   const { t } = useTranslation(['auth', 'validation'])
 
   useEffect(() => {
@@ -61,7 +69,7 @@ export const SignInForm: FC = observer(() => {
 
   return (
     <Box className={styles.signInForm}>
-      <form onSubmit={() => store.signInForm.form?.handleSubmit}>
+      <form onSubmit={() => signInForm.form?.handleSubmit}>
         <Form inputs={inputs} gridSpacing={1} />
         <Box sx={{ mt: 3 }}>
           <Button

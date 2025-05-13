@@ -16,7 +16,7 @@ import { getCountryFlag } from './get-country-flag'
 /**
  * Компонент для переключения языка в выпадающем списке
  */
-export const LanguageSwitcher: React.FC = observer(() => {
+export const LanguageSwitcher = observer(() => {
   const { t, i18n: { changeLanguage, language: currentLanguage, languages } } = useTranslation('common')
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)

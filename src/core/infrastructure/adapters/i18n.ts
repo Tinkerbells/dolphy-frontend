@@ -24,14 +24,12 @@ export class I18nAdapter implements I18nPort {
 
   constructor(
     @inject(EnvPortToken) private readonly env: EnvPort<ViteEnvironmentVariables>,
-  ) {
-    this.init()
-  }
+  ) { }
 
   /**
    * Инициализирует i18next
    */
-  private async init(): Promise<void> {
+  public async init(): Promise<void> {
     await i18n
       .use(Backend)
       .use(LanguageDetector)
@@ -50,8 +48,9 @@ export class I18nAdapter implements I18nPort {
           order: ['localStorage', 'navigator'],
           lookupLocalStorage: I18nStorageKey,
         },
+        // TODO поправить проблему suspense в useTranslation
         react: {
-          useSuspense: true,
+          useSuspense: false,
         },
         backend: {
           loadPath: '/locales/{{lng}}/{{ns}}.json',

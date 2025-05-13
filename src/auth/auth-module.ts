@@ -15,7 +15,10 @@ import { IAuthRepositoryToken } from './domain/repositories/auth.repository'
     },
     SignInUseCase,
     SignUpUseCase,
-    SignInStore,
+    {
+      isGlobal: true,
+      useClass: SignInStore,
+    },
     SignUpStore,
   ],
 })
