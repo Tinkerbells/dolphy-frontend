@@ -7,9 +7,8 @@ import { useTranslation } from 'react-i18next'
 import type { AuthEmailLoginDto } from '@/auth/domain/dto/auth-email-login.dto'
 import type { Config } from '@/core/presentation/ui/form/components/form-input'
 
-import { compose } from '@/core/presentation/react'
 import { Form } from '@/core/presentation/ui/form/form'
-import { withForm } from '@/core/presentation/ui/form/components'
+import { FormProvider } from '@/core/presentation/ui/form/providers'
 
 import styles from './sign-in.module.css'
 
@@ -17,13 +16,7 @@ interface SignInFormProps {
   signInForm: MobxForm<AuthEmailLoginDto, any, AuthEmailLoginDto>
 }
 
-const enhance = compose<SignInFormProps>(component =>
-  (props) => {
-    return withForm(component, props.signInForm)(props)
-  },
-)
-
-export const SignInForm = enhance(({ signInForm }: SignInFormProps) => {
+export function SignInForm({ signInForm }: SignInFormProps) {
   const { t } = useTranslation(['auth', 'validation'])
 
   useEffect(() => {
@@ -69,20 +62,22 @@ export const SignInForm = enhance(({ signInForm }: SignInFormProps) => {
 
   return (
     <Box className={styles.signInForm}>
-      <form onSubmit={() => signInForm.form?.handleSubmit}>
-        <Form inputs={inputs} gridSpacing={1} />
-        <Box sx={{ mt: 3 }}>
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
+      <FormProvider form={signInForm}>
+        <form onSubmit={() => signInForm.form?.handleSubmit}>
+          <Form inputs={inputs} gridSpacing={1} />
+          <Box sx={{ mt: 3 }}>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
             // disabled={store.login.isLoading}
-          >
-            {/* {store.login.isLoading ? t('common:loading') : t('auth:signIn.submit')} */}
-          </Button>
-        </Box>
-      </form>
+            >
+              {signInForm.form?.formState.isSubmitting ? t('common:loading') : t('auth:signIn.submit')}
+            </Button>
+          </Box>
+        </form>
+      </FormProvider>
     </Box>
   )
-})
+}
