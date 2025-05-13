@@ -1,0 +1,19 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  padding-top: var(--xenon-padding-sm, 12px) 0;
+
+  &__label {
+    &::after {
+      display: inline-block;
+      margin-inline-end: var(--xenon-margin-xxs);
+      color: var(--xenon-color-error);
+      line-height: 1;
+      content: "*";
+    }
+  }
+
+  &__controls {
+    margin-top: var(--xenon-margin-sm);
+  }
+}
