@@ -1,58 +1,41 @@
-import type {
-  FormInputCheckboxProps,
-  FormInputCustomOverrideProps,
-  FormInputManyOptionSingleChoiceProps,
-  FormInputMultiCheckboxProps,
-  FormInputProps,
-  FormInputRadioProps,
-  FormInputSelectProps,
-  FormInputSwitchProps,
-  FormInputTextProps,
-} from '@/core/presentation/ui/form/ui/inputs'
+import type { FieldValues } from 'react-hook-form'
 
-import {
-  FormInputCheckbox,
-  FormInputCustomOverride,
-  FormInputManyOptionSingleChoice,
-  FormInputMultiCheckbox,
-  FormInputRadio,
-  FormInputSelect,
-  FormInputSwitch,
-  FormInputText,
-} from '@/core/presentation/ui/form/ui/inputs'
+import type { FormInputCheckboxProps, FormInputCustomProps, FormInputManyOptionSingleChoiceProps, FormInputMultiCheckboxProps, FormInputProps, FormInputRadioProps, FormInputSelectProps, FormInputSwitchProps, FormInputTextProps } from './inputs'
 
-export function FormInput<TData>({ type, config }: Config<TData>) {
+import { FormInputCheckbox, FormInputCustom, FormInputManyOptionSingleChoice, FormInputMultiCheckbox, FormInputRadio, FormInputSelect, FormInputSwitch, FormInputText } from './inputs'
+
+export function FormInput<TFieldValues extends FieldValues = FieldValues>({ type, config }: Config<TFieldValues>) {
   switch (type) {
     case 'select': {
-      const { control, ...restProps } = config as unknown as SelectConfig<TData>['config']
+      const { control, ...restProps } = config as unknown as SelectConfig<TFieldValues>['config']
       return <FormInputSelect {...control} {...restProps} />
     }
     case 'text': {
-      const { control, ...restProps } = config as unknown as TextConfig<TData>['config']
+      const { control, ...restProps } = config as unknown as TextConfig<TFieldValues>['config']
       return <FormInputText {...control} {...restProps} />
     }
     case 'radio': {
-      const { control, ...restProps } = config as unknown as RadioConfig<TData>['config']
+      const { control, ...restProps } = config as unknown as RadioConfig<TFieldValues>['config']
       return <FormInputRadio {...control} {...restProps} />
     }
     case 'checkbox': {
-      const { control, ...restProps } = config as unknown as CheckboxConfig<TData>['config']
+      const { control, ...restProps } = config as unknown as CheckboxConfig<TFieldValues>['config']
       return <FormInputCheckbox {...control} {...restProps} />
     }
     case 'custom': {
-      const { control, ...restProps } = config as unknown as CustomOverrideConfig<TData>['config']
-      return <FormInputCustomOverride {...restProps} {...control} />
+      const { control, ...restProps } = config as unknown as CustomOverrideConfig<TFieldValues>['config']
+      return <FormInputCustom {...restProps} {...control} />
     }
     case 'switch': {
-      const { control, ...restProps } = config as unknown as SwitchConfig<TData>['config']
+      const { control, ...restProps } = config as unknown as SwitchConfig<TFieldValues>['config']
       return <FormInputSwitch {...control} {...restProps} />
     }
     case 'manyOptionsSingleChoice': {
-      const { control, ...restProps } = config as unknown as ManyOptionSingleChoiceConfig<TData>['config']
+      const { control, ...restProps } = config as unknown as ManyOptionSingleChoiceConfig<TFieldValues>['config']
       return <FormInputManyOptionSingleChoice {...control} {...restProps} />
     }
     case 'multiCheckbox': {
-      const { control, ...restProps } = config as unknown as MultiCheckboxConfig<TData>['config']
+      const { control, ...restProps } = config as unknown as MultiCheckboxConfig<TFieldValues>['config']
       return <FormInputMultiCheckbox {...control} {...restProps} />
     }
     default:
@@ -61,56 +44,56 @@ export function FormInput<TData>({ type, config }: Config<TData>) {
       )
   }
 }
-interface InputControl<TData> {
-  control: FormInputProps<TData>
+interface InputControl<TFieldValues extends FieldValues = FieldValues> {
+  control: FormInputProps<TFieldValues>
 }
-interface SelectConfig<TData> {
+interface SelectConfig<TFieldValues extends FieldValues = FieldValues> {
   type: 'select'
-  config: InputControl<TData> & FormInputSelectProps
+  config: InputControl<TFieldValues> & FormInputSelectProps
 }
-interface TextConfig<TData> {
+interface TextConfig<TFieldValues extends FieldValues = FieldValues> {
   type: 'text'
-  config: InputControl<TData> & FormInputTextProps
+  config: InputControl<TFieldValues> & FormInputTextProps
 }
 
-interface RadioConfig<TData> {
+interface RadioConfig<TFieldValues extends FieldValues = FieldValues> {
   type: 'radio'
-  config: InputControl<TData> & FormInputRadioProps
+  config: InputControl<TFieldValues> & FormInputRadioProps
 }
 
-interface CheckboxConfig<TData> {
+interface CheckboxConfig<TFieldValues extends FieldValues = FieldValues> {
   type: 'checkbox'
-  config: InputControl<TData> & FormInputCheckboxProps
+  config: InputControl<TFieldValues> & FormInputCheckboxProps
 }
 
-interface CustomOverrideConfig<TData> {
+interface CustomOverrideConfig<TFieldValues extends FieldValues = FieldValues> {
   type: 'custom'
   config: {
-    control: FormInputCustomOverrideProps<TData>
+    control: FormInputCustomProps<TFieldValues>
   }
 }
 
-interface SwitchConfig<TData> {
+interface SwitchConfig<TFieldValues extends FieldValues = FieldValues> {
   type: 'switch'
-  config: InputControl<TData> & FormInputSwitchProps
+  config: InputControl<TFieldValues> & FormInputSwitchProps
 }
 
-interface MultiCheckboxConfig<TData> {
+interface MultiCheckboxConfig<TFieldValues extends FieldValues = FieldValues> {
   type: 'multiCheckbox'
-  config: InputControl<TData> & FormInputMultiCheckboxProps
+  config: InputControl<TFieldValues> & FormInputMultiCheckboxProps
 }
 
-interface ManyOptionSingleChoiceConfig<TData> {
+interface ManyOptionSingleChoiceConfig<TFieldValues extends FieldValues = FieldValues> {
   type: 'manyOptionsSingleChoice'
-  config: InputControl<TData> & FormInputManyOptionSingleChoiceProps
+  config: InputControl<TFieldValues> & FormInputManyOptionSingleChoiceProps
 }
 
-export type Config<TData> =
-  | TextConfig<TData>
-  | SelectConfig<TData>
-  | RadioConfig<TData>
-  | CheckboxConfig<TData>
-  | CustomOverrideConfig<TData>
-  | SwitchConfig<TData>
-  | ManyOptionSingleChoiceConfig<TData>
-  | MultiCheckboxConfig<TData>
+export type Config<TFieldValues extends FieldValues = FieldValues> =
+  | TextConfig<TFieldValues>
+  | SelectConfig<TFieldValues>
+  | RadioConfig<TFieldValues>
+  | CheckboxConfig<TFieldValues>
+  | CustomOverrideConfig<TFieldValues>
+  | SwitchConfig<TFieldValues>
+  | ManyOptionSingleChoiceConfig<TFieldValues>
+  | MultiCheckboxConfig<TFieldValues>
