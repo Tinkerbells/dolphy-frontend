@@ -19,7 +19,10 @@ import { IAuthRepositoryToken } from './domain/repositories/auth.repository'
       isGlobal: true,
       useClass: SignInStore,
     },
-    SignUpStore,
+    {
+      isGlobal: true,
+      useClass: SignUpStore,
+    },
   ],
 })
 export class AuthModule {}

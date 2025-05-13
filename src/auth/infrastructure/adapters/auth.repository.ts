@@ -11,7 +11,7 @@ import { HttpClientPortToken } from '@/core/domain/ports/http-client.port'
 
 @injectable()
 export class AuthRepository implements IAuthRepository {
-  private readonly baseUrl = '/auth'
+  private readonly baseUrl = 'auth'
   constructor(
     @inject(HttpClientPortToken) private readonly http: HttpClientPort,
   ) {}
@@ -29,7 +29,7 @@ export class AuthRepository implements IAuthRepository {
   }
 
   async login(loginDto: AuthEmailLoginDto): Promise<LoginResponseDto> {
-    const json = await this.http.post<LoginResponseDto>({ path: 'auth/email/login', body: loginDto })
+    const json = await this.http.post<LoginResponseDto>({ path: `${this.baseUrl}/email/login`, body: loginDto })
     if (typeof json === 'object' && json !== null) {
       return new LoginResponseDto().fromJSON(json)
     }

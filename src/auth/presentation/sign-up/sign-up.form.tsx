@@ -1,14 +1,13 @@
 import type { MobxForm } from 'mobx-react-hook-form'
 
-import { Controller } from 'react-hook-form'
+import { Box, Button } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { useMobxForm } from 'mobx-react-hook-form'
-import {
-  Box,
-  Button,
-  TextField,
-} from '@mui/material'
 
-import type { AuthRegisterLoginDto } from '@/domain/auth/dto/auth-register-login.dto'
+import type { FormConfig } from '@/core/presentation/ui'
+import type { AuthRegisterLoginDto } from '@/auth/domain/dto/auth-register-login.dto'
+
+import { FormBuilder } from '@/core/presentation/ui'
 
 import styles from './sign-up.module.css'
 
@@ -17,81 +16,77 @@ interface SignUpFormProps {
 }
 
 export function SignUpForm({ signUpForm }: SignUpFormProps) {
+  const { t } = useTranslation(['auth', 'validation'])
+
   const form = useMobxForm(signUpForm)
 
+  const fields: FormConfig<AuthRegisterLoginDto>[] = [
+    {
+      type: 'text',
+      config: {
+        control: {
+          name: 'firstName',
+          label: t('auth:signUp.firstName'),
+        },
+        textFieldProps: {
+          margin: 'normal',
+          autoFocus: true,
+          id: 'firstName',
+          fullWidth: true,
+        },
+      },
+    },
+    {
+      type: 'text',
+      config: {
+        control: {
+          name: 'lastName',
+          label: t('auth:signUp.lastName'),
+        },
+        textFieldProps: {
+          margin: 'normal',
+          id: 'lastName',
+          fullWidth: true,
+        },
+      },
+    },
+    {
+      type: 'text',
+      config: {
+        control: {
+          name: 'email',
+          label: t('auth:signUp.email'),
+        },
+        textFieldProps: {
+          margin: 'normal',
+          autoComplete: 'email',
+          type: 'email',
+          id: 'email',
+          fullWidth: true,
+        },
+      },
+    },
+    {
+      type: 'text',
+      config: {
+        control: {
+          name: 'password',
+          label: t('auth:signUp.password'),
+        },
+        textFieldProps: {
+          margin: 'normal',
+          type: 'password',
+          autoComplete: 'new-password',
+          id: 'password',
+          fullWidth: true,
+        },
+      },
+    },
+  ]
+
   return (
-    <form onSubmit={form.onSubmit} className={styles.signUpForm}>
-      <Controller
-        name="firstName"
-        control={form.control}
-        render={({ field, fieldState: { error } }) => (
-          <TextField
-            {...field}
-            label="First Name"
-            fullWidth
-            margin="normal"
-            error={!!error}
-            helperText={error?.message}
-            autoFocus
-            id="firstName"
-            sx={{ mb: 2 }}
-          />
-        )}
-      />
-
-      <Controller
-        name="lastName"
-        control={form.control}
-        render={({ field, fieldState: { error } }) => (
-          <TextField
-            {...field}
-            label="Last Name"
-            fullWidth
-            margin="normal"
-            error={!!error}
-            helperText={error?.message}
-            id="lastName"
-            sx={{ mb: 2 }}
-          />
-        )}
-      />
-
-      <Controller
-        name="email"
-        control={form.control}
-        render={({ field, fieldState: { error } }) => (
-          <TextField
-            {...field}
-            label="Email Address"
-            fullWidth
-            margin="normal"
-            error={!!error}
-            helperText={error?.message}
-            autoComplete="email"
-            id="email"
-            sx={{ mb: 2 }}
-          />
-        )}
-      />
-
-      <Controller
-        name="password"
-        control={form.control}
-        render={({ field, fieldState: { error } }) => (
-          <TextField
-            {...field}
-            label="Password"
-            type="password"
-            fullWidth
-            margin="normal"
-            error={!!error}
-            helperText={error?.message}
-            autoComplete="new-password"
-            id="password"
-          />
-        )}
-      />
-
+    <Box className={styles.signUpForm} component="form" onSubmit={form.onSubmit}>
+      <FormBuilder form={form} fields={fields} />
       <Box sx={{ mt: 3 }}>
         <Button
           type="submit"
@@ -100,9 +95,9 @@ export function SignUpForm({ signUpForm }: SignUpFormProps) {
           color="primary"
           disabled={form.formState.isSubmitting || !form.formState.isValid}
         >
-          {form.formState.isSubmitting ? 'Sign up...' : 'Sign up'}
+          {signUpForm.form?.formState.isSubmitting ? t('common:loading') : t('auth:signUp.submit')}
         </Button>
       </Box>
-    </form>
+    </Box>
   )
 }

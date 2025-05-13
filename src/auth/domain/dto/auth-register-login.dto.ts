@@ -1,3 +1,4 @@
+import i18next from 'i18next'
 import { Transform } from 'class-transformer'
 import { IsEmail, IsNotEmpty, MinLength } from 'class-validator'
 
@@ -5,15 +6,30 @@ import { lowerCaseTransformer } from '@/utils/transformers/lower-case.transforme
 
 export class AuthRegisterLoginDto {
   @Transform(lowerCaseTransformer)
-  @IsEmail()
+
+  @IsNotEmpty({
+    message: () => i18next.t('validation:form.empty'),
+  })
+  @IsEmail({}, {
+    message: () => i18next.t('validation:form.email'),
+  })
   email: string
 
-  @MinLength(6)
+  @IsNotEmpty({
+    message: () => i18next.t('validation:form.empty'),
+  })
+  @MinLength(6, {
+    message: () => i18next.t('auth:validation.passwordTooShort'),
+  })
   password: string
 
-  @IsNotEmpty()
+  @IsNotEmpty({
+    message: () => i18next.t('validation:form.empty'),
+  })
   firstName: string
 
-  @IsNotEmpty()
+  @IsNotEmpty({
+    message: () => i18next.t('validation:form.empty'),
+  })
   lastName: string
 }
