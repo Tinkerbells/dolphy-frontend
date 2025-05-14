@@ -63,7 +63,7 @@ export const AuthHeader: React.FC<AuthHeaderProps> = observer(({
   }
 
   return (
-    <AppBar position="static" color="default" elevation={0}>
+    <AppBar position="fixed" color="default" elevation={0}>
       <Toolbar sx={{ padding: 1 / 2 }}>
         {/* Logo/Brand */}
         <Typography

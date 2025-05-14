@@ -8,6 +8,7 @@ import type { NotifyPort } from '@/core/domain/ports/notify.port'
 import type { NetError } from '@/core/infrastructure/models/net-error'
 
 import { queryClient } from '@/core/presentation/react'
+import { handleFormErrors } from '@/core/presentation/ui'
 import { NotifyPortToken } from '@/core/domain/ports/notify.port'
 import { SignUpUseCase } from '@/auth/application/sign-up.use-case'
 import { AuthRegisterLoginDto } from '@/auth/domain/dto/auth-register-login.dto'
@@ -18,15 +19,9 @@ export class SignUpStore {
     queryClient,
     mutationFn: dto => this.signUp.execute(dto),
     onError: (error) => {
-      // Исправленный способ установки ошибки
-      if (error.validationErrors?.email) {
-        this.signUpForm.setError('email', {
-          message: error.validationErrors.email,
-        })
-      }
-      else if (error.message) {
-        this.notify.error(error.message)
-      }
+      handleFormErrors(this.signUpForm, error, this.notify, {
+        focusFirstError: true,
+      })
     },
   })
 

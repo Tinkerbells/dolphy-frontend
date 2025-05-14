@@ -5,11 +5,12 @@ import { MobxMutation } from 'mobx-tanstack-query'
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
 
 import type { NotifyPort } from '@/core/domain/ports/notify.port'
-import type { NetError } from '@/auth/infrastructure/models/net-error'
+import type { NetError } from '@/core/infrastructure/models/net-error'
 import type { LoginResponseDto } from '@/auth/domain/dto/login-response.dto'
 import type { PersistStoragePort } from '@/core/domain/ports/persist-storage.port'
 
 import { queryClient } from '@/core/presentation/react'
+import { handleFormErrors } from '@/core/presentation/ui'
 import { NotifyPortToken } from '@/core/domain/ports/notify.port'
 import { SignInUseCase } from '@/auth/application/sign-in.use-case'
 import { AuthEmailLoginDto } from '@/auth/domain/dto/auth-email-login.dto'
@@ -27,7 +28,9 @@ export class SignInStore {
       this.persistStorage.setPrimitive(this.REFRESH_TOKEN, data.refreshToken)
     },
     onError: (error) => {
-      this.notify.error(error.validationErrors?.password || '')
+      handleFormErrors(this.signInForm, error, this.notify, {
+        focusFirstError: true,
+      })
     },
   })
 

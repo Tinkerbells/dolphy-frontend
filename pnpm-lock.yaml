@@ -81,8 +81,8 @@ importers:
         specifier: ^0.9.27
         version: 0.9.27
       mobx-react-hook-form:
-        specifier: ^2.1.1
-        version: 2.1.1(mobx-react-lite@4.1.0(mobx@6.13.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(mobx@6.13.7)(react-hook-form@7.56.0(react@18.3.1))(react@18.3.1)
+        specifier: ^3.0.0
+        version: 3.0.0(mobx-react-lite@4.1.0(mobx@6.13.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(mobx@6.13.7)(react-hook-form@7.56.0(react@18.3.1))(react@18.3.1)
       mobx-react-lite:
         specifier: ^4.1.0
         version: 4.1.0(mobx@6.13.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -3372,13 +3372,13 @@ packages:
     resolution: {integrity: sha512-5cbk2F26aa9BqkXA42QiD3HgKP1mSZ6kaD50nY9uZnCUdfi0ib/Efjsswd9vk56+sPbBkGc1Dy1f1wIoLEpMPw==}
     hasBin: true
 
-  mobx-react-hook-form@2.1.1:
-    resolution: {integrity: sha512-Z07swfK4YHPeoZs95hZMpPWv89p/9pIjDgcY/Tc22exapMIAkfNWyysVcwyK8Yp6RmUiHcsQUo8V6TnwMteHVw==}
+  mobx-react-hook-form@3.0.0:
+    resolution: {integrity: sha512-cKI7YbbfqlEOgdLcuoahiIFAGQzH1A4UYvvcVKLFPzLEFf32RFFMcV6FVoxZSg34Dlwij/lPwSzvMVXz0Nac5Q==}
     peerDependencies:
       mobx: ^6.12.4
       mobx-react-lite: ^4.0.7
       react: ^18.3.1
-      react-hook-form: ^7.55.0
+      react-hook-form: ^7.56.1
 
   mobx-react-lite@4.1.0:
     resolution: {integrity: sha512-QEP10dpHHBeQNv1pks3WnHRCem2Zp636lq54M2nKO2Sarr13pL4u6diQXf65yzXUn0mkk18SyIDCm9UOJYTi1w==}
@@ -6129,7 +6129,7 @@ snapshots:
 
   '@vue/compiler-core@3.5.13':
     dependencies:
-      '@babel/parser': 7.27.0
+      '@babel/parser': 7.27.2
       '@vue/shared': 3.5.13
       entities: 4.5.0
       estree-walker: 2.0.2
@@ -6142,7 +6142,7 @@ snapshots:
 
   '@vue/compiler-sfc@3.5.13':
     dependencies:
-      '@babel/parser': 7.27.0
+      '@babel/parser': 7.27.2
       '@vue/compiler-core': 3.5.13
       '@vue/compiler-dom': 3.5.13
       '@vue/compiler-ssr': 3.5.13
@@ -8081,8 +8081,9 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  mobx-react-hook-form@2.1.1(mobx-react-lite@4.1.0(mobx@6.13.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(mobx@6.13.7)(react-hook-form@7.56.0(react@18.3.1))(react@18.3.1):
+  mobx-react-hook-form@3.0.0(mobx-react-lite@4.1.0(mobx@6.13.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(mobx@6.13.7)(react-hook-form@7.56.0(react@18.3.1))(react@18.3.1):
     dependencies:
+      '@types/react': 18.3.20
       disposer-util: 2.0.1
       linked-abort-controller: 1.1.0
       lodash-es: 4.17.21
