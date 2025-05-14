@@ -1,4 +1,5 @@
 import type { GridProps } from '@mui/material'
+import type { MobxForm } from 'mobx-react-hook-form'
 import type { FieldValues, UseFormReturn } from 'react-hook-form'
 
 import { Grid } from '@mui/material'
@@ -9,12 +10,12 @@ import type { FormConfig } from './fields'
 import { FormField } from './fields'
 
 interface Props<TFieldValues extends FieldValues = FieldValues> {
-  form: UseFormReturn<TFieldValues>
+  form: MobxForm<TFieldValues>
   fields: FormConfig<TFieldValues>[]
   gridSpacing?: GridProps['spacing']
 }
 
-type FormProviderContext<TFieldValues extends FieldValues = FieldValues> = UseFormReturn<TFieldValues>
+type FormProviderContext<TFieldValues extends FieldValues = FieldValues> = MobxForm<TFieldValues>
 
 export const FormContext = createContext<FormProviderContext<any>>({} as FormProviderContext<any>)
 
@@ -30,7 +31,7 @@ export function FormBuilder<TFieldValues extends FieldValues = FieldValues>({ fo
   )
 }
 
-export function useFormContext<TFieldValues extends FieldValues = FieldValues>(): UseFormReturn<TFieldValues> {
+export function useFormContext<TFieldValues extends FieldValues = FieldValues>(): MobxForm<TFieldValues> {
   const context = useContext(FormContext)
 
   if (!context) {

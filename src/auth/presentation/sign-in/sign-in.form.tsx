@@ -1,8 +1,8 @@
 import type { MobxForm } from 'mobx-react-hook-form'
 
+import { observer } from 'mobx-react-lite'
 import { Box, Button } from '@mui/material'
 import { useTranslation } from 'react-i18next'
-import { useMobxForm } from 'mobx-react-hook-form'
 
 import type { FormConfig } from '@/core/presentation/ui'
 import type { AuthEmailLoginDto } from '@/auth/domain/dto/auth-email-login.dto'
@@ -12,13 +12,11 @@ import { FormBuilder } from '@/core/presentation/ui'
 import styles from './sign-in.module.css'
 
 interface SignInFormProps {
-  signInForm: MobxForm<AuthEmailLoginDto, any, AuthEmailLoginDto>
+  signInForm: MobxForm<AuthEmailLoginDto>
 }
 
-export function SignInForm({ signInForm }: SignInFormProps) {
+export const SignInForm = observer(({ signInForm }: SignInFormProps) => {
   const { t } = useTranslation(['auth', 'validation'])
-
-  const form = useMobxForm(signInForm)
 
   const fields: FormConfig<AuthEmailLoginDto>[] = [
     {
@@ -53,18 +51,19 @@ export function SignInForm({ signInForm }: SignInFormProps) {
   ]
 
   return (
-    <Box className={styles.signInForm} component="form" onSubmit={form.onSubmit}>
-      <FormBuilder form={form} fields={fields} />
+    <Box className={styles.signInForm} component="form" onSubmit={signInForm.submit}>
+      <FormBuilder form={signInForm} fields={fields} />
       <Box sx={{ mt: 3 }}>
         <Button
           type="submit"
           fullWidth
           variant="contained"
           color="primary"
+          disabled={signInForm.isSubmitting || !signInForm.isValid}
         >
-          {signInForm.form?.formState.isSubmitting ? t('common:loading') : t('auth:signIn.submit')}
+          {signInForm.isSubmitting ? t('common:loading') : t('auth:signIn.submit')}
         </Button>
       </Box>
     </Box>
   )
-}
+})

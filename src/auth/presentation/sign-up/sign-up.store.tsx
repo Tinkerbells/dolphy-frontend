@@ -18,8 +18,15 @@ export class SignUpStore {
     queryClient,
     mutationFn: dto => this.signUp.execute(dto),
     onError: (error) => {
-      this.signUpForm.form?.setError('email', { message: error.validationErrors?.email }, { shouldFocus: true })
-      this.notify.error(error.validationErrors?.email || '')
+      // Исправленный способ установки ошибки
+      if (error.validationErrors?.email) {
+        this.signUpForm.setError('email', {
+          message: error.validationErrors.email,
+        })
+      }
+      else if (error.message) {
+        this.notify.error(error.message)
+      }
     },
   })
 

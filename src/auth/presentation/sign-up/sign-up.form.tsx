@@ -1,8 +1,8 @@
 import type { MobxForm } from 'mobx-react-hook-form'
 
+import { observer } from 'mobx-react-lite'
 import { Box, Button } from '@mui/material'
 import { useTranslation } from 'react-i18next'
-import { useMobxForm } from 'mobx-react-hook-form'
 
 import type { FormConfig } from '@/core/presentation/ui'
 import type { AuthRegisterLoginDto } from '@/auth/domain/dto/auth-register-login.dto'
@@ -12,13 +12,11 @@ import { FormBuilder } from '@/core/presentation/ui'
 import styles from './sign-up.module.css'
 
 interface SignUpFormProps {
-  signUpForm: MobxForm<AuthRegisterLoginDto, any, AuthRegisterLoginDto>
+  signUpForm: MobxForm<AuthRegisterLoginDto>
 }
 
-export function SignUpForm({ signUpForm }: SignUpFormProps) {
+export const SignUpForm = observer(({ signUpForm }: SignUpFormProps) => {
   const { t } = useTranslation(['auth', 'validation'])
-
-  const form = useMobxForm(signUpForm)
 
   const fields: FormConfig<AuthRegisterLoginDto>[] = [
     {
@@ -85,19 +83,20 @@ export function SignUpForm({ signUpForm }: SignUpFormProps) {
   ]
 
   return (
-    <Box className={styles.signUpForm} component="form" onSubmit={form.onSubmit}>
-      <FormBuilder form={form} fields={fields} />
+    <Box className={styles.signUpForm} component="form" onSubmit={signUpForm.submit}>
+      <FormBuilder form={signUpForm} fields={fields} />
       <Box sx={{ mt: 3 }}>
         <Button
           type="submit"
           fullWidth
           variant="contained"
           color="primary"
-          disabled={form.formState.isSubmitting || !form.formState.isValid}
+          disabled={signUpForm.isSubmitting || !signUpForm.isValid}
         >
-          {signUpForm.form?.formState.isSubmitting ? t('common:loading') : t('auth:signUp.submit')}
+          {signUpForm.isSubmitting ? t('common:loading') : t('auth:signUp.submit')}
         </Button>
       </Box>
     </Box>
   )
-}
+})
+
