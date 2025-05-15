@@ -10,8 +10,8 @@ import '@fontsource/roboto/400.css'
 import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
 
+import { ModalHandler } from './ui'
 import { BrowserRouter } from './navigation/router'
-import { ModalHandler } from './ui/modal/modal-handler'
 import { compose, ErrorHandler, logError, Provider, queryClient } from './react'
 
 const enhance = compose(component =>

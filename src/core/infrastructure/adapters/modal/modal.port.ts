@@ -28,7 +28,7 @@ export class ModalAdapter implements ModalPort {
     this.modalQueue.hideAll()
   }
 
-  getQueue(): OverlayQueue<ModalType<any>> {
+  get queue(): OverlayQueue<ModalType<any>> {
     return this.modalQueue
   }
 }
