@@ -1,5 +1,6 @@
 import React from 'react'
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material'
+import { observer } from 'mobx-react-lite'
+import { Button, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material'
 
 export interface DialogWindowProps {
   onClose?: () => void
@@ -14,7 +15,7 @@ export interface DialogWindowProps {
 /**
  * Компонент диалогового окна подтверждения
  */
-export const DialogWindow: React.FC<DialogWindowProps> = ({
+export const DialogWindow = observer(({
   onClose,
   header,
   primaryLabel,
@@ -22,14 +23,10 @@ export const DialogWindow: React.FC<DialogWindowProps> = ({
   secondaryLabel,
   secondaryAction,
   children,
-}) => {
+}: DialogWindowProps) => {
+  console.log('Render')
   return (
-    <Dialog
-      open={true}
-      onClose={onClose}
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
-    >
+    <>
       <DialogTitle id="alert-dialog-title">
         {header}
       </DialogTitle>
@@ -48,6 +45,6 @@ export const DialogWindow: React.FC<DialogWindowProps> = ({
           {primaryLabel}
         </Button>
       </DialogActions>
-    </Dialog>
+    </>
   )
-}
+})

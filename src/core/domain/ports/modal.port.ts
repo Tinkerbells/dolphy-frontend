@@ -12,8 +12,8 @@ export interface ModalWindowBase {
  */
 export interface ModalOptions<P extends ModalWindowBase = ModalWindowBase> {
   key: string
-  element: React.ComponentType<P>
   props: P
+  element: React.ComponentType<P>
 }
 
 /**

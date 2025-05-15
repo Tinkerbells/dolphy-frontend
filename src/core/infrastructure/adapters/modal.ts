@@ -18,39 +18,28 @@ export class ModalAdapter implements ModalPort {
     makeObservable(this)
   }
 
-  /**
-   * Текущее активное модальное окно (первое в очереди)
-   */
   get front(): ModalState | null {
     return this._queue.length ? this._queue[0] : null
   }
 
-  /**
-   * Очередь всех модальных окон
-   */
   get queue(): ModalState[] {
     return this._queue
   }
 
-  /**
-   * Показывает модальное окно
-   * @param value Параметры модального окна
-   */
   show<T extends ModalWindowBase>(value: ModalOptions<T>): void {
-    // Проверяем, есть ли уже такое модальное окно
     const existingIndex = this._queue.findIndex(item => item.scheme.key === value.key)
 
     if (existingIndex >= 0) {
-      // Обновляем существующее
-      this._queue[existingIndex].scheme = value
+      this._queue[existingIndex].scheme = value as ModalOptions<any>
       return
     }
 
-    // Добавляем новое окно в очередь
     this._queue.push({
-      scheme: value,
+      scheme: value as ModalOptions<any>,
       isOpened: this._queue.length === 0,
     })
+
+    console.log(this.queue)
 
     this._updateFront()
   }

@@ -16,6 +16,7 @@ export interface DialogType {
   secondaryLabel?: string
   secondaryAction?: () => void
   children?: React.ReactNode
+  onClose?: () => void // Добавляем это свойство для совместимости с ModalWindowBase
 }
 
 /**
@@ -27,6 +28,7 @@ export function useOpenModal(options: DialogType): () => void {
   const modalDialogPort = useInjected<ModalPort>(ModalPortToken)
 
   return () => {
+    // Здесь мы корректно преобразуем DialogType в ModalOptions
     modalDialogPort.show({
       key: options.key,
       element: DialogWindow,

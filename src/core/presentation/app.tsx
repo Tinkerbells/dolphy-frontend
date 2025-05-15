@@ -11,6 +11,7 @@ import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
 
 import { BrowserRouter } from './navigation/router'
+import { ModalHandler } from './ui/modal/modal-handler'
 import { compose, ErrorHandler, logError, Provider, queryClient } from './react'
 
 const enhance = compose(component =>
@@ -26,6 +27,7 @@ export const App = enhance(() => (
       <BrowserRouter />
       <CssBaseline />
       <Toaster />
+      <ModalHandler />
       <ReactQueryDevtools position="left" initialIsOpen={false} />
     </Provider>
   </QueryClientProvider>
