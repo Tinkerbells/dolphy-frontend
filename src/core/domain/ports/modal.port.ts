@@ -1,39 +1,7 @@
-export const ModalPortToken = Symbol('ModalDialogPort')
+export const ModalPortToken = Symbol('ModalPort')
 
-/**
- * Базовый интерфейс для параметров модальных окон
- */
-export interface ModalWindowBase {
-  onClose?: () => void
-}
-
-/**
- * Опции для отображения модального окна
- */
-export interface ModalOptions<P extends ModalWindowBase = ModalWindowBase> {
-  key: string
-  props: P
-  element: React.ComponentType<P>
-}
-
-/**
- * Интерфейс для работы с модальными окнами
- */
 export interface ModalPort {
-  /**
-   * Показывает модальное окно
-   * @param options Параметры модального окна
-   */
-  show: <T extends ModalWindowBase>(options: ModalOptions<T>) => void
-
-  /**
-   * Скрывает модальное окно по ключу
-   * @param key Ключ модального окна
-   */
+  show: (options: any) => void
   hide: (key: string) => void
-
-  /**
-   * Скрывает все модальные окна
-   */
   hideAll: () => void
 }

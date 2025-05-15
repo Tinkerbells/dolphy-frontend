@@ -14,8 +14,8 @@ import {
   Typography,
 } from '@mui/material'
 
+import { useModal } from '@/core/presentation/ui'
 import { useInjected } from '@/core/presentation/react'
-import { useCloseModal, useOpenModal } from '@/core/presentation/ui/modal/modal-functions'
 
 import { DecksStore } from './decks.store'
 import { DeckCard } from './components/deck-card'
@@ -24,17 +24,17 @@ import { CreateDeckDialog } from './components/create-deck-dialog'
 
 export const DecksPage = observer(() => {
   const { t } = useTranslation(['common', 'decks'])
-  const closeDialogWindowHandler = useCloseModal('confirm-delete')
-  const openDialogWindow = useOpenModal({
+  const modal = useModal()
+  const openDialogWindow = modal.show({
     key: 'confirm-delete',
     header: 'Удаление записи',
     primaryLabel: 'Удалить',
     primaryAction: () => {
       console.log('Запись удалена')
-      closeDialogWindowHandler()
+      modal.hide('confirm-delete')
     },
     secondaryLabel: 'Отмена',
-    secondaryAction: () => closeDialogWindowHandler(),
+    secondaryAction: () => modal.hide('confirm-delete'),
     children: 'Вы действительно хотите удалить эту запись?',
   })
 
@@ -71,7 +71,7 @@ export const DecksPage = observer(() => {
         <Typography variant="h4" component="h1" gutterBottom>
           {t('decks:title')}
         </Typography>
-        <Button onClick={openDialogWindow}>Open</Button>
+        <Button>Open</Button>
 
         {isLoading && (
           <Box display="flex" justifyContent="center" my={4}>

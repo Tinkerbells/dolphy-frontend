@@ -10,7 +10,8 @@ import { useInjected } from '../../react'
 
 export const ModalHandler = observer(() => {
   const modals = useInjected<ModalAdapter>(ModalPortToken)
-  const modal = modals.front
+  const queue = modals.getQueue()
+  const modal = queue.front
   return modal
     ? (
         <>
