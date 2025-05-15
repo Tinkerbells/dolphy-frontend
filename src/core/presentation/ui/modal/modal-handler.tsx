@@ -2,7 +2,7 @@ import React from 'react'
 import { Dialog } from '@mui/material'
 import { observer } from 'mobx-react-lite'
 
-import type { ModalAdapter } from '@/core/infrastructure/adapters/modal'
+import type { ModalAdapter } from '@/core/infrastructure/adapters/modal.port'
 
 import { ModalPortToken } from '@/core/domain/ports/modal.port'
 
@@ -10,8 +10,7 @@ import { useInjected } from '../../react'
 
 export const ModalHandler = observer(() => {
   const modals = useInjected<ModalAdapter>(ModalPortToken)
-  const queue = modals.queue
-  const modal = queue.front
+  const modal = modals.front
   return modal
     ? (
         <>
