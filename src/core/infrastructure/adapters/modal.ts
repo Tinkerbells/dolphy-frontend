@@ -1,4 +1,4 @@
-import { makeObservable } from 'mobx'
+import { makeAutoObservable } from 'mobx'
 
 import type { ModalOptions, ModalPort, ModalWindowBase } from '@/core/domain/ports/modal.port'
 
@@ -11,86 +11,67 @@ export interface ModalState<T extends ModalWindowBase = ModalWindowBase> {
  * Store для управления модальными окнами
  */
 export class ModalAdapter implements ModalPort {
-  private _queue: ModalState[] = []
-  private readonly _transitionDuration: number = 300
+  queue: ModalState[] = []
+  readonly transitionDuration: number = 300
 
   constructor() {
-    makeObservable(this)
+    makeAutoObservable(this)
+
+    this.dequeue = this.dequeue.bind(this)
   }
 
   get front(): ModalState | null {
-    return this._queue.length ? this._queue[0] : null
-  }
-
-  get queue(): ModalState[] {
-    return this._queue
+    return this.queue.length ? this.queue[0] : null
   }
 
   show<T extends ModalWindowBase>(value: ModalOptions<T>): void {
-    const existingIndex = this._queue.findIndex(item => item.scheme.key === value.key)
+    const existingIndex = this.queue.findIndex(item => item.scheme.key === value.key)
 
     if (existingIndex >= 0) {
-      this._queue[existingIndex].scheme = value as ModalOptions<any>
+      this.queue[existingIndex].scheme = value as ModalOptions<any>
       return
     }
 
-    this._queue.push({
+    this.queue.push({
       scheme: value as ModalOptions<any>,
-      isOpened: this._queue.length === 0,
+      isOpened: this.queue.length === 0,
     })
 
-    console.log(this.queue)
-
-    this._updateFront()
+    this.updateFront()
   }
 
-  /**
-   * Скрывает модальное окно по ключу
-   * @param key Ключ модального окна
-   */
   hide(key: string): void {
-    const index = this._queue.findIndex(item => item.scheme.key === key)
+    const index = this.queue.findIndex(item => item.scheme.key === key)
 
     if (index < 0) {
       return
     }
 
     if (index === 0) {
-      // Если это активное окно, закрываем его с анимацией
-      this._queue[0].isOpened = false
-      setTimeout(this._dequeue, this._transitionDuration)
+      this.queue[0].isOpened = false
+      setTimeout(this.dequeue, this.transitionDuration)
     }
     else {
-      // Иначе просто удаляем из очереди
-      this._queue.splice(index, 1)
+      this.queue.splice(index, 1)
     }
   }
 
-  /**
-   * Скрывает все модальные окна
-   */
   hideAll(): void {
     if (this.front) {
       this.front.isOpened = false
     }
 
     setTimeout(() => {
-      this._queue = []
-    }, this._transitionDuration)
+      this.queue = []
+    }, this.transitionDuration)
   }
 
-  /**
-   * Удаляет первый элемент из очереди
-   */
-  private _dequeue(): void {
-    this._queue = this._queue.slice(1)
-    this._updateFront()
+  dequeue(): void {
+    this.queue = this.queue.slice(1)
+    this.updateFront()
   }
 
-  /**
-   * Обновляет состояние первого элемента в очереди
-   */
-  private _updateFront(): void {
+  updateFront(): void {
     const front = this.front
     if (front) {
       front.isOpened = true

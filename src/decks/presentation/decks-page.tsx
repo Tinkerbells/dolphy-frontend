@@ -35,7 +35,7 @@ export const DecksPage = observer(() => {
     },
     secondaryLabel: 'Отмена',
     secondaryAction: () => closeDialogWindowHandler(),
-    children: <p>Вы действительно хотите удалить эту запись?</p>,
+    children: 'Вы действительно хотите удалить эту запись?',
   })
 
   const decksStore = useInjected<DecksStore>(DecksStore)

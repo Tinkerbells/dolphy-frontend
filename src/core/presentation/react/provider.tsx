@@ -1,25 +1,27 @@
 import type { PropsWithChildren } from 'react'
 
 import { getModuleContainer } from 'inversiland'
-import { createContext, useContext } from 'react'
+import { createContext, memo, useContext, useMemo } from 'react'
 
 import AppModule from '@/app-module'
 
 type ModuleContainer = ReturnType<typeof getModuleContainer>
 
 export const DIContext = createContext<ModuleContainer | null>(null)
-
 DIContext.displayName = 'DIContext'
 
-export function Provider({ children }: PropsWithChildren) {
-  const container = getModuleContainer(AppModule)
+export const Provider = memo(({ children }: PropsWithChildren) => {
+  const container = useMemo(() => getModuleContainer(AppModule), [])
+  const contextValue = useMemo(() => container, [container])
 
   return (
-    <DIContext.Provider value={container}>
+    <DIContext.Provider value={contextValue}>
       {children}
     </DIContext.Provider>
   )
-}
+})
+
+const injectCache = new Map<any, any>()
 
 export function useInjected<T>(injected: any): T {
   const container = useContext(DIContext)
@@ -28,5 +30,10 @@ export function useInjected<T>(injected: any): T {
     throw new Error('Component должен быть завернут в Provider')
   }
 
-  return container.get(injected)
+  return useMemo(() => {
+    if (!injectCache.has(injected)) {
+      injectCache.set(injected, container.get(injected))
+    }
+    return injectCache.get(injected)
+  }, [container, injected])
 }

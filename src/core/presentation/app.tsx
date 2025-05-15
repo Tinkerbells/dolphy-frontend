@@ -28,7 +28,7 @@ export const App = enhance(() => (
       <CssBaseline />
       <Toaster />
       <ModalHandler />
-      <ReactQueryDevtools position="left" initialIsOpen={false} />
+      <ReactQueryDevtools buttonPosition="top-left" position="right" initialIsOpen={false} />
     </Provider>
   </QueryClientProvider>
 ))
