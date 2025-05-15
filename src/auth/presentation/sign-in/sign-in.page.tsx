@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router'
 import { Google } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import {
@@ -10,22 +12,23 @@ import {
 } from '@mui/material'
 
 import { useInjected } from '@/core/presentation/react'
+import { root } from '@/core/presentation/navigation/routes'
 
 import { SignInForm } from './sign-in.form'
 import { SignInStore } from './sign-in.store'
 
 export function SignInPage() {
   const { t } = useTranslation(['auth', 'common'])
-  // const navigate = useNavigate()
+  const navigate = useNavigate()
 
   const store = useInjected<SignInStore>(SignInStore)
 
-  // useEffect(() => {
-  //   if (store.login.result.isSuccess) {
-  //     // navigate(root.decks.$path())
-  //   }
-  // }, [store.login.result.isSuccess])
-  //
+  useEffect(() => {
+    if (store.login.result.isSuccess) {
+      navigate(root.decks.$path())
+    }
+  }, [store.login.result.isSuccess])
+
   return (
     <Box
       sx={{

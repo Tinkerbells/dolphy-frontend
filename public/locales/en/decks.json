@@ -1,0 +1,18 @@
+{
+  "title": "My Flashcard Decks",
+  "createDeck": "Create New Deck",
+  "editDeck": "Edit Deck",
+  "deckName": "Deck Name",
+  "deckDescription": "Description",
+  "noDecks": "You don't have any decks yet. Create one to get started!",
+  "noDescription": "No description",
+  "cardsCount": "Cards",
+  "dueCount": "Due",
+  "lastStudied": "Last studied",
+  "studyNow": "Study Now ({{count}})",
+  "browse": "Browse Cards",
+  "edit": "Edit",
+  "delete": "Delete",
+  "moreOptions": "More Options",
+  "confirmDelete": "Are you sure you want to delete this deck? This action cannot be undone."
+}
