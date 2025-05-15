@@ -23,14 +23,16 @@ export interface DialogType {
  *
  * @param options Параметры диалогового окна
  */
-export function openDialogWindow(options: DialogType): void {
+export function useOpenModal(options: DialogType): () => void {
   const modalDialogPort = useInjected<ModalPort>(ModalPortToken)
 
-  modalDialogPort.show({
-    key: options.key,
-    element: DialogWindow,
-    props: options,
-  })
+  return () => {
+    modalDialogPort.show({
+      key: options.key,
+      element: DialogWindow,
+      props: options,
+    })
+  }
 }
 
 /**
@@ -39,7 +41,7 @@ export function openDialogWindow(options: DialogType): void {
  * @param key Ключ диалогового окна
  * @returns Обработчик закрытия
  */
-export function closeDialogWindowHandler(key: string): () => void {
+export function useCloseModal(key: string): () => void {
   const modalDialogPort = useInjected<ModalPort>(ModalPortToken)
 
   return () => {

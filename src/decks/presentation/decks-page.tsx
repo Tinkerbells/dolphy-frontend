@@ -5,6 +5,7 @@ import {
   Alert,
   AppBar,
   Box,
+  Button,
   CircularProgress,
   Container,
   Fab,
@@ -14,6 +15,7 @@ import {
 } from '@mui/material'
 
 import { useInjected } from '@/core/presentation/react'
+import { useCloseModal, useOpenModal } from '@/core/presentation/ui/modal/modal-functions'
 
 import { DecksStore } from './decks.store'
 import { DeckCard } from './components/deck-card'
@@ -22,6 +24,20 @@ import { CreateDeckDialog } from './components/create-deck-dialog'
 
 export const DecksPage = observer(() => {
   const { t } = useTranslation(['common', 'decks'])
+  const closeDialogWindowHandler = useCloseModal('confirm-delete')
+  const openDialogWindow = useOpenModal({
+    key: 'confirm-delete',
+    header: 'Удаление записи',
+    primaryLabel: 'Удалить',
+    primaryAction: () => {
+      console.log('Запись удалена')
+      closeDialogWindowHandler()
+    },
+    secondaryLabel: 'Отмена',
+    secondaryAction: () => closeDialogWindowHandler(),
+    children: <p>Вы действительно хотите удалить эту запись?</p>,
+  })
+
   const decksStore = useInjected<DecksStore>(DecksStore)
 
   const { data: decksData, isLoading, isError, error } = decksStore.decks.result
@@ -55,6 +71,7 @@ export const DecksPage = observer(() => {
         <Typography variant="h4" component="h1" gutterBottom>
           {t('decks:title')}
         </Typography>
+        <Button onClick={openDialogWindow}>Open</Button>
 
         {isLoading && (
           <Box display="flex" justifyContent="center" my={4}>
