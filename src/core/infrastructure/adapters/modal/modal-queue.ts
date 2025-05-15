@@ -1,13 +1,12 @@
 import { action, computed, makeObservable } from 'mobx'
 
-import type { ModalPort } from '@/core/domain/ports/modal.port'
 import type { OverlayState } from '@/core/domain/types/overlay.type'
 
-import type { ModalType, ModalWindowBase } from '../models/modal'
+import type { ModalType } from '../../models/modal'
 
-import { OverlayQueueBase } from './overlay'
+import { OverlayQueueBase } from '../overlay'
 
-export class ModalAdapter<T extends ModalType<any>> extends OverlayQueueBase<T> implements ModalPort {
+export class ModalOverlayQueue<T extends ModalType<any>> extends OverlayQueueBase<T> {
   private readonly _transitionDuration: number
 
   constructor(transitionDuration: number) {
@@ -59,14 +58,6 @@ export class ModalAdapter<T extends ModalType<any>> extends OverlayQueueBase<T> 
     }
   }
 
-  show<T extends ModalWindowBase>(value: ModalType<T>): void {
-    this.show(value as ModalType<any>)
-  }
-
-  hide(key: string): void {
-    this.hide(key)
-  }
-
   hideAll(): void {
     if (this.front) {
       this.front.isOpened = false
@@ -77,4 +68,3 @@ export class ModalAdapter<T extends ModalType<any>> extends OverlayQueueBase<T> 
     }, this._transitionDuration)
   }
 }
-

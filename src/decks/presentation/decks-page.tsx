@@ -25,7 +25,7 @@ import { CreateDeckDialog } from './components/create-deck-dialog'
 export const DecksPage = observer(() => {
   const { t } = useTranslation(['common', 'decks'])
   const modal = useModal()
-  const openDialogWindow = modal.show({
+  const openDialogWindow = () => modal.show({
     key: 'confirm-delete',
     header: 'Удаление записи',
     primaryLabel: 'Удалить',
@@ -35,7 +35,7 @@ export const DecksPage = observer(() => {
     },
     secondaryLabel: 'Отмена',
     secondaryAction: () => modal.hide('confirm-delete'),
-    children: 'Вы действительно хотите удалить эту запись?',
+    element: () => 'Вы действительно хотите удалить эту запись?',
   })
 
   const decksStore = useInjected<DecksStore>(DecksStore)
@@ -71,7 +71,7 @@ export const DecksPage = observer(() => {
         <Typography variant="h4" component="h1" gutterBottom>
           {t('decks:title')}
         </Typography>
-        <Button>Open</Button>
+        <Button onClick={openDialogWindow}>Open</Button>
 
         {isLoading && (
           <Box display="flex" justifyContent="center" my={4}>
