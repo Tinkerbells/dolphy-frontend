@@ -27,15 +27,8 @@ export const DecksPage = observer(() => {
   const modal = useModal()
   const openDialogWindow = () => modal.show({
     key: 'confirm-delete',
-    header: 'Удаление записи',
-    primaryLabel: 'Удалить',
-    primaryAction: () => {
-      console.log('Запись удалена')
-      modal.hide('confirm-delete')
-    },
-    secondaryLabel: 'Отмена',
-    secondaryAction: () => modal.hide('confirm-delete'),
     element: () => 'Вы действительно хотите удалить эту запись?',
+    props: { },
   })
 
   const decksStore = useInjected<DecksStore>(DecksStore)

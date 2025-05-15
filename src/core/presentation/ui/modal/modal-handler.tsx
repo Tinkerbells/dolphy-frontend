@@ -11,10 +11,16 @@ import { useInjected } from '../../react'
 export const ModalHandler = observer(() => {
   const modals = useInjected<ModalAdapter>(ModalPortToken)
   const modal = modals.queue.front
+  const closeHandle: (() => void) | undefined = modal && modal.scheme.props.onClose
   return modal
     ? (
         <>
-          <Dialog open={modal.isOpened}>
+          <Dialog
+            open={modal.isOpened}
+            onClose={modal.scheme.isBlocking
+              ? undefined
+              : closeHandle || (() => modals.hide(modal?.scheme.key))}
+          >
             {React.createElement(modal.scheme.element, modal.scheme.props)}
           </Dialog>
         </>
