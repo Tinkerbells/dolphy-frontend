@@ -1,2 +1,2 @@
 export * from './decks.route'
-export * from './decks.store'
+export * from './store/decks.store'

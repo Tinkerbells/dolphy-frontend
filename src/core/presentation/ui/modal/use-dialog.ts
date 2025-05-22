@@ -3,15 +3,17 @@ import { getModuleContainer } from 'inversiland'
 
 import type { ModalPort } from '@/core/domain/ports/modal.port'
 import type { ModalAdapter } from '@/core/infrastructure/adapters/overlays'
-import type { ModalType, ModalWindowBase } from '@/core/infrastructure/models/modal'
 
 import AppModule from '@/app-module'
 import { ModalPortToken } from '@/core/domain/ports/modal.port'
 
-import { useInjected } from '../../react'
+import type { DialogWindowProps } from './dialog-window'
 
-export function useModal<T extends ModalWindowBase>(
-  options: ModalType<T>,
+import { useInjected } from '../../react'
+import { DialogWindow } from './dialog-window'
+
+export function useDialog(
+  options: DialogWindowProps,
   deps: any[],
 ) {
   const modal = useInjected<ModalPort>(ModalPortToken)
@@ -25,18 +27,22 @@ export function useModal<T extends ModalWindowBase>(
   ], [...deps])
 }
 
-export function openModalWindow<T extends ModalWindowBase>(
-  options: ModalType<T>,
+export function openDialogWindow(
+  options: DialogWindowProps,
 ) {
   const container = getModuleContainer(AppModule)
   const modal = container.getProvided(ModalPortToken) as ModalAdapter
-  modal.show(options)
+  modal.show({
+    element: DialogWindow,
+    props: options,
+    key: options.key,
+  })
   return () => {
     modal.hide(options.key)
   }
 }
 
-export function closeModalWindowHandler(key: string) {
+export function closeDialogWindow(key: string) {
   const container = getModuleContainer(AppModule)
   const modal = container.getProvided(ModalPortToken) as ModalAdapter
   return () => {
@@ -44,11 +50,11 @@ export function closeModalWindowHandler(key: string) {
   }
 }
 
-export const modal = {
-  show<T extends ModalWindowBase>(options: ModalType<T>) {
-    return () => openModalWindow(options)
+export const dialog = {
+  show(options: DialogWindowProps) {
+    return () => openDialogWindow(options)
   },
   hide(key: string) {
-    return closeModalWindowHandler(key)
+    return closeDialogWindow(key)
   },
 }

@@ -7,7 +7,5 @@ export interface ModalWindowBase {
 export interface ModalType<T extends ModalWindowBase> {
   element: ComponentType<T>
   props: T
-  isBlocking?: boolean
-  hasBlackBackground?: boolean
   key: string
 }
