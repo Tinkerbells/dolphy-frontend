@@ -1,1 +1,1 @@
-export { signInPageRoute } from './components'
+export { signInPageRoute } from './ui'

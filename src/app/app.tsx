@@ -10,7 +10,8 @@ import '@fontsource/roboto/400.css'
 import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
 
-import { ModalHandler } from './ui'
+import { ModalHandler } from '@/shared'
+
 import { BrowserRouter } from './navigation/router'
 import { compose, ErrorHandler, logError, queryClient } from './react'
 

@@ -1,12 +1,9 @@
 import { jwtDecode } from 'jwt-decode'
 
-import type { HttpClient, HttpRequest } from '@/common'
-import type { EnvPort } from '@/core/domain/ports/env.port'
-import type { I18nPort } from '@/core/domain/ports/i18n.port'
-import type { PersistStoragePort } from '@/core/domain/ports/persist-storage.port'
+import type { Env, HttpClient, HttpRequest, I18n, PersistStorage } from '@/common'
 
 import { env, i18nInstance } from '@/common'
-import { FetchMethod, ResponseCode } from '@/core/domain/enums/http.enum'
+import { FetchMethod, ResponseCode } from '@/types/enums/http.enum'
 
 import type { CustomRequest } from './custom-request'
 import type { ViteEnvironmentVariables } from '../env/vite-env'
@@ -21,9 +18,9 @@ class HttpService implements HttpClient {
   private _authWhiteList = ['/', '/decks/', '/courses/']
 
   constructor(
-    private readonly env: EnvPort<ViteEnvironmentVariables>,
-    private readonly persistService: PersistStoragePort,
-    private readonly i18n: I18nPort,
+    private readonly env: Env<ViteEnvironmentVariables>,
+    private readonly persistService: PersistStorage,
+    private readonly i18n: I18n,
   ) {
 
     // if (!this.isAuthorized() && !this._authWhiteList.includes(window.location.pathname)) {

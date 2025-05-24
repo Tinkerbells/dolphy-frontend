@@ -1,7 +1,7 @@
 import type { MobxForm } from 'mobx-react-hook-form'
 
-import type { NotifyPort } from '@/core/domain/ports/notify.port'
-import type { NetError } from '@/core/infrastructure/models/net-error'
+import type { Notify } from '@/common'
+import type { NetError } from '@/common/services/http-client/net-error'
 
 /**
  * Опции обработчика ошибок формы
@@ -18,7 +18,7 @@ export interface FormErrorHandlerOptions {
 export function handleFormErrors<T extends Record<string, any>>(
   form: MobxForm<T>,
   error: NetError,
-  notify: NotifyPort,
+  notify: Notify,
   options: FormErrorHandlerOptions = {},
 ): boolean {
   const {

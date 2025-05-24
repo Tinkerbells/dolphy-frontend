@@ -3,11 +3,10 @@ import { CircularProgress } from '@mui/material'
 import { createBrowserRouter, Navigate, Outlet, RouterProvider } from 'react-router'
 
 import { signInPageRoute } from '@/features'
-// import { decksPageRoute } from '@/decks/presentation'
+import { NotAuthorizedLayout } from '@/shared'
 
 import { root } from './routes'
 import { compose, withSuspense } from '../react'
-import { AuthorizedLayout, NotAuthorizedLayout } from '../ui'
 
 const enhance = compose(component =>
   withSuspense(component, { FallbackComponent: CircularProgress }),

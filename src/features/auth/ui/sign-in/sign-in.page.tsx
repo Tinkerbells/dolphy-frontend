@@ -1,4 +1,6 @@
+import { useEffect } from 'react'
 import { observer } from 'mobx-react-lite'
+import { useNavigate } from 'react-router'
 import { Google } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import {
@@ -10,13 +12,24 @@ import {
   Typography,
 } from '@mui/material'
 
-// import { SignInForm } from './sign-in.form'
+import { root } from '@/app/navigation/routes'
+
+import { SignInForm } from './sign-in.form'
 import { signInController } from '../../controllers/sign-in.controller'
 
 export const SignInPage = observer(() => {
   const { t } = useTranslation(['auth', 'common'])
 
-  const controller = signInController
+  const navigate = useNavigate()
+
+  const { signInForm, isSuccess } = signInController
+
+  useEffect(() => {
+    if (isSuccess) {
+      console.log('isSuccess')
+      // navigate(root.decks.$path())
+    }
+  }, [isSuccess])
 
   return (
     <Box
@@ -39,7 +52,7 @@ export const SignInPage = observer(() => {
         </Typography>
 
         <Box>
-          {/* <SignInForm signInForm={store.signInForm} /> */}
+          <SignInForm signInForm={signInForm} />
 
           <Divider sx={{ my: 2 }}>{t('auth:signIn.or')}</Divider>
 

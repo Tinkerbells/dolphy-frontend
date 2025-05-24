@@ -5,6 +5,7 @@ import { classValidatorResolver } from '@hookform/resolvers/class-validator'
 import type { CacheService, Notify, PersistStorage } from '@/common'
 import type { NetError } from '@/common/services/http-client/net-error'
 
+import { handleFormErrors } from '@/shared'
 import { cacheInstance } from '@/common/services/cache'
 import { localStorageInstance, notify } from '@/common'
 
@@ -34,13 +35,25 @@ export class SignInStore {
       },
       resolver: classValidatorResolver(AuthEmailLoginDto),
       mode: 'onChange',
-      // onSubmit: this.login(),
+      onSubmit: this.login,
     })
 
     makeAutoObservable(this)
   }
 
-  public login() {
+  private login = async (data: AuthEmailLoginDto) => {
+    await this._login().mutate(data)
+  }
+
+  public get isLoading() {
+    return this._login().result.isLoading
+  }
+
+  public get isSuccess() {
+    return this._login().result.isSuccess
+  }
+
+  private _login() {
     return this.cache.createMutation<LoginResponseDto, AuthEmailLoginDto, NetError>(
       dto => this.authService.login(dto),
       {
@@ -49,11 +62,10 @@ export class SignInStore {
           this.persistStorage.setPrimitive(this.ACCESS_TOKEN, data.token)
           this.persistStorage.setPrimitive(this.REFRESH_TOKEN, data.refreshToken)
         },
-        onError: () => {
-          // Обрабатываем ошибки формы
-          // handleFormErrors(this.signInForm, error, this.notify, {
-          //   focusFirstError: true,
-          // })
+        onError: (error) => {
+          handleFormErrors(this.signInForm, error, this.notify, {
+            focusFirstError: true,
+          })
         },
       },
     )

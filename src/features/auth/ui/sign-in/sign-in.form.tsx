@@ -4,10 +4,10 @@ import { observer } from 'mobx-react-lite'
 import { Box, Button } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 
-import type { FormConfig } from '@/core/presentation/ui'
+import type { FormConfig } from '@/shared'
 import type { AuthEmailLoginDto } from '@/auth/domain/dto/auth-email-login.dto'
 
-import { FormBuilder } from '@/core/presentation/ui'
+import { FormBuilder } from '@/shared'
 
 import styles from './sign-in.module.css'
 

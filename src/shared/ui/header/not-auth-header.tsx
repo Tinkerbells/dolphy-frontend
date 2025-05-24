@@ -10,7 +10,8 @@ import {
   useTheme,
 } from '@mui/material'
 
-import { root } from '../../navigation/routes'
+import { root } from '@/app/navigation/routes'
+
 import { LanguageSwitcher } from '../language-switcher'
 
 const CenteredNavigation = styled(Box)(() => ({
