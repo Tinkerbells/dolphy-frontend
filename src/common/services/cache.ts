@@ -144,7 +144,7 @@ class MobxCacheService implements CacheService {
           retry: 3,
         },
         mutations: {
-          retry: 1,
+          retry: 0,
         },
       },
     })

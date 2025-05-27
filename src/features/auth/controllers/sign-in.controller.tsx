@@ -42,23 +42,26 @@ export class SignInStore {
   }
 
   private login = async (data: AuthEmailLoginDto) => {
-    await this._login().mutate(data)
+    await this.loginMutation.mutate(data)
   }
 
   public get isLoading() {
-    return this._login().result.isLoading
+    return this.loginMutation.result.isLoading
   }
 
   public get isSuccess() {
-    return this._login().result.isSuccess
+    return this.loginMutation.result.isSuccess
   }
 
-  private _login() {
-    return this.cache.createMutation<LoginResponseDto, AuthEmailLoginDto, NetError>(
+  private get loginMutation() {
+    return this._loginMutation()
+  }
+
+  private readonly _loginMutation = () =>
+    this.cache.createMutation<LoginResponseDto, AuthEmailLoginDto, NetError>(
       dto => this.authService.login(dto),
       {
         onSuccess: (data) => {
-          // Сохраняем токены после успешного входа
           this.persistStorage.setPrimitive(this.ACCESS_TOKEN, data.token)
           this.persistStorage.setPrimitive(this.REFRESH_TOKEN, data.refreshToken)
         },
@@ -69,7 +72,6 @@ export class SignInStore {
         },
       },
     )
-  }
 }
 
 export const signInController = new SignInStore(cacheInstance, localStorageInstance, notify, authService)
