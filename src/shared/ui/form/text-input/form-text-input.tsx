@@ -102,7 +102,7 @@ const TextInput = forwardRef<
         )
       })
 
-function FormTextInput<
+export function FormTextInput<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 >(
@@ -133,5 +133,3 @@ function FormTextInput<
     />
   )
 }
-
-export default FormTextInput
