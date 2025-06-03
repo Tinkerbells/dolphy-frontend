@@ -1,0 +1,31 @@
+{
+  "title": "Cards",
+  "deckDetail": "Deck Details",
+  "allCards": "All Cards",
+  "totalCards": "Total cards",
+  "dueToday": "Due today",
+  "newCards": "New cards",
+  "mastered": "Mastered",
+  "noCards": "No cards in this deck yet. Add your first card!",
+  "addCard": "Add card",
+  "createCard": "Create card",
+  "editCard": "Edit card",
+  "deleteCard": "Delete card",
+  "confirmDelete": "Are you sure you want to delete this card? This action cannot be undone.",
+  "delete": "Delete",
+  "edit": "Edit",
+  "study": "Study",
+  "question": "Question",
+  "answer": "Answer",
+  "moreOptions": "More options",
+  "showAnswer": "Show answer",
+  "hideAnswer": "Hide answer",
+  "nextReview": "Next review",
+  "lastReview": "Last review",
+  "state": {
+    "New": "New",
+    "Learning": "Learning",
+    "Review": "Review",
+    "Relearning": "Relearning"
+  }
+}

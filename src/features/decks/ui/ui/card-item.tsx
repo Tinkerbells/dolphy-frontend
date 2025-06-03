@@ -140,7 +140,7 @@ export function CardItem({ card, onEdit, onDelete }: CardItemProps) {
             {showAnswer ? <VisibilityOffIcon /> : <VisibilityIcon />}
           </IconButton>
           <Typography variant="body2" color="text.secondary">
-            {showAnswer ? 'Скрыть ответ' : 'Показать ответ'}
+            {showAnswer ? t('') : 'Показать ответ'}
           </Typography>
         </Box>
 
