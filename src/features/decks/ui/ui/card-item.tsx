@@ -128,7 +128,7 @@ export function CardItem({ card, onEdit, onDelete }: CardItemProps) {
         </Box>
 
         <Typography variant="h6" component="div" gutterBottom>
-          {/* {card.note.question} */}
+          {card.front}
         </Typography>
 
         <Box display="flex" alignItems="center" gap={1} mb={2}>
@@ -154,7 +154,7 @@ export function CardItem({ card, onEdit, onDelete }: CardItemProps) {
             }}
           >
             <Typography variant="body1">
-              {/* {card.note.answer} */}
+              {card.back}
             </Typography>
           </Box>
         )}

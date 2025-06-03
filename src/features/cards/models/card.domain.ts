@@ -20,6 +20,8 @@ export class Card {
   deckId: string
   deleted: boolean
   createdAt: Date
+  front?: string
+  back?: string
 }
 
 /**
