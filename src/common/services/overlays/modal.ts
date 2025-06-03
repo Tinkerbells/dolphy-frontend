@@ -1,19 +1,21 @@
 import type { ComponentType } from 'react'
 
-import type { Modal } from '@/common'
-
 import type { OverlayQueue } from './overlay'
 
 import { modalQueueInstance } from './modal-queue'
 
-export interface ModalWindowBase {
-  onClose?: () => void
+export interface Modal {
+  show: (options: any) => void
+  hide: (key: string) => void
+  hideAll: () => void
 }
 
-export interface ModalType<T extends ModalWindowBase> {
+export interface ModalType<T> {
   element: ComponentType<T>
   props: T
   key: string
+  title?: string
+  description?: string
 }
 
 class ModalService implements Modal {

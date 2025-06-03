@@ -1,5 +1,5 @@
 export * from './maybe.types'
 export * from './nullable.types'
 export * from './pagination-response.types'
-export * from './partial-type.type'
 export * from './primitive.types'
+export * from './operation-result-response.types'

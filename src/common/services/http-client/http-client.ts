@@ -1,6 +1,6 @@
 import { jwtDecode } from 'jwt-decode'
 
-import type { Env, HttpClient, HttpRequest, I18n, PersistStorage } from '@/common'
+import type { Env, I18n, PersistStorage } from '@/common'
 
 import { env, i18nInstance } from '@/common'
 import { FetchMethod, ResponseCode } from '@/types/enums/http.enum'
@@ -11,21 +11,33 @@ import type { ViteEnvironmentVariables } from '../env/vite-env'
 import { NetError } from './net-error'
 import { localStorageInstance } from '../local-storage'
 
+export interface HttpRequest {
+  path: string
+  body?: any
+  signal?: AbortSignal
+}
+
+export interface HttpClient {
+  get: <ResponseType>(req: HttpRequest) => Promise<ResponseType>
+  post: <ResponseType>(req: HttpRequest) => Promise<ResponseType>
+  patch: <ResponseType>(req: HttpRequest) => Promise<ResponseType>
+  delete: <ResponseType>(req: HttpRequest) => Promise<ResponseType>
+}
+
 class HttpService implements HttpClient {
   private readonly ACCESS_TOKEN = 'access_token'
   private readonly REFRESH_TOKEN = 'refresh_token'
   protected readonly ORIGIN: string = this.env.get('VITE_API_URL')
-  private _authWhiteList = ['/', '/decks/', '/courses/']
+  private _authWhiteList = ['/', '/decks/', '/sign-in', '/sign-up']
 
   constructor(
     private readonly env: Env<ViteEnvironmentVariables>,
     private readonly persistService: PersistStorage,
     private readonly i18n: I18n,
   ) {
-
-    // if (!this.isAuthorized() && !this._authWhiteList.includes(window.location.pathname)) {
-    //   this.goToAuth()
-    // }
+    if (!this.isAuthorized() && !this._authWhiteList.includes(window.location.pathname)) {
+      this.goToAuth()
+    }
   }
 
   public async get<T>(req: HttpRequest): Promise<T> {
@@ -56,6 +68,11 @@ class HttpService implements HttpClient {
       }
 
       const response = await this._fetch(request)
+
+      // Для Tanstack Query onSuccess
+      if (this._isStatusNoContent(response.status)) {
+        return {} as T
+      }
       const body = await response.json()
 
       if (response.ok)
@@ -93,19 +110,21 @@ class HttpService implements HttpClient {
     body,
     withHeaders = true,
     isRefresh = false,
+    signal,
   }: CustomRequest & { isRefresh?: boolean }): Promise<Response> {
     const url = `${this.ORIGIN}/api/v1/${path}`
 
     if (method === FetchMethod.get) {
       return withHeaders
-        ? fetch(url, { headers: this._makeHeaders(isRefresh) })
-        : fetch(url)
+        ? fetch(url, { headers: this._makeHeaders(isRefresh), signal })
+        : fetch(url, { signal })
     }
 
     return fetch(url, {
       method,
       headers: this._makeHeaders(isRefresh),
       body: JSON.stringify(body),
+      signal,
     })
   }
 
@@ -168,6 +187,10 @@ class HttpService implements HttpClient {
     catch {
       return true
     }
+  }
+
+  protected _isStatusNoContent(code: number): boolean {
+    return code === ResponseCode.NO_CONTENT
   }
 
   protected _isStatusOk(code: number): boolean {

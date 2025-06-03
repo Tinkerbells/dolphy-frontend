@@ -1,5 +1,4 @@
-import { useEffect } from 'react'
-import { useNavigate } from 'react-router'
+import { observer } from 'mobx-react-lite'
 import { Google } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import {
@@ -11,22 +10,15 @@ import {
   Typography,
 } from '@mui/material'
 
-import { useInjected } from '@/core/presentation/react'
-import { root } from '@/core/presentation/navigation/routes'
+import { root } from '@/app/navigation/routes'
 
-import { SignUpForm } from './sign-up.form'
-import { SignUpStore } from './sign-up.store'
+import { SignUpForm } from './ui'
+import { signUpController } from '../../controllers/sign-up.controller'
 
-export function SignUpPage() {
+export const SignUpPage = observer(() => {
   const { t } = useTranslation(['auth', 'common'])
-  const navigate = useNavigate()
-  const store = useInjected<SignUpStore>(SignUpStore)
 
-  useEffect(() => {
-    if (store.register.result.isSuccess) {
-      navigate(root['sign-in'].$path())
-    }
-  }, [store.register.result.isSuccess, navigate])
+  const { signUpForm } = signUpController
 
   return (
     <Box
@@ -49,9 +41,7 @@ export function SignUpPage() {
         </Typography>
 
         <Box>
-          <SignUpForm
-            signUpForm={store.signUpForm}
-          />
+          <SignUpForm signUpForm={signUpForm} />
 
           <Divider sx={{ my: 2 }}>{t('auth:signUp.or')}</Divider>
 
@@ -61,7 +51,7 @@ export function SignUpPage() {
             startIcon={<Google />}
             sx={{ mb: 3, py: 1.5 }}
           >
-            {t('auth:signUp.signInWithGoogle')}
+            {t('auth:signUp.signUpWithGoogle')}
           </Button>
 
           <Box sx={{ textAlign: 'center' }}>
@@ -69,10 +59,10 @@ export function SignUpPage() {
               {t('auth:signUp.haveAccount')}
               {' '}
               <Link
-                href="/sign-in"
+                href={root['sign-in'].$path()}
                 style={{ color: 'primary.main', textDecoration: 'none' }}
               >
-                {t('auth:signUp.signIn')}
+                {t('signUp.signIn')}
               </Link>
             </Typography>
           </Box>
@@ -80,4 +70,4 @@ export function SignUpPage() {
       </Card>
     </Box>
   )
-}
+})

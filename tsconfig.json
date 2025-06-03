@@ -21,7 +21,10 @@
     "resolveJsonModule": true,
     "types": [
       "vite/client",
-      "reflect-metadata"
+      "reflect-metadata",
+      "jest",
+      "vitest/globals",
+      "@testing-library/jest-dom"
     ],
     "allowImportingTsExtensions": true,
     "strict": true,

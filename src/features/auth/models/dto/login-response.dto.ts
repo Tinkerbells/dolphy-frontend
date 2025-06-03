@@ -1,17 +1,8 @@
-import { jsonProperty, Serializable } from 'ts-serializable'
+import type { User } from '../user.domain'
 
-import { User } from '../user.domain'
-
-export class LoginResponseDto extends Serializable {
-  @jsonProperty(String)
+export class LoginResponseDto {
   token: string
-
-  @jsonProperty(String)
   refreshToken: string
-
-  @jsonProperty(Number)
   tokenExpires: number
-
-  @jsonProperty(User)
-  user: User = new User()
+  user: User
 }

@@ -67,6 +67,13 @@
     "timeFormat": "HH:mm",
     "dateTimeFormat": "DD.MM.YYYY HH:mm"
   },
+  "notifications": {
+    "itemDeleted": "{{item}} успешно удалён",
+    "itemCreated": "{{item}} успешно создан",
+    "itemUpdated": "{{item}} успешно обновлён",
+    "actionFailed": "Не удалось {{action}} {{item}}",
+    "saved": "Изменения успешно сохранены"
+  },
   "errors": {
     "somethingWentWrong": "Что-то пошло не так",
     "pageNotFound": "Страница не найдена",

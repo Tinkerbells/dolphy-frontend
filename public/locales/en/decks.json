@@ -2,6 +2,7 @@
   "title": "My Flashcard Decks",
   "createDeck": "Create New Deck",
   "editDeck": "Edit Deck",
+  "deleteDeck": "Delete Deck",
   "deckName": "Deck Name",
   "deckDescription": "Description",
   "noDecks": "You don't have any decks yet. Create one to get started!",

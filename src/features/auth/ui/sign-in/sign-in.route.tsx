@@ -5,7 +5,7 @@ import { CircularProgress } from '@mui/material'
 import { withErrorBoundary } from 'react-error-boundary'
 
 import { root } from '@/app/navigation/routes.ts'
-import { compose, ErrorHandler, logError, withSuspense } from '@/shared'
+import { compose, ErrorHandler, logError, withSuspense } from '@/app/react'
 
 const SignInPage = lazy(() =>
   import('./sign-in.page.tsx').then(module => ({ default: module.SignInPage })),

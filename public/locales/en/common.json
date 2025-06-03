@@ -60,6 +60,13 @@
     "ago": "ago",
     "in": "in"
   },
+  "notifications": {
+    "itemDeleted": "{{item}} deleted successfully",
+    "itemCreated": "{{item}} created successfully",
+    "itemUpdated": "{{item}} updated successfully",
+    "actionFailed": "Failed to {{action}} {{item}}",
+    "saved": "Your changes have been saved"
+  },
   "dates": {
     "dateFormat": "MM/DD/YYYY",
     "shortDateFormat": "MM/DD/YY",

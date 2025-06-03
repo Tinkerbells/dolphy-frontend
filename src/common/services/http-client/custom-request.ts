@@ -1,4 +1,4 @@
-import type { HttpRequest } from '@/common'
+import type { HttpRequest } from './http-client'
 
 export interface CustomRequest extends HttpRequest {
   /** Метод запроса: GET, POST, PATCH и т.д. */

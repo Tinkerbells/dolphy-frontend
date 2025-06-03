@@ -1,48 +1,21 @@
-import { jsonIgnore, jsonProperty, Serializable } from 'ts-serializable'
-
-export class User extends Serializable {
-  @jsonProperty(Number, String)
+export class User {
   id: number | string
-
-  @jsonProperty(String, null)
-  email: string | null
-
-  @jsonProperty(String)
+  email: string
   provider: string
-
-  @jsonProperty(String, null)
-  socialId?: string | null
-
-  @jsonProperty(String, null)
-  firstName: string | null
-
-  @jsonProperty(String, null)
-  lastName: string | null
-
-  // TODO fix any typings
-  photo?: any | null
-
-  @jsonIgnore()
-  role?: any | null
-
-  @jsonIgnore()
-  status?: any | null
-
-  @jsonProperty(String)
+  socialId?: string
+  firstName: string
+  lastName: string
+  // TODO: fix any typings
+  photo?: any
+  role?: any
+  status?: any
   createdAt: string
-
-  @jsonProperty(String)
   updatedAt: string
-
-  @jsonProperty(String, null)
   deletedAt: string
-
-  @jsonIgnore()
   get fullName(): string {
     return [this.firstName, this.lastName].filter(Boolean).join(' ')
   }
 
-  @jsonIgnore()
   get firstChar(): string {
     return this.firstName?.charAt(0) || 'U'
   }

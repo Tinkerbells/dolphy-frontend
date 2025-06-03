@@ -1,15 +1,14 @@
 import type { RouteObject } from 'react-router'
 
-import { observer } from 'mobx-react-lite'
 import { createElement, lazy } from 'react'
 import { CircularProgress } from '@mui/material'
 import { withErrorBoundary } from 'react-error-boundary'
 
-import { root } from '@/core/presentation/navigation/routes.ts'
-import { compose, ErrorHandler, logError, withSuspense } from '@/core/presentation/react'
+import { root } from '@/app/navigation/routes.ts'
+import { compose, ErrorHandler, logError, withSuspense } from '@/app/react'
 
 const SignUpPage = lazy(() =>
-  import('./sign-up.page.tsx').then(module => ({ default: observer(module.SignUpPage) })),
+  import('./sign-up.page.tsx').then(module => ({ default: module.SignUpPage })),
 )
 
 const enhance = compose(

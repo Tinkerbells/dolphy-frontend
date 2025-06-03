@@ -1,1 +1,1 @@
-export { signInPageRoute } from './ui'
+export { signInPageRoute, signUpPageRoute } from './ui'

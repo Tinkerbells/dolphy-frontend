@@ -7,10 +7,21 @@ import LanguageDetector from 'i18next-browser-languagedetector'
 
 import { Locales } from '@/types/enums/locales.enum'
 
-import type { Env, I18n } from '../types'
+import type { Env } from './env'
 import type { ViteEnvironmentVariables } from './env/vite-env'
 
 import { env } from './env'
+
+/**
+ * Порт для работы с интернационализацией
+ */
+export interface I18n {
+  t: TFunction
+  changeLanguage: (lang: string) => Promise<void>
+  getCurrentLanguage: () => string
+  getAvailableLanguages: () => string[]
+  onLanguageChanged: (callback: (lang: string) => void) => void
+}
 
 /**
  * Адаптер для работы с i18next
@@ -43,9 +54,8 @@ class I18nService implements I18n {
           order: ['localStorage', 'navigator'],
           lookupLocalStorage: this.I18nStorageKey,
         },
-        // TODO поправить проблему suspense в useTranslation
         react: {
-          useSuspense: false,
+          useSuspense: true,
         },
         backend: {
           loadPath: '/locales/{{lng}}/{{ns}}.json',

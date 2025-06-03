@@ -1,9 +1,18 @@
 import { validateSync } from 'class-validator'
 import { plainToClass } from 'class-transformer'
 
-import type { Env } from '@/common/types'
-
 import { ViteEnvironmentVariables } from './vite-env'
+
+/**
+ * Интерфейс сервиса окружения, предоставляющего доступ к переменным окружения
+ * @template T - Тип структуры переменных окружения
+ */
+export interface Env<T extends Record<string, any>> {
+  get: <K extends keyof T>(key: K) => T[K]
+  getAll: () => T
+  isProduction: () => boolean
+  isDevelopment: () => boolean
+}
 
 /**
  * Сервис для загрузки и валидации переменных окружения Vite

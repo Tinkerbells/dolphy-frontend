@@ -1,4 +1,7 @@
-import type { HttpClient } from '@/common'
+import { plainToClass } from 'class-transformer'
+
+import type { OperationResultDto } from '@/types'
+import type { HttpClient } from '@/common/services/http-client'
 
 import { http } from '@/common/services/http-client'
 
@@ -12,30 +15,24 @@ import { LoginResponseDto } from '../models/dto/login-response.dto'
 class AuthService implements AuthRepository {
   private readonly baseUrl = 'auth'
 
-  constructor(private readonly http: HttpClient) { }
+  constructor(private readonly http: HttpClient) {}
 
-  async me(): Promise<User> {
-    const json = await this.http.get<User>({ path: `${this.baseUrl}/me` })
-    if (typeof json === 'object' && json !== null) {
-      return User.fromJSON(json)
-    }
-    throw new Error('Wrong return type')
+  async me(signal?: AbortSignal): Promise<User> {
+    const json = await this.http.get<User>({ path: `${this.baseUrl}/me`, signal })
+    return plainToClass(User, json)
   }
 
-  async register(createUserDto: AuthRegisterLoginDto): Promise<void> {
-    return this.http.post<void>({ path: `${this.baseUrl}/email/register`, body: createUserDto })
+  async register(createUserDto: AuthRegisterLoginDto, signal?: AbortSignal): Promise<OperationResultDto> {
+    return this.http.post<OperationResultDto>({ path: `${this.baseUrl}/email/register`, body: createUserDto, signal })
   }
 
-  async login(loginDto: AuthEmailLoginDto): Promise<LoginResponseDto> {
-    const json = await this.http.post<LoginResponseDto>({ path: `${this.baseUrl}/email/login`, body: loginDto })
-    if (typeof json === 'object' && json !== null) {
-      return new LoginResponseDto().fromJSON(json)
-    }
-    throw new Error('Wrong return type')
+  async login(loginDto: AuthEmailLoginDto, signal?: AbortSignal): Promise<LoginResponseDto> {
+    const json = await this.http.post<LoginResponseDto>({ path: `${this.baseUrl}/email/login`, body: loginDto, signal })
+    return plainToClass(LoginResponseDto, json)
   }
 
-  async logout(): Promise<void> {
-    return this.http.post<void>({ path: 'auth/logout' })
+  async logout(signal?: AbortSignal): Promise<void> {
+    return this.http.post<void>({ path: 'auth/logout', signal })
   }
 }
 
