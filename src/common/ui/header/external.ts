@@ -1,1 +1,1 @@
-export { profile } from '@/features/auth/controllers/profile.contorller'
+export { profile } from '@/features/auth/shared'

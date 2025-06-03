@@ -161,7 +161,7 @@ function SelectExtendedInputRaw<T extends object>(
                 data={props.options}
                 endReached={props.onEndReached}
                 components={MUIComponents}
-                itemContent={(index, item) => (
+                itemContent={(_, item) => (
                   <ListItemButton
                     selected={
                       props.value

@@ -65,7 +65,8 @@ export const LanguageSwitcher = observer(() => {
           >
             {getCountryFlag(language)}
             &nbsp;
-            {t(`language.${language}`)}
+            {/* @ts-expect-error - i18n function returns unknown type */}
+            {String(t(`language.${language}`))}
           </MenuItem>
         ))}
       </Menu>
@@ -87,7 +88,8 @@ export const LanguageSwitcherButtons: React.FC = observer(() => {
           size="small"
           onClick={() => changeLanguage(language)}
         >
-          {t(`language.${language}`)}
+          {/* @ts-expect-error - i18n function returns unknown type */}
+          {String(t(`language.${language}`))}
         </Button>
       ))}
     </Box>

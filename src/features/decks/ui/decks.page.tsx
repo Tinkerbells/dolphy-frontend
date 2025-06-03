@@ -1,6 +1,6 @@
-import { observer } from 'mobx-react-lite'
-import { useTranslation } from 'react-i18next'
 import AddIcon from '@mui/icons-material/Add'
+import { useTranslation } from 'react-i18next'
+import { observer, useLocalObservable } from 'mobx-react-lite'
 import {
   Alert,
   Box,
@@ -11,12 +11,13 @@ import {
   Typography,
 } from '@mui/material'
 
-import { useDecksModals } from './lib'
 import { DeckCard } from './ui'
-import { decksController } from '../controllers'
+import { useDecksModals } from './lib'
+import { createDeckController } from '../controllers'
 
 export const DecksPage = observer(() => {
   const { t } = useTranslation(['common', 'decks'])
+  const decksController = useLocalObservable(createDeckController())
 
   const { isLoading, decks, openUpdateModal, openDeleteModal, openCreateModal } = decksController
 

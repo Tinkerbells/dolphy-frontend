@@ -1,5 +1,5 @@
-import { useState } from 'react'
 import { observer } from 'mobx-react-lite'
+import { useEffect, useState } from 'react'
 import { styled } from '@mui/material/styles'
 import { useTranslation } from 'react-i18next'
 import LogoutIcon from '@mui/icons-material/Logout'
@@ -26,8 +26,12 @@ const CenteredNavigation = styled(Box)(() => ({
 }))
 
 export const AuthHeader = observer(() => {
-  const { logout, isLoading, user } = profile
+  const { logout, isLoading, user, refetch } = profile
   const { t } = useTranslation(['common', 'auth'])
+
+  useEffect(() => {
+    refetch()
+  }, [])
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
@@ -67,15 +71,6 @@ export const AuthHeader = observer(() => {
 
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <LanguageSwitcher />
-
-          {/* <Tooltip title={t('navigation.notifications', 'Notifications')}> */}
-          {/*   <IconButton size="large" color="inherit" sx={{ mr: 1 }}> */}
-          {/*     <Badge badgeContent={notificationCount} color="error"> */}
-          {/*       <NotificationsIcon /> */}
-          {/*     </Badge> */}
-          {/*   </IconButton> */}
-          {/* </Tooltip> */}
-
           <Tooltip title={t('navigation.settings', 'Account settings')}>
             <IconButton
               onClick={handleClick}

@@ -163,7 +163,7 @@ function MultipleSelectExtendedInputRaw<T extends object>(
                 data={props.options}
                 endReached={props.onEndReached}
                 components={MUIComponents}
-                itemContent={(index, item) => (
+                itemContent={(_, item) => (
                   <ListItemButton
                     selected={valueKeys.includes(props.keyExtractor(item))}
                     onClick={() => {

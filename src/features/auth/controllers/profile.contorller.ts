@@ -2,10 +2,10 @@ import { makeAutoObservable } from 'mobx'
 
 import type { NullableType } from '@/types'
 import type { NetError } from '@/common/services/http-client'
-import type { CacheService, Notify, PersistStorage, RouterService } from '@/common'
+import type { CacheService, PersistStorage, RouterService } from '@/common'
 
 import { root } from '@/app/navigation/routes'
-import { cacheInstance, localStorageInstance, notify, router } from '@/common'
+import { cacheInstance, localStorageInstance, router } from '@/common'
 
 import type { User } from '../models/user.domain'
 import type { AuthRepository } from '../models/repositories/auth.repository'
@@ -13,13 +13,16 @@ import type { AuthRepository } from '../models/repositories/auth.repository'
 import { authService } from '../services/auth.service'
 
 class ProfileController {
+  private readonly keys = {
+    profile: ['profile'] as const,
+  }
+
   private readonly ACCESS_TOKEN = 'access_token'
   private readonly REFRESH_TOKEN = 'refresh_token'
   constructor(
     private readonly cache: CacheService,
     private readonly persistStorage: PersistStorage,
     private readonly router: RouterService,
-    private readonly notify: Notify,
     private readonly authService: AuthRepository,
   ) {
     makeAutoObservable(this, {}, { autoBind: true })
@@ -33,12 +36,22 @@ class ProfileController {
     return this.getProfileQuery.result.data
   }
 
+  public refetch() {
+    return this.getProfileQuery.refetch()
+  }
+
   public async logout() {
     return await this.logoutMutation.mutate()
   }
 
   private readonly getProfileQuery
-    = this.cache.createQuery<NullableType<User>, NetError>(() => this.authService.me())
+    = this.cache.createQuery<NullableType<User>, NetError>(
+      () => this.authService.me(),
+      {
+        queryKey: this.keys.profile,
+        enableOnDemand: true,
+      },
+    )
 
   private readonly logoutMutation = this.cache.createMutation(
     (_, { signal }) => this.authService.logout(signal),
@@ -55,4 +68,4 @@ class ProfileController {
   )
 }
 
-export const profile = new ProfileController(cacheInstance, localStorageInstance, router, notify, authService)
+export const profile = new ProfileController(cacheInstance, localStorageInstance, router, authService)

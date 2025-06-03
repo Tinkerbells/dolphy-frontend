@@ -9,8 +9,8 @@ import type {
   FieldValues,
 } from 'react-hook-form'
 
-import * as React from 'react'
 import { forwardRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Controller,
 } from 'react-hook-form'
@@ -20,8 +20,7 @@ import {
   TimePicker,
 } from '@mui/x-date-pickers'
 
-import useLanguage from '@/services/i18n/use-language'
-import { getValueByKey } from '@/components/form/date-pickers/helper'
+import { getValueByKey } from './helper'
 
 type ValueDateType = Date | null | undefined
 interface TimePickerFieldProps {
@@ -58,12 +57,12 @@ function TimePickerInputRaw(
   },
   ref?: ForwardedRef<HTMLDivElement | null>,
 ) {
-  const language = useLanguage()
+  const { i18n } = useTranslation()
 
   return (
     <LocalizationProvider
       dateAdapter={AdapterDateFns}
-      adapterLocale={getValueByKey(language)}
+      adapterLocale={getValueByKey(i18n.language)}
     >
       <TimePicker
         ref={ref}

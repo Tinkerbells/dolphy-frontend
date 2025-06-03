@@ -78,7 +78,7 @@ export class DecksController {
 
   private readonly decksQuery = this.cache.createQuery<PaginationResponseDto<Deck>, NetError>(
     () => this.deckService.findAll(),
-    { queryKey: this.keys.decks },
+    { queryKey: this.keys.decks, enableOnDemand: true, suspense: true },
   )
 
   private _refetchDecks() {
@@ -125,3 +125,12 @@ export const decksController = new DecksController(
   notify,
   deckService,
 )
+
+export function createDeckController() {
+  return () => new DecksController(
+    modalInstance,
+    cacheInstance,
+    notify,
+    deckService,
+  )
+}

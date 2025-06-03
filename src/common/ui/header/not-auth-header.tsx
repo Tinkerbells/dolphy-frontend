@@ -7,7 +7,6 @@ import {
   Button,
   Toolbar,
   Typography,
-  useTheme,
 } from '@mui/material'
 
 import { root } from '@/app/navigation/routes'
@@ -22,7 +21,6 @@ const CenteredNavigation = styled(Box)(() => ({
 
 export const NotAuthHeader: React.FC = () => {
   const { t } = useTranslation(['common', 'auth'])
-  const theme = useTheme()
   const navigate = useNavigate()
 
   const handleSignIn = () => {
@@ -40,11 +38,11 @@ export const NotAuthHeader: React.FC = () => {
         <Typography
           variant="h6"
           component="div"
-          sx={{
+          sx={theme => ({
             fontWeight: 'bold',
             color: theme.palette.primary.main,
             mr: 2,
-          }}
+          })}
         >
           {t('app.name')}
         </Typography>

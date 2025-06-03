@@ -38,7 +38,7 @@ function CheckboxBooleanInputRaw(
 ) {
   const value = props.value ?? false
   const onChange = (
-    event: ChangeEvent<HTMLInputElement>,
+    _: ChangeEvent<HTMLInputElement>,
     checkboxValue: boolean,
   ) => {
     props.onChange(checkboxValue)
