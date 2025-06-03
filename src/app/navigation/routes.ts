@@ -1,4 +1,4 @@
-import { route } from 'react-router-typesafe-routes'
+import { route, string } from 'react-router-typesafe-routes'
 
 export const root = route({
   path: '',
@@ -13,7 +13,8 @@ export const root = route({
       path: 'decks',
       children: {
         detail: route({
-          path: 'detail',
+          path: ':id',
+          params: { id: string() },
         }),
       },
     }),

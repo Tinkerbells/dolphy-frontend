@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { closeDialogWindow, openDialogWindow, openModalWindow, closeModalWindowHandler } from '@/common'
+import { closeDialogWindow, closeModalWindowHandler, openDialogWindow, openModalWindow } from '@/common'
 
 import type { Deck } from '../../models/deck.domain'
 import type { DecksController } from '../../controllers'
@@ -20,7 +20,7 @@ export function useDecksModals(controller: DecksController) {
         key: 'create-deck',
         element: CreateDeckForm,
         props: {
-          onCancel: closeModalWindowHandler("create-deck"),
+          onCancel: closeModalWindowHandler('create-deck'),
           createDeckForm: controller.deckCreateForm,
         },
         title: t('decks:createDeck'),
@@ -29,7 +29,7 @@ export function useDecksModals(controller: DecksController) {
         key: 'update-deck',
         element: EditDeckForm,
         props: {
-          onCancel:closeModalWindowHandler("update-deck"),
+          onCancel: closeModalWindowHandler('update-deck'),
           editDeckForm: controller.deckUpdateForm(deck),
         },
         title: t('decks:editDeck'),
@@ -46,5 +46,5 @@ export function useDecksModals(controller: DecksController) {
         },
       }),
     })
-  }, [controller])
+  }, [controller, t])
 }

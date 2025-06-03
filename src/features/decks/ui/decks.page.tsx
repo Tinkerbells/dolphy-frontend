@@ -17,11 +17,11 @@ import { createDeckController } from '../controllers'
 
 export const DecksPage = observer(() => {
   const { t } = useTranslation(['common', 'decks'])
-  const decksController = useLocalObservable(createDeckController())
+  const controller = useLocalObservable(createDeckController())
 
-  const { isLoading, decks, openUpdateModal, openDeleteModal, openCreateModal } = decksController
+  const { isLoading, decks, openUpdateModal, openDeleteModal, openCreateModal } = controller
 
-  useDecksModals(decksController)
+  useDecksModals(controller)
 
   return (
     <Box sx={{ flexGrow: 1 }}>

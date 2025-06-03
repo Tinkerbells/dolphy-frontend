@@ -2,7 +2,7 @@ import type { HttpClient } from '@/common/services/http-client'
 
 import { http } from '@/common/services/http-client'
 
-import type { CardWithContent } from '../models/card.domain'
+import type { Card } from '../models/card.domain'
 import type { CardsRepository } from '../models/repositories/cards.repository'
 
 /**
@@ -11,20 +11,20 @@ import type { CardsRepository } from '../models/repositories/cards.repository'
 class CardsService implements CardsRepository {
   private readonly baseUrl = 'cards'
   constructor(private readonly http: HttpClient) {}
-  async findById(id: string): Promise<CardWithContent> {
-    return this.http.get<CardWithContent>({ path: `${this.baseUrl}/${id}` })
+  async findById(id: string): Promise<Card> {
+    return this.http.get<Card>({ path: `${this.baseUrl}/${id}` })
   }
 
-  async findByDeckId(deckId: string): Promise<CardWithContent[]> {
-    return this.http.get<CardWithContent[]>({ path: `${this.baseUrl}/deck/${deckId}` })
+  async findByDeckId(deckId: string): Promise<Card[]> {
+    return this.http.get<Card[]>({ path: `${this.baseUrl}/deck/${deckId}` })
   }
 
-  async findDueByDeckId(deckId: string): Promise<CardWithContent[]> {
-    return this.http.get<CardWithContent[]>({ path: `${this.baseUrl}/due/deck/${deckId}` })
+  async findDueByDeckId(deckId: string): Promise<Card[]> {
+    return this.http.get<Card[]>({ path: `${this.baseUrl}/due/deck/${deckId}` })
   }
 
-  async findDueCards(): Promise<CardWithContent[]> {
-    return this.http.get<CardWithContent[]>({ path: `${this.baseUrl}/due` })
+  async findDueCards(): Promise<Card[]> {
+    return this.http.get<Card[]>({ path: `${this.baseUrl}/due` })
   }
 }
 

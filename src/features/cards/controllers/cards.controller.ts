@@ -7,7 +7,7 @@ import { root } from '@/app/navigation/routes'
 import { cacheInstance, notify, router } from '@/common'
 
 import type { Deck } from '../external'
-import type { CardWithContent } from '../../cards/models/card.domain'
+import type { Card } from '../../cards/models/card.domain'
 import type { CardsRepository } from '../../cards/models/repositories/cards.repository'
 
 import { cardsService } from '../../cards/services/cards.service'
@@ -64,11 +64,11 @@ export class DeckDetailController {
     return this.deckDueCardsQuery.result.isLoading
   }
 
-  get cards(): CardWithContent[] | undefined {
+  get cards(): Card[] | undefined {
     return this.deckCardsQuery.result.data
   }
 
-  get dueCards(): CardWithContent[] | undefined {
+  get dueCards(): Card[] | undefined {
     return this.deckDueCardsQuery.result.data
   }
 
@@ -82,13 +82,13 @@ export class DeckDetailController {
 
   get newCardsCount(): number {
     return this.cards?.filter(cardWithContent =>
-      cardWithContent.card.state === 'New',
+      cardWithContent.state === 'New',
     ).length ?? 0
   }
 
   get learningCardsCount(): number {
     return this.cards?.filter(cardWithContent =>
-      cardWithContent.card.state === 'Learning' || cardWithContent.card.state === 'Relearning',
+      cardWithContent.state === 'Learning' || cardWithContent.state === 'Relearning',
     ).length ?? 0
   }
 
@@ -130,7 +130,7 @@ export class DeckDetailController {
   /**
    * Запрос для получения всех карточек колоды
    */
-  private readonly deckCardsQuery = this.cache.createQuery<CardWithContent[], NetError>(
+  private readonly deckCardsQuery = this.cache.createQuery<Card[], NetError>(
     () => {
       if (!this._deckId) {
         throw new CardsControllerError('Идентификатор колоды не установлен')
@@ -139,7 +139,6 @@ export class DeckDetailController {
     },
     {
       queryKey: this._deckId ? this.keys.deckCards(this._deckId) : [],
-      enabled: () => !!this._deckId,
       enableOnDemand: true,
     },
   )
@@ -147,7 +146,7 @@ export class DeckDetailController {
   /**
    * Запрос для получения карточек для повторения
    */
-  private readonly deckDueCardsQuery = this.cache.createQuery<CardWithContent[], NetError>(
+  private readonly deckDueCardsQuery = this.cache.createQuery<Card[], NetError>(
     () => {
       if (!this._deckId) {
         throw new CardsControllerError('Идентификатор колоды не установлен')

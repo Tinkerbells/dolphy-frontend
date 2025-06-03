@@ -2,8 +2,8 @@ import { createElement } from 'react'
 import { CircularProgress } from '@mui/material'
 import { createBrowserRouter, Navigate, Outlet, RouterProvider } from 'react-router'
 
-import { decksPageRoute, signInPageRoute, signUpPageRoute } from '@/features'
 import { AuthorizedLayout, NotAuthorizedLayout, RouterServiceAdapter } from '@/common'
+import { deckDetailPageRoute, decksPageRoute, signInPageRoute, signUpPageRoute } from '@/features'
 
 import { root } from './routes'
 import { compose, withSuspense } from '../react'
@@ -33,7 +33,7 @@ const browserRouter = createBrowserRouter([
       },
       {
         element: createElement(enhance(AuthorizedLayout)),
-        children: [decksPageRoute],
+        children: [decksPageRoute, deckDetailPageRoute],
       },
       { path: '*', element: <Navigate to={root['sign-in'].$path()} replace /> },
     ],

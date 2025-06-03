@@ -1,13 +1,13 @@
 import type { Deck } from '../../external'
-import type { CardWithContent } from '../card.domain'
+import type { Card } from '../card.domain'
 
 /**
  * Интерфейс репозитория для работы с карточками
  */
 export interface CardsRepository {
   // findAll: (params?: FindCardsParams) => Promise<PaginationResponseDto<CardWithContent>>
-  findById: (id: string) => Promise<CardWithContent>
-  findByDeckId: (deckId: Deck['id']) => Promise<CardWithContent[]>
-  findDueByDeckId: (deckId: Deck['id']) => Promise<CardWithContent[]>
-  findDueCards: () => Promise<CardWithContent[]>
+  findById: (id: string) => Promise<Card>
+  findByDeckId: (deckId: Deck['id']) => Promise<Card[]>
+  findDueByDeckId: (deckId: Deck['id']) => Promise<Card[]>
+  findDueCards: () => Promise<Card[]>
 }
