@@ -87,14 +87,14 @@ export function CardItem({ card, onEdit, onDelete }: CardItemProps) {
         <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={2}>
           <Box display="flex" gap={1} alignItems="center">
             <Chip
-              label={card.state}
+              label={t(`cards:state.${card.state}`)}
               size="small"
               color={getStateColor(card.state) as any}
               variant="outlined"
             />
             {card.reps > 0 && (
               <Chip
-                label={`${card.reps} повторений`}
+                label={t('cards:repetitionsCount', { count: card.reps })}
                 size="small"
                 variant="outlined"
               />
@@ -135,12 +135,12 @@ export function CardItem({ card, onEdit, onDelete }: CardItemProps) {
           <IconButton
             size="small"
             onClick={() => setShowAnswer(!showAnswer)}
-            aria-label={showAnswer ? 'Скрыть ответ' : 'Показать ответ'}
+            aria-label={showAnswer ? t('cards:hideAnswer') : t('cards:showAnswer')}
           >
             {showAnswer ? <VisibilityOffIcon /> : <VisibilityIcon />}
           </IconButton>
           <Typography variant="body2" color="text.secondary">
-            {showAnswer ? t('') : 'Показать ответ'}
+            {showAnswer ? t('cards:hideAnswer') : t('cards:showAnswer')}
           </Typography>
         </Box>
 
@@ -161,15 +161,15 @@ export function CardItem({ card, onEdit, onDelete }: CardItemProps) {
 
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant="body2" color="text.secondary">
-            Следующий показ:
-            {' '}
+            {t('cards:nextReview')}
+            {': '}
             {formatDate(card.due)}
           </Typography>
 
           {card.last_review && (
             <Typography variant="body2" color="text.secondary">
-              Последнее повторение:
-              {' '}
+              {t('cards:lastReview')}
+              {': '}
               {formatDate(card.last_review)}
             </Typography>
           )}
