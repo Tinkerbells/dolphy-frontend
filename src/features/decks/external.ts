@@ -1,3 +1,6 @@
 export { cardsService } from '../cards/shared'
 export type { CardsRepository } from '../cards/shared'
-export type { CardDomain } from '../cards/shared'
+export type { Card } from '../cards/shared'
+export type { FsrsCardWithContent, FsrsRepository } from '../fsrs/shared'
+export { State } from '../fsrs/shared'
+export { fsrsService } from '../fsrs/shared'

@@ -31,7 +31,7 @@ export const DeckDetailPage = observer(() => {
 
   const {
     isCardsLoading,
-    cards,
+    dueCards,
     totalCardsCount,
     dueCardsCount,
     newCardsCount,
@@ -135,9 +135,9 @@ export const DeckDetailPage = observer(() => {
           </Alert>
         )}
 
-        {cards && cards.length > 0 && (
+        {dueCards && dueCards.length > 0 && (
           <Box>
-            {cards.map(card => (
+            {dueCards.map(card => (
               <CardItem
                 key={card.id}
                 card={card}

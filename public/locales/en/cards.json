@@ -22,6 +22,7 @@
   "hideAnswer": "Hide answer",
   "nextReview": "Next review",
   "lastReview": "Last review",
+  "repetitionsCount": " ({{count}})",
   "state": {
     "New": "New",
     "Learning": "Learning",

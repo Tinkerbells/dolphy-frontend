@@ -1,13 +1,15 @@
 import type { Deck } from '../../external'
-import type { Card, FsrsCardWithContent } from '../card.domain'
+import type { Card } from '../card.domain'
 
 /**
  * Интерфейс репозитория для работы с карточками
  */
 export interface CardsRepository {
-  // findAll: (params?: FindCardsParams) => Promise<PaginationResponseDto<CardWithContent>>
+  // TODO: добавить закоментированные методы
+  // findAll: (params?: FindCardsParams) => Promise<PaginationResponseDto<Card[]>>
   findById: (id: string) => Promise<Card>
   findByDeckId: (deckId: Deck['id']) => Promise<Card[]>
-  findDueByDeckId: (deckId: Deck['id']) => Promise<FsrsCardWithContent[]>
-  findDueCards: () => Promise<FsrsCardWithContent[]>
+  // create: (data: CreateCardDto) => Promise<FsrsCardWithContent>
+  // update: (id: string, data: Partial<CreateCardDto>) => Promise<FsrsCardWithContent>
+  // remove: (id: string) => Promise<OperationResultDto>
 }

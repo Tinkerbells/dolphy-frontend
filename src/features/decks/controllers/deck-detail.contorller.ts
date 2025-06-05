@@ -9,9 +9,9 @@ import { root } from '@/app/navigation/routes'
 import { cacheInstance, modalInstance, notify, router } from '@/common'
 
 import type { Deck } from '../../decks/models/deck.domain'
-import type { CardDomain, CardsRepository } from '../external'
+import type { Card, CardsRepository, FsrsCardWithContent, FsrsRepository } from '../external'
 
-import { cardsService } from '../external'
+import { cardsService, fsrsService, State } from '../external'
 
 export interface CardsModals {
   create: () => void
@@ -27,8 +27,8 @@ export class DeckDetailController {
     deckDueCards: (id: string) => ['deck', id, 'due-cards'] as const,
   }
 
-  private readonly deckCardsQuery: MobxQuery<CardDomain.Card[], NetError>
-  private readonly deckDueCardsQuery: MobxQuery<CardDomain.Card[], NetError>
+  private readonly deckCardsQuery: MobxQuery<Card[], NetError>
+  private readonly deckDueCardsQuery: MobxQuery<FsrsCardWithContent[], NetError>
 
   private _deckId?: Deck['id'] = undefined
   private _openModal?: CardsModals
@@ -41,13 +41,14 @@ export class DeckDetailController {
     private readonly router: RouterService,
     private readonly notify: Notify,
     private readonly cardsService: CardsRepository,
+    private readonly fsrsService: FsrsRepository,
     deckId: Deck['id'],
   ) {
     this._deckId = deckId
     // TODO: check newer version of `mobx-tanstack-query` for fixing this bug
     // eslint-disable-next-line ts/ban-ts-comment
     // @ts-ignore
-    this.deckCardsQuery = this.cache.createQuery<CardDomain.Card[], NetError>(
+    this.deckCardsQuery = this.cache.createQuery<Card[], NetError>(
       () => {
         if (!this._deckId) {
           throw new Error('Идентификатор колоды не установлен')
@@ -62,12 +63,12 @@ export class DeckDetailController {
       // TODO: check newer version of `mobx-tanstack-query` for fixing this bug
       // eslint-disable-next-line ts/ban-ts-comment
       // @ts-ignore
-      this.deckDueCardsQuery = this.cache.createQuery<CardDomain.Card[], NetError>(
+      this.deckDueCardsQuery = this.cache.createQuery<CardDomain.FsrsCardWithContent[], NetError>(
         () => {
           if (!this._deckId) {
             throw new Error('Идентификатор колоды не установлен')
           }
-          return this.cardsService.findDueByDeckId(this._deckId)
+          return this.fsrsService.findDueByDeckId(this._deckId)
         },
         {
           queryKey: this.keys.deckDueCards(this._deckId!),
@@ -131,20 +132,20 @@ export class DeckDetailController {
   }
 
   get newCardsCount(): number {
-    return this.cards?.filter(cardWithContent =>
-      cardWithContent.state === 'New',
+    return this.dueCards?.filter(cardWithContent =>
+      cardWithContent.state === State.New,
     ).length ?? 0
   }
 
   get learningCardsCount(): number {
-    return this.cards?.filter(cardWithContent =>
-      cardWithContent.state === 'Learning' || cardWithContent.state === 'Relearning',
+    return this.dueCards?.filter(cardWithContent =>
+      cardWithContent.state === State.Learning || cardWithContent.state === State.Relearning,
     ).length ?? 0
   }
 
   get masteredCardsCount(): number {
-    return this.cards?.filter(cardWithContent =>
-      cardWithContent.state === 'Review',
+    return this.dueCards?.filter(cardWithContent =>
+      cardWithContent.state === State.Review,
     ).length ?? 0
   }
 
@@ -197,6 +198,7 @@ export function createDeckDetailController(deckId: Deck['id']) {
     router,
     notify,
     cardsService,
+    fsrsService,
     deckId,
   )
 }

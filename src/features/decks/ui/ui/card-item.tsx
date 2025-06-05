@@ -17,10 +17,10 @@ import {
   Typography,
 } from '@mui/material'
 
-import type { CardDomain } from '../../external'
+import type { FsrsCardWithContent } from '../../external'
 
 interface CardItemProps {
-  card: CardDomain.Card
+  card: FsrsCardWithContent
   onEdit: () => void
   onDelete: () => void
 }
@@ -63,14 +63,6 @@ export function CardItem({ card, onEdit, onDelete }: CardItemProps) {
     }
   }
 
-  const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('ru-RU', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    }).format(new Date(date))
-  }
-
   return (
     <Card
       elevation={1}
@@ -89,7 +81,7 @@ export function CardItem({ card, onEdit, onDelete }: CardItemProps) {
             <Chip
               label={t(`cards:state.${card.state}`)}
               size="small"
-              color={getStateColor(card.state) as any}
+              color={getStateColor(card.state)}
               variant="outlined"
             />
             {card.reps > 0 && (
@@ -128,7 +120,7 @@ export function CardItem({ card, onEdit, onDelete }: CardItemProps) {
         </Box>
 
         <Typography variant="h6" component="div" gutterBottom>
-          {card.front}
+          {card.card.question}
         </Typography>
 
         <Box display="flex" alignItems="center" gap={1} mb={2}>
@@ -154,7 +146,7 @@ export function CardItem({ card, onEdit, onDelete }: CardItemProps) {
             }}
           >
             <Typography variant="body1">
-              {card.back}
+              {card.card.answer}
             </Typography>
           </Box>
         )}
@@ -163,14 +155,14 @@ export function CardItem({ card, onEdit, onDelete }: CardItemProps) {
           <Typography variant="body2" color="text.secondary">
             {t('cards:nextReview')}
             {': '}
-            {formatDate(card.due)}
+            {/* {formatDate(card.due)} */}
           </Typography>
 
           {card.last_review && (
             <Typography variant="body2" color="text.secondary">
               {t('cards:lastReview')}
               {': '}
-              {formatDate(card.last_review)}
+              {/* {formatDate(card.last_review)} */}
             </Typography>
           )}
         </Box>

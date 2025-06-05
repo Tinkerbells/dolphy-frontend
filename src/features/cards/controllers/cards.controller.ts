@@ -60,37 +60,37 @@ export class DeckDetailController {
     return this.deckCardsQuery.result.isLoading
   }
 
-  get isDueCardsLoading(): boolean {
-    return this.deckDueCardsQuery.result.isLoading
-  }
+  // get isDueCardsLoading(): boolean {
+  //   return this.deckDueCardsQuery.result.isLoading
+  // }
 
   get cards(): Card[] | undefined {
     return this.deckCardsQuery.result.data
   }
 
-  get dueCards(): Card[] | undefined {
-    return this.deckDueCardsQuery.result.data
-  }
+  // get dueCards(): FsrsCardWithContent[] | undefined {
+  //   return this.deckDueCardsQuery.result.data
+  // }
 
   get totalCardsCount(): number {
     return this.cards?.length ?? 0
   }
 
-  get dueCardsCount(): number {
-    return this.dueCards?.length ?? 0
-  }
+  // get dueCardsCount(): number {
+  //   return this.dueCards?.length ?? 0
+  // }
 
-  get newCardsCount(): number {
-    return this.cards?.filter(cardWithContent =>
-      cardWithContent.state === 'New',
-    ).length ?? 0
-  }
-
-  get learningCardsCount(): number {
-    return this.cards?.filter(cardWithContent =>
-      cardWithContent.state === 'Learning' || cardWithContent.state === 'Relearning',
-    ).length ?? 0
-  }
+  // get newCardsCount(): number {
+  //   return this.dueCards?.filter(cardWithContent =>
+  //     cardWithContent.state === State.New,
+  //   ).length ?? 0
+  // }
+  //
+  // get learningCardsCount(): number {
+  //   return this.dueCards?.filter(cardWithContent =>
+  //     cardWithContent.state === State.Learning || cardWithContent.state === State.Relearning,
+  //   ).length ?? 0
+  // }
 
   /**
    * Переходит к странице обучения с текущей колодой
@@ -101,10 +101,10 @@ export class DeckDetailController {
       return
     }
 
-    if (this.dueCardsCount === 0) {
-      this.notify.info('Нет карточек для повторения')
-      return
-    }
+    // if (this.dueCardsCount === 0) {
+    //   this.notify.info('Нет карточек для повторения')
+    //   return
+    // }
 
     // Переход к странице обучения (нужно будет создать маршрут)
     this.router.navigate(`/decks/${this._deckId}/study`)
@@ -123,7 +123,7 @@ export class DeckDetailController {
   private _refetchData(): void {
     if (this._deckId) {
       this.deckCardsQuery.refetch()
-      this.deckDueCardsQuery.refetch()
+      // this.deckDueCardsQuery.refetch()
     }
   }
 
@@ -143,21 +143,21 @@ export class DeckDetailController {
     },
   )
 
-  /**
-   * Запрос для получения карточек для повторения
-   */
-  private readonly deckDueCardsQuery = this.cache.createQuery<Card[], NetError>(
-    () => {
-      if (!this._deckId) {
-        throw new CardsControllerError('Идентификатор колоды не установлен')
-      }
-      return this.cardsService.findDueByDeckId(this._deckId)
-    },
-    {
-      queryKey: this._deckId ? this.keys.deckDueCards(this._deckId) : [],
-      enabled: () => !!this._deckId,
-    },
-  )
+//   /**
+//    * Запрос для получения карточек для повторения
+//    */
+//   private readonly deckDueCardsQuery = this.cache.createQuery<FsrsCardWithContent[], NetError>(
+//     () => {
+//       if (!this._deckId) {
+//         throw new CardsControllerError('Идентификатор колоды не установлен')
+//       }
+//       return this.cardsService.findDueByDeckId(this._deckId)
+//     },
+//     {
+//       queryKey: this._deckId ? this.keys.deckDueCards(this._deckId) : [],
+//       enabled: () => !!this._deckId,
+//     },
+//   )
 }
 
 export function createCardsController(deckId: Deck['id']) {

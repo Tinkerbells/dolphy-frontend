@@ -2,7 +2,7 @@ import type { HttpClient } from '@/common/services/http-client'
 
 import { http } from '@/common/services/http-client'
 
-import type { Card } from '../models/card.domain'
+import type { Card, FsrsCardWithContent } from '../models/card.domain'
 import type { CardsRepository } from '../models/repositories/cards.repository'
 
 /**
@@ -19,12 +19,12 @@ class CardsService implements CardsRepository {
     return this.http.get<Card[]>({ path: `${this.baseUrl}/deck/${deckId}` })
   }
 
-  async findDueByDeckId(deckId: string): Promise<Card[]> {
-    return this.http.get<Card[]>({ path: `${this.baseUrl}/due/deck/${deckId}` })
+  async findDueByDeckId(deckId: string): Promise<FsrsCardWithContent[]> {
+    return this.http.get<FsrsCardWithContent[]>({ path: `${this.baseUrl}/due/deck/${deckId}` })
   }
 
-  async findDueCards(): Promise<Card[]> {
-    return this.http.get<Card[]>({ path: `${this.baseUrl}/due` })
+  async findDueCards(): Promise<FsrsCardWithContent[]> {
+    return this.http.get<FsrsCardWithContent[]>({ path: `${this.baseUrl}/due` })
   }
 }
 
