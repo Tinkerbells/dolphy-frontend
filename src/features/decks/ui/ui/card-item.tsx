@@ -26,7 +26,7 @@ interface CardItemProps {
 }
 
 export function CardItem({ card, onEdit, onDelete }: CardItemProps) {
-  const { t } = useTranslation(['cards', 'common'])
+  const { t, i18n } = useTranslation(['cards', 'common'])
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [showAnswer, setShowAnswer] = useState(false)
 
@@ -48,21 +48,6 @@ export function CardItem({ card, onEdit, onDelete }: CardItemProps) {
     onDelete()
   }
 
-  const getStateColor = (state: string) => {
-    switch (state) {
-      case 'New':
-        return 'primary'
-      case 'Learning':
-        return 'warning'
-      case 'Review':
-        return 'success'
-      case 'Relearning':
-        return 'error'
-      default:
-        return 'default'
-    }
-  }
-
   return (
     <Card
       elevation={1}
@@ -81,7 +66,7 @@ export function CardItem({ card, onEdit, onDelete }: CardItemProps) {
             <Chip
               label={t(`cards:state.${card.state}`)}
               size="small"
-              color={getStateColor(card.state)}
+              color={card.stateColor}
               variant="outlined"
             />
             {card.reps > 0 && (
@@ -155,31 +140,17 @@ export function CardItem({ card, onEdit, onDelete }: CardItemProps) {
           <Typography variant="body2" color="text.secondary">
             {t('cards:nextReview')}
             {': '}
-            {/* {formatDate(card.due)} */}
+            {card.formatDateTimeHuman(card.due, i18n.language)}
           </Typography>
 
           {card.last_review && (
             <Typography variant="body2" color="text.secondary">
               {t('cards:lastReview')}
               {': '}
-              {/* {formatDate(card.last_review)} */}
+              {card.formatDateTimeHuman(card.last_review, i18n.language)}
             </Typography>
           )}
         </Box>
-
-        {/* {card.note.extend?.tags && ( */}
-        {/*   <Box mt={1} display="flex" gap={0.5} flexWrap="wrap"> */}
-        {/*     {card.note.extend.tags.map((tag: string, index: number) => ( */}
-        {/*       <Chip */}
-        {/*         key={index} */}
-        {/*         label={tag} */}
-        {/*         size="small" */}
-        {/*         variant="outlined" */}
-        {/*         color="secondary" */}
-        {/*       /> */}
-        {/*     ))} */}
-        {/*   </Box> */}
-        {/* )} */}
       </CardContent>
     </Card>
   )

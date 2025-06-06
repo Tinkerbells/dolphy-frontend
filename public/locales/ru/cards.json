@@ -22,10 +22,14 @@
   "hideAnswer": "Скрыть ответ",
   "nextReview": "Следующий показ",
   "lastReview": "Последнее повторение",
+  "repetitionsCount_one": "{{count}} повторение",
+  "repetitionsCount_few": "{{count}} повторения",
+  "repetitionsCount_many": "{{count}} повторений",
+  "repetitionsCount_other": "{{count}} повторений",
   "state": {
-    "New": "Новая",
-    "Learning": "Изучение",
-    "Review": "Повторение",
-    "Relearning": "Переизучение"
+    "0": "Новая",
+    "1": "Изучение",
+    "2": "Повторение",
+    "3": "Переизучение"
   }
 }

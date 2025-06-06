@@ -1,5 +1,6 @@
 import AddIcon from '@mui/icons-material/Add'
 import { useTranslation } from 'react-i18next'
+import HomeIcon from '@mui/icons-material/Home'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import { useTypedParams } from 'react-router-typesafe-routes'
@@ -17,11 +18,29 @@ import {
   Typography,
 } from '@mui/material'
 
+import { compose } from '@/app/react'
+import { withBreadcrumbs } from '@/common'
 import { root } from '@/app/navigation/routes'
 
 import { CardItem } from './ui'
 import { useCardsModals } from './lib'
 import { createDeckDetailController } from '../controllers'
+
+const enhance = compose(component =>
+  withBreadcrumbs(component, {
+    items: [
+      {
+        label: 'Home',
+        icon: <HomeIcon fontSize="small" />,
+        href: root.decks.$path(),
+      },
+      {
+        label: 'Here the name of deck',
+        href: root.decks.$path(),
+      },
+    ],
+  }),
+)
 
 export const DeckDetailPage = observer(() => {
   const { id: deckId } = useTypedParams(root.decks.detail)

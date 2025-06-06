@@ -1,4 +1,5 @@
 export * from './cache'
+export * from './date'
 export * from './env'
 export * from './i18n'
 export * from './local-storage'

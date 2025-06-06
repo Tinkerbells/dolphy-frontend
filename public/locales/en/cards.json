@@ -22,11 +22,12 @@
   "hideAnswer": "Hide answer",
   "nextReview": "Next review",
   "lastReview": "Last review",
-  "repetitionsCount": " ({{count}})",
+  "repetitionsCount": "{{count}} repetition",
+  "repetitionsCount_plural": "{{count}} repetitions",
   "state": {
-    "New": "New",
-    "Learning": "Learning",
-    "Review": "Review",
-    "Relearning": "Relearning"
+    "0": "New",
+    "1": "Learning",
+    "2": "Review",
+    "3": "Relearning"
   }
 }

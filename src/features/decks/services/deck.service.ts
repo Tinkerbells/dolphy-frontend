@@ -1,5 +1,5 @@
-import type { PaginationResponseDto, OperationResultDto } from '@/types'
 import type { HttpClient } from '@/common/services/http-client'
+import type { OperationResultDto, PaginationResponseDto } from '@/types'
 
 import { http } from '@/common/services/http-client'
 
