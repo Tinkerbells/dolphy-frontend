@@ -60,7 +60,6 @@ export class DeckDetailController {
         enabled: ({ queryKey }) => typeof queryKey[1] === 'string',
         enableOnDemand: true,
       },
-      // TODO: check newer version of `mobx-tanstack-query` for fixing this bug
       // eslint-disable-next-line ts/ban-ts-comment
       // @ts-ignore
       this.deckDueCardsQuery = this.cache.createQuery<CardDomain.FsrsCardWithContent[], NetError>(

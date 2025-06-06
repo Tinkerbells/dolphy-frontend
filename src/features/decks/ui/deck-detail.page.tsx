@@ -1,10 +1,11 @@
+import { useMemo } from 'react'
+import { useLocation } from 'react-router'
 import AddIcon from '@mui/icons-material/Add'
 import { useTranslation } from 'react-i18next'
 import HomeIcon from '@mui/icons-material/Home'
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
-import { useTypedParams } from 'react-router-typesafe-routes'
 import { observer, useLocalObservable } from 'mobx-react-lite'
+import { useTypedParams, useTypedState } from 'react-router-typesafe-routes'
 import {
   Alert,
   Box,
@@ -13,64 +14,42 @@ import {
   Container,
   Fab,
   Grid,
-  IconButton,
   Paper,
   Typography,
 } from '@mui/material'
 
-import { compose } from '@/app/react'
-import { withBreadcrumbs } from '@/common'
+import { Breadcrumbs } from '@/common'
 import { root } from '@/app/navigation/routes'
 
 import { CardItem } from './ui'
 import { useCardsModals } from './lib'
 import { createDeckDetailController } from '../controllers'
 
-const enhance = compose(component =>
-  withBreadcrumbs(component, {
-    items: [
-      {
-        label: 'Home',
-        icon: <HomeIcon fontSize="small" />,
-        href: root.decks.$path(),
-      },
-      {
-        label: 'Here the name of deck',
-        href: root.decks.$path(),
-      },
-    ],
-  }),
-)
-
 export const DeckDetailPage = observer(() => {
   const { id: deckId } = useTypedParams(root.decks.detail)
+  const { deckName } = useTypedState(root.decks.detail)
   const { t } = useTranslation(['common', 'cards', 'decks'])
 
   const controller = useLocalObservable(createDeckDetailController(deckId!))
 
-  const {
-    isCardsLoading,
-    dueCards,
-    totalCardsCount,
-    dueCardsCount,
-    newCardsCount,
-    masteredCardsCount,
-    goBackToDecks,
-    startStudy,
-    openCreateModal,
-    openDeleteModal,
-  } = controller
+  const breadcrumbItems = useMemo(() => ([
+    {
+      label: t('common:navigation.home'),
+      icon: <HomeIcon fontSize="small" />,
+      href: root.decks.$path(),
+    },
+    {
+      label: deckName,
+    },
+  ]), [root, location, t])
 
   useCardsModals(controller)
 
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Container maxWidth="lg" sx={{ mt: 12, mb: 4 }}>
-        {/* Header */}
+        <Breadcrumbs items={breadcrumbItems} />
         <Box display="flex" alignItems="center" mb={3}>
-          <IconButton onClick={goBackToDecks} sx={{ mr: 2 }}>
-            <ArrowBackIcon />
-          </IconButton>
           <Typography variant="h4" component="h1" sx={{ flexGrow: 1 }}>
             {t('cards:deckDetail')}
           </Typography>
@@ -78,8 +57,8 @@ export const DeckDetailPage = observer(() => {
             variant="contained"
             color="primary"
             startIcon={<PlayArrowIcon />}
-            onClick={startStudy}
-            disabled={dueCardsCount === 0}
+            onClick={controller.startStudy}
+            disabled={controller.dueCardsCount === 0}
             sx={{ mr: 2 }}
           >
             {t('cards:study')}
@@ -91,7 +70,7 @@ export const DeckDetailPage = observer(() => {
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Paper sx={{ p: 2, textAlign: 'center' }}>
               <Typography variant="h3" color="primary">
-                {totalCardsCount}
+                {controller.totalCardsCount}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 {t('cards:totalCards')}
@@ -102,7 +81,7 @@ export const DeckDetailPage = observer(() => {
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Paper sx={{ p: 2, textAlign: 'center' }}>
               <Typography variant="h3" color="warning.main">
-                {dueCardsCount}
+                {controller.dueCardsCount}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 {t('cards:dueToday')}
@@ -113,7 +92,7 @@ export const DeckDetailPage = observer(() => {
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Paper sx={{ p: 2, textAlign: 'center' }}>
               <Typography variant="h3" color="info.main">
-                {newCardsCount}
+                {controller.newCardsCount}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 {t('cards:newCards')}
@@ -124,7 +103,7 @@ export const DeckDetailPage = observer(() => {
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Paper sx={{ p: 2, textAlign: 'center' }}>
               <Typography variant="h3" color="success.main">
-                {masteredCardsCount}
+                {controller.masteredCardsCount}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 {t('cards:mastered')}
@@ -138,30 +117,30 @@ export const DeckDetailPage = observer(() => {
           {t('cards:allCards')}
           {' '}
           (
-          {totalCardsCount}
+          {controller.totalCardsCount}
           )
         </Typography>
 
-        {isCardsLoading && (
+        {controller.isCardsLoading && (
           <Box display="flex" justifyContent="center" my={4}>
             <CircularProgress />
           </Box>
         )}
 
-        {!isCardsLoading && totalCardsCount === 0 && (
+        {!controller.isCardsLoading && controller.totalCardsCount === 0 && (
           <Alert severity="info" sx={{ my: 2 }}>
             {t('cards:noCards')}
           </Alert>
         )}
 
-        {dueCards && dueCards.length > 0 && (
+        {controller.dueCards && controller.dueCards.length > 0 && (
           <Box>
-            {dueCards.map(card => (
+            {controller.dueCards.map(card => (
               <CardItem
                 key={card.id}
                 card={card}
                 onEdit={() => { /* TODO: Implement edit functionality */ }}
-                onDelete={openDeleteModal(card.id)}
+                onDelete={controller.openDeleteModal(card.id)}
               />
             ))}
           </Box>
@@ -170,7 +149,7 @@ export const DeckDetailPage = observer(() => {
           color="primary"
           aria-label={t('cards:addCard')}
           sx={{ position: 'fixed', bottom: 16, right: 16 }}
-          onClick={openCreateModal}
+          onClick={controller.openCreateModal}
         >
           <AddIcon />
         </Fab>

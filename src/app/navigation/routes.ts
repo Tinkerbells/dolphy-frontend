@@ -15,6 +15,9 @@ export const root = route({
         detail: route({
           path: ':id',
           params: { id: string() },
+          state: {
+            deckName: string(),
+          },
         }),
       },
     }),

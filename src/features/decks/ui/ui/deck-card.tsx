@@ -8,13 +8,13 @@ import {
   Card,
   CardContent,
   IconButton,
-  Link,
   Menu,
   MenuItem,
   Tooltip,
   Typography,
 } from '@mui/material'
 
+import { Link } from '@/common'
 import { root } from '@/app/navigation/routes'
 
 import type { Deck } from '../../models/deck.domain'
@@ -49,7 +49,7 @@ export function DeckCard({ deck, onEdit, onDelete }: DeckCardProps) {
   }
 
   return (
-    <Link underline="none" href={root.decks.detail.$buildPath({ params: { id: deck.id } })}>
+    <Link underline="none" href={root.decks.detail.$buildPath({ params: { id: deck.id } })} state={root.decks.detail.$buildState({ state: { deckName: deck.name } })}>
       <Card
         elevation={2}
         sx={{

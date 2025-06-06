@@ -1,5 +1,8 @@
 import type { ComponentType } from 'react'
-import { Breadcrumbs, BreadcrumbsProps } from './breadcrumbs'
+
+import type { BreadcrumbsProps } from './breadcrumbs'
+
+import { Breadcrumbs } from './breadcrumbs'
 
 export function withBreadcrumbs<P extends object>(
   Component: ComponentType<P>,
