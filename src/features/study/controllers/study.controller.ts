@@ -22,7 +22,9 @@ import {
 
 export class StudyController {
   private readonly keys = {
-    dueCards: (deckId: string) => ['study', 'due-cards', deckId] as const,
+    deckCards: ['deck', 'cards'] as const,
+    deckDueCards: (id: string) => ['deck', id, 'due-cards'] as const,
+    dueCards: (deckId: string) => ['study', deckId] as const,
   }
 
   private _deckId: Deck['id']
@@ -67,7 +69,8 @@ export class StudyController {
     this.gradeCardMutation = this.cache.createMutation<FsrsCardWithContent, GradeCardDto, NetError>(
       (dto: GradeCardDto) => this.fsrsService.grade(dto),
       {
-        onSuccess: (data, variables) => {
+        onSuccess: (_, variables) => {
+          // TODO: добавить i18n в notify
           this._updateSessionStats(variables.rating)
           this._moveToNextCard()
           this._gradedCardsCount++
@@ -77,10 +80,10 @@ export class StudyController {
           if (this.isSessionComplete) {
             this._showSessionResults()
           }
-          this.notify.success('Карточка успешно оценена')
+          // this.notify.success('Карточка успешно оценена')
         },
         onError: (error) => {
-          this.notify.error('Ошибка при оценке карточки')
+          // this.notify.error('Ошибка при оценке карточки')
           console.error('Grade card error:', error)
         },
       },
@@ -150,7 +153,8 @@ export class StudyController {
     await this.gradeCardMutation.mutate(gradeDto)
   }
 
-  finishSession(): void {
+  async finishSession() {
+    await this.cache.getClient().invalidateQueries({ queryKey: this.keys.deckDueCards(this._deckId) })
     this.router.navigate(
       root.decks.detail.$buildPath({
         params: { id: this._deckId! },
@@ -178,12 +182,11 @@ export class StudyController {
   }
 
   private _showSessionResults(): void {
-    const { total, correct } = this._sessionStats
-    const accuracy = total > 0 ? Math.round((correct / total) * 100) : 0
+    // const { total, correct } = this._sessionStats
 
-    this.notify.success(
-      `Сессия завершена! Точность: ${accuracy}% (${correct}/${total})`,
-    )
+    // this.notify.success(
+    //   `Сессия завершена! Точность: ${accuracy}% (${correct}/${total})`,
+    // )
   }
 }
 

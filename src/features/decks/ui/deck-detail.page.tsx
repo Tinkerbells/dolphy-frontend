@@ -120,21 +120,21 @@ export const DeckDetailPage = observer(() => {
           )
         </Typography>
 
-        {controller.isDueCardsLoading && (
+        {controller.isCardsLoading && (
           <Box display="flex" justifyContent="center" my={4}>
             <CircularProgress />
           </Box>
         )}
 
-        {!controller.isDueCardsLoading && controller.totalCardsCount === 0 && (
+        {!controller.isCardsLoading && controller.totalCardsCount === 0 && (
           <Alert severity="info" sx={{ my: 2 }}>
             {t('cards:noCards')}
           </Alert>
         )}
 
-        {controller.dueCards && controller.dueCards.length > 0 && (
+        {controller.cards && controller.cards.length > 0 && (
           <Box>
-            {controller.dueCards.map(card => (
+            {controller.cards.map(card => (
               <CardItem
                 key={card.id}
                 card={card}

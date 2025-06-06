@@ -9,7 +9,6 @@ import {
   Box,
   Card,
   CardContent,
-  Chip,
   IconButton,
   Menu,
   MenuItem,
@@ -17,16 +16,16 @@ import {
   Typography,
 } from '@mui/material'
 
-import type { FsrsCardWithContent } from '../../external'
+import type { Card as CardType } from '../../external'
 
 interface CardItemProps {
-  card: FsrsCardWithContent
+  card: CardType
   onEdit: () => void
   onDelete: () => void
 }
 
 export function CardItem({ card, onEdit, onDelete }: CardItemProps) {
-  const { t, i18n } = useTranslation(['cards', 'common'])
+  const { t } = useTranslation(['cards', 'common'])
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [showAnswer, setShowAnswer] = useState(false)
 
@@ -62,22 +61,9 @@ export function CardItem({ card, onEdit, onDelete }: CardItemProps) {
     >
       <CardContent>
         <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={2}>
-          <Box display="flex" gap={1} alignItems="center">
-            <Chip
-              label={t(`cards:state.${card.state}`)}
-              size="small"
-              color={card.stateColor}
-              variant="outlined"
-            />
-            {card.reps > 0 && (
-              <Chip
-                label={t('cards:repetitionsCount', { count: card.reps })}
-                size="small"
-                variant="outlined"
-              />
-            )}
-          </Box>
-
+          <Typography variant="h6" component="div" gutterBottom>
+            {card.question}
+          </Typography>
           <Tooltip title={t('cards:moreOptions')}>
             <IconButton
               size="small"
@@ -104,11 +90,7 @@ export function CardItem({ card, onEdit, onDelete }: CardItemProps) {
           </Menu>
         </Box>
 
-        <Typography variant="h6" component="div" gutterBottom>
-          {card.card.question}
-        </Typography>
-
-        <Box display="flex" alignItems="center" gap={1} mb={2}>
+        <Box display="flex" alignItems="center" gap={1}>
           <IconButton
             size="small"
             onClick={() => setShowAnswer(!showAnswer)}
@@ -128,29 +110,14 @@ export function CardItem({ card, onEdit, onDelete }: CardItemProps) {
               backgroundColor: 'action.hover',
               borderRadius: 1,
               mb: 2,
+              mt: 1,
             }}
           >
             <Typography variant="body1">
-              {card.card.answer}
+              {card.answer}
             </Typography>
           </Box>
         )}
-
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography variant="body2" color="text.secondary">
-            {t('cards:nextReview')}
-            {': '}
-            {card.formatDateTimeHuman(card.due, i18n.language)}
-          </Typography>
-
-          {card.last_review && (
-            <Typography variant="body2" color="text.secondary">
-              {t('cards:lastReview')}
-              {': '}
-              {card.formatDateTimeHuman(card.last_review, i18n.language)}
-            </Typography>
-          )}
-        </Box>
       </CardContent>
     </Card>
   )
