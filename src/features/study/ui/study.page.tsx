@@ -354,12 +354,20 @@ export const StudyPage = observer(() => {
         </Alert>
       )}
 
-      {/* Кнопки оценки */}
       {controller.isCardFlipped && (
         <RatingButtons
           onRate={controller.gradeCard}
-          disabled={controller.isLoading}
+          disabled={controller.isGrading || controller.isLoading}
         />
+      )}
+
+      {controller.isGrading && (
+        <Box display="flex" justifyContent="center" alignItems="center" mb={2}>
+          <CircularProgress size={24} sx={{ mr: 1 }} />
+          <Typography variant="body2" color="text.secondary">
+            {t('cards:study.grading')}
+          </Typography>
+        </Box>
       )}
 
       {/* Подсказки по горячим клавишам */}

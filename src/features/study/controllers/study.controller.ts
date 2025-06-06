@@ -1,4 +1,4 @@
-import type { MobxQuery } from 'mobx-tanstack-query'
+import type { MobxMutation, MobxQuery } from 'mobx-tanstack-query'
 
 import { makeAutoObservable } from 'mobx'
 
@@ -8,13 +8,18 @@ import type { CacheService, Notify, RouterService } from '@/common'
 import { root } from '@/app/navigation/routes'
 import { cacheInstance, notify, router } from '@/common'
 
-import type { Deck, FsrsCardWithContent, FsrsRepository } from '../external'
+import type {
+  Deck,
+  FsrsCardWithContent,
+  FsrsRepository,
+  GradeCardDto,
+} from '../external'
 
-import { fsrsService, Rating } from '../external'
+import {
+  fsrsService,
+  Rating,
+} from '../external'
 
-/**
- * Контроллер для управления страницей обучения
- */
 export class StudyController {
   private readonly keys = {
     dueCards: (deckId: string) => ['study', 'due-cards', deckId] as const,
@@ -31,6 +36,7 @@ export class StudyController {
   }
 
   private readonly dueCardsQuery: MobxQuery<FsrsCardWithContent[], NetError>
+  private readonly gradeCardMutation: MobxMutation<FsrsCardWithContent, GradeCardDto, NetError>
 
   constructor(
     private readonly cache: CacheService,
@@ -41,6 +47,7 @@ export class StudyController {
   ) {
     this._deckId = deckId
     makeAutoObservable(this, {}, { autoBind: true })
+
     // eslint-disable-next-line ts/ban-ts-comment
     // @ts-ignore
     this.dueCardsQuery = this.cache.createQuery<FsrsCardWithContent[], NetError>(
@@ -56,25 +63,42 @@ export class StudyController {
         enableOnDemand: true,
       },
     )
+
+    this.gradeCardMutation = this.cache.createMutation<FsrsCardWithContent, GradeCardDto, NetError>(
+      (dto: GradeCardDto) => this.fsrsService.grade(dto),
+      {
+        onSuccess: (data, variables) => {
+          this._updateSessionStats(variables.rating)
+          this._moveToNextCard()
+          this._gradedCardsCount++
+          if (this._gradedCardsCount % 3 === 0) {
+            this._refetchDueCards()
+          }
+          if (this.isSessionComplete) {
+            this._showSessionResults()
+          }
+          this.notify.success('Карточка успешно оценена')
+        },
+        onError: (error) => {
+          this.notify.error('Ошибка при оценке карточки')
+          console.error('Grade card error:', error)
+        },
+      },
+    )
   }
 
-  /**
-   * Получить текущие карточки для повторения
-   */
   get dueCards(): FsrsCardWithContent[] | undefined {
     return this.dueCardsQuery.result.data
   }
 
-  /**
-   * Проверить загружаются ли карточки
-   */
   get isLoading(): boolean {
     return this.dueCardsQuery.result.isLoading
   }
 
-  /**
-   * Получить текущую карточку для изучения
-   */
+  get isGrading(): boolean {
+    return this.gradeCardMutation.result.isPending
+  }
+
   get currentCard(): FsrsCardWithContent | undefined {
     if (!this.dueCards || this.dueCards.length === 0) {
       return undefined
@@ -82,16 +106,10 @@ export class StudyController {
     return this.dueCards[this._currentCardIndex]
   }
 
-  /**
-   * Проверить перевернута ли карточка
-   */
   get isCardFlipped(): boolean {
     return this._isCardFlipped
   }
 
-  /**
-   * Получить прогресс обучения (в процентах)
-   */
   get progress(): number {
     if (!this.dueCards || this.dueCards.length === 0) {
       return 100
@@ -99,9 +117,6 @@ export class StudyController {
     return Math.round((this._currentCardIndex / this.dueCards.length) * 100)
   }
 
-  /**
-   * Получить количество оставшихся карточек
-   */
   get remainingCards(): number {
     if (!this.dueCards) {
       return 0
@@ -109,96 +124,59 @@ export class StudyController {
     return this.dueCards.length - this._currentCardIndex
   }
 
-  /**
-   * Получить статистику сессии
-   */
   get sessionStats() {
     return { ...this._sessionStats }
   }
 
-  /**
-   * Проверить завершена ли сессия
-   */
   get isSessionComplete(): boolean {
     return this.remainingCards === 0
   }
 
-  /**
-   * Перевернуть карточку
-   */
   flipCard(): void {
     this._isCardFlipped = !this._isCardFlipped
   }
 
-  /**
-   * Оценить карточку и перейти к следующей
-   */
   async gradeCard(rating: Rating): Promise<void> {
     const currentCard = this.currentCard
     if (!currentCard) {
       return
     }
 
-    try {
-      // Отправляем оценку на сервер
-      // В реальном проекте здесь должен быть вызов API для оценки карточки
-      // await this.fsrsService.gradeCard(currentCard.cardId, rating)
-
-      // Обновляем статистику
-      this._sessionStats.total++
-      if (rating === Rating.Good || rating === Rating.Easy) {
-        this._sessionStats.correct++
-      }
-      else {
-        this._sessionStats.incorrect++
-      }
-
-      // Переходим к следующей карточке
-      this._moveToNextCard()
-
-      // Обновляем данные каждые 3 оцененные карточки
-      this._gradedCardsCount++
-      if (this._gradedCardsCount % 3 === 0) {
-        await this._refetchDueCards()
-      }
-
-      // Если карточки закончились, показываем результаты
-      if (this.isSessionComplete) {
-        this._showSessionResults()
-      }
+    const gradeDto: GradeCardDto = {
+      cardId: currentCard.cardId,
+      rating,
     }
-    catch (error) {
-      this.notify.error('Ошибка при оценке карточки')
-      console.error('Grade card error:', error)
-    }
+
+    await this.gradeCardMutation.mutate(gradeDto)
   }
 
-  /**
-   * Завершить сессию обучения
-   */
   finishSession(): void {
-    // TODO: вернуть обратно на страницу с коллодой
-    this.router.navigate(root.decks.$path())
+    this.router.navigate(
+      root.decks.detail.$buildPath({
+        params: { id: this._deckId! },
+      }),
+    )
   }
 
-  /**
-   * Перейти к следующей карточке
-   */
+  private _updateSessionStats(rating: Rating): void {
+    this._sessionStats.total++
+    if (rating === Rating.Good || rating === Rating.Easy) {
+      this._sessionStats.correct++
+    }
+    else {
+      this._sessionStats.incorrect++
+    }
+  }
+
   private _moveToNextCard(): void {
     this._currentCardIndex++
     this._isCardFlipped = false
   }
 
-  /**
-   * Обновить список карточек для повторения
-   */
   private async _refetchDueCards(): Promise<void> {
     await this.dueCardsQuery.refetch()
   }
 
-  /**
-   * Показать результаты сессии
-   */
   private _showSessionResults(): void {
     const { total, correct } = this._sessionStats
     const accuracy = total > 0 ? Math.round((correct / total) * 100) : 0
@@ -209,9 +187,6 @@ export class StudyController {
   }
 }
 
-/**
- * Фабрика для создания контроллера обучения
- */
 export function createStudyController(deckId: Deck['id']) {
   return () => new StudyController(
     cacheInstance,

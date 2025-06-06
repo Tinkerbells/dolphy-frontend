@@ -17,7 +17,7 @@ class FsrsService implements FsrsRepository {
   constructor(private readonly http: HttpClient) {}
 
   async grade(dto: GradeCardDto): Promise<FsrsCardWithContent> {
-    const json = await this.http.post<FsrsCardWithContent>({ path: `${this.baseUrl}/card/${dto.cardId}`, body: {
+    const json = await this.http.post<FsrsCardWithContent>({ path: `${this.baseUrl}/card/${dto.cardId}/grade`, body: {
       rating: dto.rating,
     } })
     return plainToClass(FsrsCardWithContent, json)

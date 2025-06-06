@@ -47,7 +47,7 @@ export const DeckDetailPage = observer(() => {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Container maxWidth="lg" sx={{ mt: 12, mb: 4 }}>
-        <Breadcrumbs items={breadcrumbItems} />
+        <Breadcrumbs items={breadcrumbItems} onBackButtonClick={controller.goBackToDecks} />
         <Box display="flex" alignItems="center" mb={3}>
           <Typography variant="h4" component="h1" sx={{ flexGrow: 1 }}>
             {t('cards:deckDetail')}
