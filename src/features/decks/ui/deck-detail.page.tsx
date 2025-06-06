@@ -56,7 +56,7 @@ export const DeckDetailPage = observer(() => {
             variant="contained"
             color="primary"
             startIcon={<PlayArrowIcon />}
-            onClick={controller.startStudy}
+            onClick={controller.startStudy(deckName)}
             disabled={controller.dueCardsCount === 0}
             sx={{ mr: 2 }}
           >

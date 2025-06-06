@@ -12,7 +12,10 @@ export function RouterServiceAdapter() {
     router.init({
       navigate: (path, params) =>
         typeof path === 'string'
-          ? navigate({ pathname: path, ...params })
+          ? navigate({ pathname: path, search: params?.search }, {
+              replace: params?.replace,
+              state: params?.state,
+            })
           : navigate(path),
     })
   }, [])

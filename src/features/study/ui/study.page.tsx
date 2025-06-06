@@ -1,8 +1,8 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import CloseIcon from '@mui/icons-material/Close'
-import { useTypedParams } from 'react-router-typesafe-routes'
 import { observer, useLocalObservable } from 'mobx-react-lite'
+import { useTypedParams, useTypedState } from 'react-router-typesafe-routes'
 import {
   Alert,
   Box,
@@ -100,6 +100,7 @@ const RatingButtons = observer(({
  */
 export const StudyPage = observer(() => {
   const { id: deckId } = useTypedParams(root.decks.detail.study)
+  const { deckName } = useTypedState(root.decks.detail.study)
   const { t } = useTranslation(['cards', 'common'])
 
   const controller = useLocalObservable(createStudyController(deckId!))
@@ -172,7 +173,7 @@ export const StudyPage = observer(() => {
           <Button
             variant="contained"
             color="primary"
-            onClick={controller.finishSession}
+            onClick={controller.finishSession(deckName)}
           >
             {t('cards:study.backToDeck')}
           </Button>

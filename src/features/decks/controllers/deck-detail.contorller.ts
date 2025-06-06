@@ -145,24 +145,30 @@ export class DeckDetailController {
   /**
    * Переходит к странице обучения с текущей колодой
    */
-  startStudy(): void {
-    if (!this._deckId) {
+  startStudy(deckName?: Deck['name']) {
+    return () => {
+      if (!this._deckId) {
       // TODO: i18n
-      this.notify.error('Колода не выбрана')
-      return
-    }
+        this.notify.error('Колода не выбрана')
+        return
+      }
 
-    if (this.dueCardsCount === 0) {
-      this.notify.info('Нет карточек для повторения')
-      return
-    }
+      if (this.dueCardsCount === 0) {
+        this.notify.info('Нет карточек для повторения')
+        return
+      }
 
-    // Переход к странице обучения
-    this.router.navigate(
-      root.decks.detail.study.$buildPath({
-        params: { id: this._deckId },
-      }),
-    )
+      // Переход к странице обучения
+      this.router.navigate(
+        root.decks.detail.study.$buildPath({
+          params: { id: this._deckId },
+        }),
+        { state:
+      root.decks.detail.study.$buildState({
+        state: { deckName },
+      }) },
+      )
+    }
   }
 
   /**

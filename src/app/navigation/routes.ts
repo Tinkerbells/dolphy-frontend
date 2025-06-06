@@ -21,6 +21,9 @@ export const root = route({
           children: {
             study: route({
               path: 'study',
+              state: {
+                deckName: string(),
+              },
             }),
           },
         }),

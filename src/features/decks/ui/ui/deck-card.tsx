@@ -49,7 +49,7 @@ export function DeckCard({ deck, onEdit, onDelete }: DeckCardProps) {
   }
 
   return (
-    <Link underline="none" href={root.decks.detail.$buildPath({ params: { id: deck.id } })} state={root.decks.detail.$buildState({ state: { deckName: deck.name } })}>
+    <Link underline="none" href={root.decks.detail.$buildPath({ params: { id: deck.id } })} state={root.decks.detail.$buildState({ state: { deckName: deck.name } })} replace={true}>
       <Card
         elevation={2}
         sx={{

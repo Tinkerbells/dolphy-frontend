@@ -8,6 +8,10 @@ interface NavigateHandlerParams {
    * вместо добавления новой позиции
    */
   replace?: boolean
+  /**
+   * состояние для передачи в роутер
+   */
+  state?: any
 }
 
 /**

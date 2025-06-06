@@ -153,13 +153,18 @@ export class StudyController {
     await this.gradeCardMutation.mutate(gradeDto)
   }
 
-  async finishSession() {
-    await this.cache.getClient().invalidateQueries({ queryKey: this.keys.deckDueCards(this._deckId) })
-    this.router.navigate(
-      root.decks.detail.$buildPath({
-        params: { id: this._deckId! },
-      }),
-    )
+  finishSession(deckName?: Deck['name']) {
+    return async () => {
+      await this.cache.getClient().invalidateQueries({ queryKey: this.keys.deckDueCards(this._deckId) })
+      this.router.navigate(
+        root.decks.detail.$buildPath({
+          params: { id: this._deckId! },
+        }),
+        { state: root.decks.detail.$buildState({
+          state: { deckName },
+        }) },
+      )
+    }
   }
 
   private _updateSessionStats(rating: Rating): void {
