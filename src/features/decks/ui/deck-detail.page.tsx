@@ -1,5 +1,4 @@
 import { useMemo } from 'react'
-import { useLocation } from 'react-router'
 import AddIcon from '@mui/icons-material/Add'
 import { useTranslation } from 'react-i18next'
 import HomeIcon from '@mui/icons-material/Home'
@@ -121,13 +120,13 @@ export const DeckDetailPage = observer(() => {
           )
         </Typography>
 
-        {controller.isCardsLoading && (
+        {controller.isDueCardsLoading && (
           <Box display="flex" justifyContent="center" my={4}>
             <CircularProgress />
           </Box>
         )}
 
-        {!controller.isCardsLoading && controller.totalCardsCount === 0 && (
+        {!controller.isDueCardsLoading && controller.totalCardsCount === 0 && (
           <Alert severity="info" sx={{ my: 2 }}>
             {t('cards:noCards')}
           </Alert>

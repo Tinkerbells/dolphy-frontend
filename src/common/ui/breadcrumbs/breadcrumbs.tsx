@@ -3,13 +3,13 @@ import type { ChipProps, BreadcrumbsProps as MuiBreadcrumbsProps } from '@mui/ma
 
 import { useNavigate } from 'react-router'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
-import { 
+import {
   Box,
-  Chip, 
-  emphasize, 
-  IconButton, 
-  Breadcrumbs as MuiBreadcrumbs, 
-  styled 
+  Chip,
+  emphasize,
+  IconButton,
+  Breadcrumbs as MuiBreadcrumbs,
+  styled,
 } from '@mui/material'
 
 import { LinkBehavior } from '../link'
@@ -51,24 +51,24 @@ const StyledBreadcrumb = styled(Chip)(({ theme }) => {
   }
 }) as typeof Chip
 
-export function Breadcrumbs({ 
-  items, 
-  backButton = true, 
-  onBackButtonClick, 
-  ...rest 
+export function Breadcrumbs({
+  items,
+  backButton = true,
+  onBackButtonClick,
+  ...rest
 }: BreadcrumbsProps) {
   const navigate = useNavigate()
 
   return (
-    <Box 
-      display="flex" 
-      alignItems="center" 
-      sx={{my:2}}
+    <Box
+      display="flex"
+      alignItems="center"
+      sx={{ my: 2 }}
       {...rest}
     >
       {backButton && (
-        <IconButton 
-          onClick={onBackButtonClick ?? (() => navigate(-1))} 
+        <IconButton
+          onClick={onBackButtonClick ?? (() => navigate(-1))}
           sx={{ mr: 1, p: 0.5 }}
           size="small"
           aria-label="Go back"
@@ -76,7 +76,7 @@ export function Breadcrumbs({
           <ArrowBackIcon />
         </IconButton>
       )}
-      
+
       <MuiBreadcrumbs aria-label="breadcrumb">
         {items.map((item, i) => {
           const { href, ...chipProps } = item
