@@ -60,7 +60,7 @@ export const DeckDetailPage = observer(() => {
             disabled={controller.dueCardsCount === 0}
             sx={{ mr: 2 }}
           >
-            {t('cards:study')}
+            {t('cards:studyAction')}
           </Button>
         </Box>
 

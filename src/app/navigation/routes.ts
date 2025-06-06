@@ -18,6 +18,11 @@ export const root = route({
           state: {
             deckName: string(),
           },
+          children: {
+            study: route({
+              path: 'study',
+            }),
+          },
         }),
       },
     }),

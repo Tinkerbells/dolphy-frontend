@@ -33,8 +33,6 @@ export class DeckDetailController {
   private _deckId?: Deck['id'] = undefined
   private _openModal?: CardsModals
 
-  // createCardForm: MobxForm<CreateCardDto>
-
   constructor(
     private readonly cache: CacheService,
     private readonly modal: Modal,
@@ -62,7 +60,7 @@ export class DeckDetailController {
       },
       // eslint-disable-next-line ts/ban-ts-comment
       // @ts-ignore
-      this.deckDueCardsQuery = this.cache.createQuery<CardDomain.FsrsCardWithContent[], NetError>(
+      this.deckDueCardsQuery = this.cache.createQuery<FsrsCardWithContent[], NetError>(
         () => {
           if (!this._deckId) {
             throw new Error('Идентификатор колоды не установлен')
@@ -77,17 +75,6 @@ export class DeckDetailController {
       ),
     )
     makeAutoObservable(this, {}, { autoBind: true })
-
-    // this.createCardForm = new MobxForm<CreateCardDto>({
-    //   defaultValues: {
-    //     question: '',
-    //     answer: '',
-    //     deckId,
-    //   },
-    //   resolver: classValidatorResolver(CreateCardDto),
-    //   mode: 'onChange',
-    //   onSubmit: this.createCard,
-    // })
   }
 
   setModalsHandlers(modalsHandler: CardsModals) {
@@ -97,7 +84,6 @@ export class DeckDetailController {
   setDeckId(deckId: string): void {
     if (this._deckId !== deckId) {
       this._deckId = deckId
-      // this.createCardForm.setValue('deckId', deckId)
       this._refetchData()
     }
   }
@@ -161,15 +147,22 @@ export class DeckDetailController {
    */
   startStudy(): void {
     if (!this._deckId) {
+      // TODO: i18n
       this.notify.error('Колода не выбрана')
       return
     }
 
     if (this.dueCardsCount === 0) {
       this.notify.info('Нет карточек для повторения')
+      return
     }
 
-    // this.router.navigate(root.decks.detail.study.$path({ id: this._deckId }))
+    // Переход к странице обучения
+    this.router.navigate(
+      root.decks.detail.study.$buildPath({
+        params: { id: this._deckId },
+      }),
+    )
   }
 
   /**
