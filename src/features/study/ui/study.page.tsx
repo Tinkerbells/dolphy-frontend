@@ -183,15 +183,15 @@ export const StudyPage = observer(() => {
   }
 
   return (
-    <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
+    <Container maxWidth="md" sx={{ mt: 12, mb: 4 }}>
       {/* Заголовок и кнопка закрытия */}
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <Typography variant="h5" component="h1">
-          {t('cards:study.title')}
+          {deckName}
         </Typography>
 
         <IconButton
-          onClick={controller.finishSession}
+          onClick={controller.finishSession(deckName)}
           aria-label={t('common:actions.close')}
         >
           <CloseIcon />
@@ -200,20 +200,6 @@ export const StudyPage = observer(() => {
 
       {/* Прогресс бар */}
       <Box mb={3}>
-        <Box display="flex" justifyContent="space-between" mb={1}>
-          <Typography variant="body2" color="text.secondary">
-            {t('cards:study.progress')}
-            :
-            {controller.progress}
-            %
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {t('cards:study.remaining')}
-            :
-            {controller.remainingCards}
-          </Typography>
-        </Box>
-
         <LinearProgress
           variant="determinate"
           value={controller.progress}

@@ -69,6 +69,7 @@ export class DeckDetailController {
         },
         {
           queryKey: this.keys.deckDueCards(this._deckId!),
+          refetchInterval: 0.5 * 60 * 1000, // 30 seconds
           enabled: ({ queryKey }) => typeof queryKey[1] === 'string',
           enableOnDemand: true,
         },
