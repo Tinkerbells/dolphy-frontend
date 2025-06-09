@@ -4,8 +4,7 @@ import type { HttpClient } from '@/common/services/http-client'
 
 import { http } from '@/common/services/http-client'
 
-import type { FsrsRepository } from '../models'
-import type { GradeCardDto } from '../models/dto/grade-card.dto'
+import type { FsrsRepository, GradeCardDto, UndoGradeCardDto } from '../models'
 
 import { FsrsCardWithContent } from '../models/fsrs.domain'
 
@@ -15,6 +14,11 @@ import { FsrsCardWithContent } from '../models/fsrs.domain'
 class FsrsService implements FsrsRepository {
   private readonly baseUrl = 'fsrs'
   constructor(private readonly http: HttpClient) {}
+
+  async undoGrade(dto: UndoGradeCardDto): Promise<FsrsCardWithContent> {
+    const json = await this.http.post<FsrsCardWithContent>({ path: `${this.baseUrl}/card/${dto.cardId}/undo` })
+    return plainToClass(FsrsCardWithContent, json)
+  }
 
   async grade(dto: GradeCardDto): Promise<FsrsCardWithContent> {
     const json = await this.http.post<FsrsCardWithContent>({ path: `${this.baseUrl}/card/${dto.cardId}/grade`, body: {
