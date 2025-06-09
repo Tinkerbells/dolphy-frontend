@@ -1,10 +1,10 @@
 import { makeAutoObservable } from 'mobx'
 
+import type { CacheService, Modal, Notify } from '@/common'
 import type { NetError } from '@/common/services/http-client'
 import type { OperationResultDto, PaginationResponseDto } from '@/types'
-import type { CacheService, Modal, Notify, RouterService } from '@/common'
 
-import { cacheInstance, modalInstance, notify, router } from '@/common'
+import { cacheInstance, modalInstance, notify } from '@/common'
 
 import type { Deck } from '../models/deck.domain'
 import type { CreateDeckDto, UpdateDeckDto } from '../models/dto'

@@ -23,7 +23,7 @@ export function useCardsModals(controller: DeckDetailController) {
         },
         title: t('cards:createCard'),
       }),
-      delete: (cardId: string) => openDialogWindow({
+      delete: (_cardId: string) => openDialogWindow({
         key: 'delete-card',
         title: t('cards:deleteCard'),
         description: t('cards:confirmDelete'),

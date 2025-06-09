@@ -17,6 +17,7 @@ import {
 } from '@mui/material'
 
 import { profile } from './external'
+import { ThemeSwitcher } from '../theme-switcher'
 import { LanguageSwitcher } from '../language-switcher'
 
 const CenteredNavigation = styled(Box)(() => ({
@@ -71,6 +72,7 @@ export const AuthHeader = observer(() => {
 
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <LanguageSwitcher />
+          <ThemeSwitcher />
           <Tooltip title={t('navigation.settings', 'Account settings')}>
             <IconButton
               onClick={handleClick}

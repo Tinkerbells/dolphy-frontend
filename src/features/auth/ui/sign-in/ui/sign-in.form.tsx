@@ -9,7 +9,6 @@ import { FormTextInput } from '@/common'
 
 import type { AuthEmailLoginDto } from '../../../models/dto/auth-email-login.dto'
 
-
 interface SignInFormProps {
   signInForm: MobxForm<AuthEmailLoginDto>
 }
@@ -21,9 +20,11 @@ export const SignInForm = observer(({ signInForm }: SignInFormProps) => {
 
   return (
     <FormProvider {...originalForm} formState={{ ...signInForm }}>
-      <Box  component="form" onSubmit={signInForm.submit}
+      <Box
+        component="form"
+        onSubmit={signInForm.submit}
         sx={{
-maxWidth: 400
+          maxWidth: 400,
 
         }}
       >

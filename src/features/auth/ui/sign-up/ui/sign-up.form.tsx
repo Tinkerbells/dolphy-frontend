@@ -9,7 +9,6 @@ import { FormTextInput } from '@/common'
 
 import type { AuthRegisterLoginDto } from '../../../models/dto/auth-register-login.dto'
 
-
 interface SignUpFormProps {
   signUpForm: MobxForm<AuthRegisterLoginDto>
 }
@@ -21,9 +20,13 @@ export const SignUpForm = observer(({ signUpForm }: SignUpFormProps) => {
 
   return (
     <FormProvider {...originalForm} formState={{ ...signUpForm }}>
-      <Box  component="form" onSubmit={signUpForm.submit} sx={{
-        maxWidth: 400
-      }}>
+      <Box
+        component="form"
+        onSubmit={signUpForm.submit}
+        sx={{
+          maxWidth: 400,
+        }}
+      >
         <Grid container spacing={2} mb={2} sx={{ marginTop: 3 }}>
           <Grid size={{ xs: 6 }}>
             <FormTextInput<AuthRegisterLoginDto>

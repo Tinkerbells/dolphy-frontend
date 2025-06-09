@@ -1,5 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import UndoIcon from '@mui/icons-material/Undo'
+import RedoIcon from '@mui/icons-material/Redo'
 import CloseIcon from '@mui/icons-material/Close'
 import { observer, useLocalObservable } from 'mobx-react-lite'
 import { useTypedParams, useTypedState } from 'react-router-typesafe-routes'
@@ -111,23 +113,23 @@ export const StudyPage = observer(() => {
         </Typography>
 
         <Box display="flex" gap={1}>
-          {/* <IconButton */}
-          {/*   onClick={() => undo()} */}
-          {/*   disabled={disabledUndo} */}
-          {/*   title={t('common:actions.undo')} */}
-          {/*   size="small" */}
-          {/* > */}
-          {/*   <UndoIcon /> */}
-          {/* </IconButton> */}
-          {/**/}
-          {/* <IconButton */}
-          {/*   onClick={() => redo()} */}
-          {/*   disabled={disabledRedo} */}
-          {/*   title={t('common:actions.redo')} */}
-          {/*   size="small" */}
-          {/* > */}
-          {/* <RedoIcon /> */}
-          {/* </IconButton> */}
+          <IconButton
+            onClick={controller.undoLastGrade}
+            disabled={!controller.canUndo}
+            title={t('common:actions.undo')}
+            size="small"
+          >
+            <UndoIcon />
+          </IconButton>
+
+          <IconButton
+            onClick={controller.redoLastGrade}
+            disabled={!controller.canRedo}
+            title={t('common:actions.redo')}
+            size="small"
+          >
+            <RedoIcon />
+          </IconButton>
 
           <IconButton
             onClick={controller.finishSession(deckName)}

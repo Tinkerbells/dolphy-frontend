@@ -11,6 +11,7 @@ import {
 
 import { root } from '@/app/navigation/routes'
 
+import { ThemeSwitcher } from '../theme-switcher'
 import { LanguageSwitcher } from '../language-switcher'
 
 const CenteredNavigation = styled(Box)(() => ({
@@ -53,6 +54,7 @@ export const NotAuthHeader: React.FC = () => {
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <LanguageSwitcher />
+          <ThemeSwitcher />
           <Button
             variant="outlined"
             color="primary"

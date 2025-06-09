@@ -1,4 +1,4 @@
-import type { PaginationResponseDto, OperationResultDto } from '@/types'
+import type { OperationResultDto, PaginationResponseDto } from '@/types'
 
 import type { Deck } from '../deck.domain'
 import type { CreateDeckDto, UpdateDeckDto } from '../dto'

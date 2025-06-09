@@ -1,4 +1,3 @@
-import type { ReactNode } from 'react'
 import type { MotionValue, PanInfo } from 'motion/react'
 
 export type SwipeDirection = 'right' | 'left' | 'up' | 'down'
