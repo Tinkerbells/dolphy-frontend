@@ -1,4 +1,4 @@
-import type { MobxMutation, MobxQuery } from 'mobx-tanstack-query'
+import type { Mutation, Query } from 'mobx-tanstack-query'
 
 import { makeAutoObservable } from 'mobx'
 
@@ -32,8 +32,11 @@ export class StudyController {
     incorrect: 0,
   }
 
-  private readonly dueCardsQuery: MobxQuery<FsrsCardWithContent[], NetError>
-  private readonly gradeCardMutation: MobxMutation<FsrsCardWithContent, GradeCardDto, NetError>
+  private _currentCardIndex = 0
+  private _isProcessingSwipe = false
+
+  private readonly dueCardsQuery: Query<FsrsCardWithContent[], NetError>
+  private readonly gradeCardMutation: Mutation<FsrsCardWithContent, GradeCardDto, NetError>
 
   constructor(
     private readonly cache: CacheService,
@@ -45,8 +48,6 @@ export class StudyController {
     this._deckId = deckId
     makeAutoObservable(this, {}, { autoBind: true })
 
-    // eslint-disable-next-line ts/ban-ts-comment
-    // @ts-ignore
     this.dueCardsQuery = this.cache.createQuery<FsrsCardWithContent[], NetError>(
       () => {
         if (!this._deckId) {
@@ -100,14 +101,22 @@ export class StudyController {
     if (!this.dueCards || this.dueCards.length === 0) {
       return undefined
     }
-    return this.dueCards[0] // Первая карточка в списке - текущая
+    return this.dueCards[this._currentCardIndex]
+  }
+
+  get currentCardIndex(): number {
+    return this._currentCardIndex
+  }
+
+  get isProcessingSwipe(): boolean {
+    return this._isProcessingSwipe
   }
 
   get remainingCards(): number {
     if (!this.dueCards) {
       return 0
     }
-    return this.dueCards.length
+    return this.dueCards.length - this._currentCardIndex
   }
 
   get sessionStats() {
@@ -120,16 +129,24 @@ export class StudyController {
 
   async gradeCard(rating: Rating): Promise<void> {
     const currentCard = this.currentCard
-    if (!currentCard) {
+    if (!currentCard || this._isProcessingSwipe) {
       return
     }
 
-    const gradeDto: GradeCardDto = {
-      cardId: currentCard.cardId,
-      rating,
-    }
+    this._isProcessingSwipe = true
 
-    await this.gradeCardMutation.mutate(gradeDto)
+    try {
+      const gradeDto: GradeCardDto = {
+        cardId: currentCard.cardId,
+        rating,
+      }
+
+      await this.gradeCardMutation.mutate(gradeDto)
+      this._currentCardIndex++
+    }
+    finally {
+      this._isProcessingSwipe = false
+    }
   }
 
   finishSession(deckName?: Deck['name']) {
@@ -158,6 +175,7 @@ export class StudyController {
       correct: 0,
       incorrect: 0,
     }
+    this._currentCardIndex = 0
   }
 
   async refreshDueCards(): Promise<void> {

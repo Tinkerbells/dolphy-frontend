@@ -1,51 +1,58 @@
-import type { QueryKey } from '@tanstack/query-core'
-import type { CreateMutationParams } from 'mobx-tanstack-query/preset'
-import type { MobxMutationConfig, MobxQueryConfig, MobxQueryFn } from 'mobx-tanstack-query'
+import type { DefaultError, QueryKey } from '@tanstack/query-core'
+import type {
+  MutationConfig,
+  QueryFn,
+} from 'mobx-tanstack-query'
+import type {
+  CreateMutationParams,
+  CreateQueryParams,
+} from 'mobx-tanstack-query/preset'
 
+import { hashKey } from '@tanstack/query-core'
 import {
-  MobxQuery,
-  MobxQueryClient,
+  Query,
+  QueryClient,
 } from 'mobx-tanstack-query'
 import {
   createMutation as baseCreateMutation,
-  // createQuery as baseCreateQuery,
 } from 'mobx-tanstack-query/preset'
-
-import { queryClient } from '@/app/react'
 
 export class CacheService {
   private readonly abortController: AbortController
-  private readonly queryClient: MobxQueryClient
+  private readonly queryClient: QueryClient
 
-  constructor(queryClient?: MobxQueryClient) {
+  constructor(queryClient?: QueryClient) {
     this.abortController = new AbortController()
-    this.queryClient = queryClient || new MobxQueryClient({
+    this.queryClient = queryClient || new QueryClient({
       defaultOptions: {
         queries: {
+          throwOnError: true,
+          queryKeyHashFn: hashKey,
           staleTime: 5 * 60 * 1000,
-          refetchOnWindowFocus: false,
+          refetchOnWindowFocus: 'always',
+          refetchOnReconnect: 'always',
           retry: 3,
         },
         mutations: {
-          retry: 0,
+          throwOnError: true,
         },
       },
     })
   }
 
-  // TODO: watch if fixed in next versions of `mobx-tanstack-query`
   public createQuery<
     TQueryFnData = unknown,
-    TError = unknown,
+    TError = DefaultError,
     TData = TQueryFnData,
+    TQueryData = TQueryFnData,
     TQueryKey extends QueryKey = QueryKey,
   >(
-    queryFn: MobxQueryFn<TQueryFnData, TError, TData>,
-    params?: Omit<MobxQueryConfig<TQueryFnData, TError, TData, TQueryKey>, 'queryFn' | 'queryClient'>,
+    queryFn: QueryFn<TQueryFnData, TError, TData, TQueryData, TQueryKey>,
+    params?: CreateQueryParams<TQueryFnData, TError, TData, TQueryData, TQueryKey>,
   ) {
-    return new MobxQuery<TQueryFnData, TError, TData, TQueryKey>({
-      queryClient: this.queryClient,
+    return new Query<TQueryFnData, TError, TData, TQueryData, TQueryKey>({
       queryFn,
+      queryClient: this.queryClient,
       ...params,
     })
   }
@@ -56,7 +63,7 @@ export class CacheService {
     TError = Error,
     TContext = unknown,
   >(
-    mutationFn: MobxMutationConfig<TData, TVariables, TError, TContext>['mutationFn'],
+    mutationFn: MutationConfig<TData, TVariables, TError, TContext>['mutationFn'],
     params?: Omit<CreateMutationParams<TData, TVariables, TError, TContext>, 'queryClient'>,
   ) {
     return baseCreateMutation(mutationFn, {
@@ -82,9 +89,9 @@ export class CacheService {
     return this.queryClient.getQueryData<TData>(queryKey)
   }
 
-  public getClient(): MobxQueryClient {
+  public getClient(): QueryClient {
     return this.queryClient
   }
 }
 
-export const cacheInstance = new CacheService(queryClient)
+export const cacheInstance = new CacheService()

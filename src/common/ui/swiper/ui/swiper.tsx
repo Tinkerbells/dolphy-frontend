@@ -1,6 +1,5 @@
 import type { PanInfo } from 'motion/react'
 import type {
-  Dispatch,
   HTMLAttributes,
   ReactElement,
 } from 'react'
@@ -11,60 +10,52 @@ import React, {
   createContext,
   forwardRef,
   useCallback,
-  useEffect,
   useImperativeHandle,
   useMemo,
   useRef,
-  useState,
 } from 'react'
 
 import type {
   SwipeDirection,
-  SwiperAction,
   SwiperActionsType,
   SwiperContextType,
   SwipeType,
 } from '../api'
 
+import { setleaveValue } from '../lib'
 import { SwiperItem } from './swiper-item'
-import {
-  SwiperActionTypes,
-} from '../api'
-import { getInitialItems, setleaveValue } from '../lib'
-import { HISTORY_DEPTH, ITEMS_PER_VIEW, OFFSET_BOUNDARY } from '../config'
+import { ITEMS_PER_VIEW, OFFSET_BOUNDARY } from '../config'
 
 export const SwiperContext = createContext<SwiperContextType | null>(null)
 export const SwiperActionContext = createContext<SwiperActionsType | null>(null)
 
 interface SwiperProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onDrag'> {
+  items: ReactElement[]
+  currentIndex: number
+  isProcessing?: boolean
   onDrag?: (_e: any, info: PanInfo) => void
-  onSwipe?: (swipe: SwipeType) => void
+  onSwipe?: (swipe: SwipeType) => Promise<void> | void
   offsetBoundary?: number
   itemsPerView?: number
-  history?: boolean
-  historyDepth?: number
-  dispatch?: Dispatch<SwiperAction>
+  onDisabledChange?: (disabled: boolean) => void
 }
 
 export interface SwiperRef {
-  swipe: (direction: SwipeDirection) => void
-  undo: () => void
-  redo: () => void
-  reset: () => void
+  swipe: (direction: SwipeDirection) => Promise<void> | void
 }
 
 export const Swiper = forwardRef<SwiperRef, SwiperProps>(
   (
     {
-      children,
+      items,
+      currentIndex,
+      isProcessing = false,
       className,
       onDrag,
       onSwipe,
       offsetBoundary = OFFSET_BOUNDARY,
       itemsPerView = ITEMS_PER_VIEW,
-      historyDepth = HISTORY_DEPTH,
-      history = false,
-      dispatch,
+      onDisabledChange,
       ...props
     },
     ref,
@@ -73,18 +64,6 @@ export const Swiper = forwardRef<SwiperRef, SwiperProps>(
 
     const leaveX = useMotionValue(0)
     const leaveY = useMotionValue(0)
-
-    const [currentIndex, setCurrentIndex] = useState(0)
-    const [items, setItems] = useState<ReactElement[]>(
-      getInitialItems(children),
-    )
-
-    const [historyState, setHistoryState] = useState<
-      { items: ReactElement[], direction: SwipeDirection | null }[]
-    >(history ? [{ items: getInitialItems(children), direction: null }] : [])
-    const [redoStack, setRedoStack] = useState<
-      { items: ReactElement[], direction: SwipeDirection | null }[]
-    >([])
 
     const leaveMap = useMemo(
       () => ({
@@ -96,121 +75,47 @@ export const Swiper = forwardRef<SwiperRef, SwiperProps>(
       [leaveX, leaveY],
     )
 
-    useEffect(() => {
-      if (dispatch) {
-        dispatch({
-          type: SwiperActionTypes.SET_UNDO_DISABLED,
-          payload: historyState.length <= 1,
-        })
-        dispatch({
-          type: SwiperActionTypes.SET_REDO_DISABLED,
-          payload: redoStack.length <= 0,
-        })
-        dispatch({
-          type: SwiperActionTypes.SET_DISABLED,
-          payload: items.length === 0,
-        })
+    const disabled = isProcessing || items.length === 0
+
+    const notifyDisabledChange = useCallback(() => {
+      if (onDisabledChange) {
+        onDisabledChange(disabled)
       }
-    }, [historyState, redoStack, items, dispatch])
+    }, [disabled, onDisabledChange])
+
+    React.useEffect(() => {
+      notifyDisabledChange()
+    }, [notifyDisabledChange])
 
     const handleSwipe = useCallback(
-      (direction: SwipeDirection) => {
-        if (items.length === 0)
+      async (direction: SwipeDirection) => {
+        if (items.length === 0 || isProcessing) {
           return
-        const currentItem = items[currentIndex]
-        onSwipe
-        && onSwipe({
-          direction,
-          id: currentIndex,
-          children: currentItem,
-        })
-
-        setleaveValue(direction, leaveMap[direction])
-
-        if (history) {
-          setHistoryState((prevHistory) => {
-            const newHistory = [...prevHistory, { items, direction }]
-            return newHistory.length > historyDepth + 1
-              ? newHistory.slice(1)
-              : newHistory
-          })
-          setRedoStack([])
         }
 
-        setItems(prevItems => prevItems.slice(1))
-        setCurrentIndex(prevIndex => prevIndex + 1)
+        try {
+          setleaveValue(direction, leaveMap[direction])
+
+          if (onSwipe) {
+            await onSwipe({
+              direction,
+              index: currentIndex,
+            })
+          }
+        }
+        catch (error) {
+          console.error('Swipe handling error:', error)
+        }
       },
-      [onSwipe, items, currentIndex, leaveMap, history, historyDepth],
+      [onSwipe, items, currentIndex, leaveMap, isProcessing],
     )
-
-    const handleUndo = useCallback(() => {
-      if (!history) {
-        console.warn(
-          'To enable undo, redo, and reset functionality in Swiper, ensure that the history prop is passed correctly. This will allow for tracking navigation history and enable restoring previous states.',
-        )
-      }
-      if (historyState.length > 1) {
-        setRedoStack(prevRedoStack => [
-          {
-            items,
-            direction: historyState[historyState.length - 1].direction,
-          },
-          ...prevRedoStack,
-        ])
-        const previousState = historyState[historyState.length - 1]
-        setHistoryState(prevHistory => prevHistory.slice(0, -1)) // Remove the last state
-        setItems(previousState.items)
-        setCurrentIndex(prevIndex => prevIndex - 1)
-      }
-    }, [history, historyState, items])
-
-    const handleRedo = useCallback(() => {
-      if (!history) {
-        console.warn(
-          'To enable undo, redo, and reset functionality in Swiper, ensure that the history prop is passed correctly. This will allow for tracking navigation history and enable restoring previous states.',
-        )
-      }
-      if (redoStack.length > 0) {
-        const nextState = redoStack[0]
-        setHistoryState(prevHistory => [
-          ...prevHistory,
-          { items, direction: nextState.direction },
-        ])
-        setItems(nextState.items)
-        setRedoStack(prevRedoStack => prevRedoStack.slice(1))
-        setCurrentIndex(prevIndex => prevIndex + 1)
-
-        if (nextState.direction) {
-          setleaveValue(nextState.direction, leaveMap[nextState.direction])
-        }
-      }
-    }, [history, redoStack, items, leaveMap])
-
-    const handleReset = useCallback(() => {
-      if (!history) {
-        console.warn(
-          'To enable undo, redo, and reset functionality in Swiper, ensure that the history prop is passed correctly. This will allow for tracking navigation history and enable restoring previous states.',
-        )
-        return
-      }
-      const initialItems = getInitialItems(children)
-      setItems(initialItems)
-      setCurrentIndex(0)
-      setHistoryState([{ items: initialItems, direction: null }])
-      setRedoStack([])
-    }, [children, history])
 
     useImperativeHandle(
       ref,
       () => ({
         swipe: handleSwipe,
-        undo: handleUndo,
-        redo: handleRedo,
-        reset: handleReset,
-        disabled: historyState.length === 1,
-        ...internalRef.current,
       }),
-      [handleSwipe, handleUndo, handleRedo, handleReset, historyState],
+      [handleSwipe],
     )
 
     const value = useMemo(
@@ -231,26 +136,11 @@ export const Swiper = forwardRef<SwiperRef, SwiperProps>(
     )
 
     const onExitComplete = useCallback(() => {
-      if (dispatch) {
-        dispatch({
-          type: SwiperActionTypes.SET_DISABLED,
-          payload: false,
-        })
-      }
       leaveX.set(0)
       leaveY.set(0)
-    }, [leaveX, leaveY, dispatch])
+    }, [leaveX, leaveY])
 
-    const displayedItems = items.slice(0, itemsPerView)
-
-    const onAnimationStart = useCallback(() => {
-      if (dispatch) {
-        dispatch({
-          type: SwiperActionTypes.SET_DISABLED,
-          payload: true,
-        })
-      }
-    }, [dispatch])
+    const displayedItems = items.slice(currentIndex, currentIndex + itemsPerView)
 
     return (
       <SwiperContext.Provider value={value}>
@@ -269,12 +159,11 @@ export const Swiper = forwardRef<SwiperRef, SwiperProps>(
             <AnimatePresence onExitComplete={onExitComplete} initial={false}>
               {displayedItems.map((item, index) => {
                 const zIndex = items.length - index
-                const key = `swiper-item-${item.key}`
+                const key = `swiper-item-${item.key ?? currentIndex + index}`
                 if (index === 0) {
                   return (
                     <SwiperItem
-                      onAnimationStart={onAnimationStart}
-                      id={index}
+                      id={currentIndex + index}
                       zIndex={zIndex}
                       key={key}
                     >

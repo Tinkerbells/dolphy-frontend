@@ -1,4 +1,4 @@
-import type { MobxMutation } from 'mobx-tanstack-query'
+import type { Mutation } from 'mobx-tanstack-query'
 
 import { makeAutoObservable } from 'mobx'
 import { MobxForm } from 'mobx-react-hook-form'
@@ -14,7 +14,7 @@ export class DecksUpdateFormController {
   updateDeckForm: MobxForm<UpdateDeckDto>
 
   constructor(
-    private readonly updateDeckMutation: MobxMutation<Deck, { id: Deck['id'], data: UpdateDeckDto }, NetError>,
+    private readonly updateDeckMutation: Mutation<Deck, { id: Deck['id'], data: UpdateDeckDto }, NetError>,
     private readonly deck: Deck,
   ) {
     makeAutoObservable(this)

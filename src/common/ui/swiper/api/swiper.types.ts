@@ -3,31 +3,13 @@ import type { MotionValue, PanInfo } from 'motion/react'
 
 export type SwipeDirection = 'right' | 'left' | 'up' | 'down'
 
-export interface SwiperState {
-  disabled: boolean
-  disabledRedo: boolean
-  disabledUndo: boolean
-}
-
-export enum SwiperActionTypes {
-  SET_DISABLED = 'SET_DISABLED',
-  SET_REDO_DISABLED = 'SET_REDO_DISABLED',
-  SET_UNDO_DISABLED = 'SET_UNDO_DISABLED',
-}
-
-export type SwiperAction =
-  | { type: SwiperActionTypes.SET_DISABLED, payload: boolean }
-  | { type: SwiperActionTypes.SET_REDO_DISABLED, payload: boolean }
-  | { type: SwiperActionTypes.SET_UNDO_DISABLED, payload: boolean }
-
 export interface SwipeType {
   direction: SwipeDirection
-  id: number
-  children: ReactNode
+  index: number
 }
 
 export interface SwiperProviderProps {
-  onSwipe: (swipe: SwipeType) => void
+  onSwipe: (swipe: SwipeType) => Promise<void> | void
   offsetBoundary?: number
 }
 
@@ -44,6 +26,6 @@ export interface SwiperContextType {
 }
 
 export interface SwiperActionsType {
-  handleSwipe: (direction: SwipeDirection) => void
+  handleSwipe: (direction: SwipeDirection) => Promise<void> | void
   onDrag?: (_e: any, info: PanInfo) => void
 }

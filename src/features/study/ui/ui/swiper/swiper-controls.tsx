@@ -4,7 +4,7 @@ import { Button, Stack, Typography } from '@mui/material'
 import type { SwipeDirection } from '@/common'
 
 interface StudySwiperControlsProps {
-  swipe: (direction: SwipeDirection) => void | undefined
+  swipe: (direction: SwipeDirection) => Promise<void> | void | undefined
   disabled: boolean
 }
 

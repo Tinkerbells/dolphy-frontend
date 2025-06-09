@@ -44,7 +44,6 @@ export const StudyPage = observer(() => {
   const handleSwipe = useCallback(async (swipeData: SwipeType) => {
     const direction = swipeData.direction as SwipeDirection
     const rating = swipeDirectionToRating[direction]
-
     if (rating !== undefined) {
       await controller.gradeCard(rating)
     }
@@ -152,7 +151,12 @@ export const StudyPage = observer(() => {
         {/* </Typography> */}
       </Box>
 
-      <StudySwiper cards={controller.dueCards} handleSwipe={handleSwipe} />
+      <StudySwiper
+        cards={controller.dueCards}
+        currentIndex={controller.currentCardIndex}
+        isProcessing={controller.isProcessingSwipe}
+        handleSwipe={handleSwipe}
+      />
 
       {controller.isGrading && (
         <Box display="flex" justifyContent="center" alignItems="center" mb={2}>

@@ -47,7 +47,7 @@
     "mobx-devtools": "^0.9.27",
     "mobx-react-hook-form": "^3.0.0",
     "mobx-react-lite": "^4.1.0",
-    "mobx-tanstack-query": "^5.1.0",
+    "mobx-tanstack-query": "^5.2.0",
     "motion": "^12.16.0",
     "react": "^18.2.0",
     "react-call": "^1.7.0",

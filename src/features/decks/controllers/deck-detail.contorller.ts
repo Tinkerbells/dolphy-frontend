@@ -1,4 +1,4 @@
-import type { MobxQuery } from 'mobx-tanstack-query'
+import type { Query } from 'mobx-tanstack-query'
 
 import { makeAutoObservable } from 'mobx'
 
@@ -27,8 +27,8 @@ export class DeckDetailController {
     deckDueCards: (id: string) => ['deck', id, 'due-cards'] as const,
   }
 
-  private readonly deckCardsQuery: MobxQuery<Card[], NetError>
-  private readonly deckDueCardsQuery: MobxQuery<FsrsCardWithContent[], NetError>
+  private readonly deckCardsQuery: Query<Card[], NetError>
+  private readonly deckDueCardsQuery: Query<FsrsCardWithContent[], NetError>
 
   private _deckId?: Deck['id'] = undefined
   private _openModal?: CardsModals

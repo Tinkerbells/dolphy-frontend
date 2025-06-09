@@ -10,11 +10,11 @@ import '@fontsource/roboto/400.css'
 import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
 
-import { ModalHandler, theme } from '@/common'
 import { setupMobxDevTools } from '@/devtools'
+import { cacheInstance, ModalHandler, theme } from '@/common'
 
 import { BrowserRouter } from './navigation/router'
-import { compose, ErrorHandler, logError, queryClient } from './react'
+import { compose, ErrorHandler, logError } from './react'
 
 setupMobxDevTools()
 
@@ -25,14 +25,18 @@ const enhance = compose(component =>
   }),
 )
 
-export const App = enhance(() => (
-  <QueryClientProvider client={queryClient}>
-    <ThemeProvider theme={theme}>
-      <BrowserRouter />
-      <CssBaseline />
-      <Toaster />
-      <ModalHandler />
-      <ReactQueryDevtools buttonPosition="top-left" position="right" initialIsOpen={false} />
-    </ThemeProvider>
-  </QueryClientProvider>
-))
+export const App = enhance(() => {
+  const queryClient = cacheInstance.getClient()
+  queryClient.mount()
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider theme={theme}>
+        <BrowserRouter />
+        <CssBaseline />
+        <Toaster />
+        <ModalHandler />
+        <ReactQueryDevtools buttonPosition="top-left" position="right" initialIsOpen={false} />
+      </ThemeProvider>
+    </QueryClientProvider>
+  )
+})
