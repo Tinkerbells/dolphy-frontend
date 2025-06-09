@@ -11,6 +11,7 @@ import {
   IconButton,
   LinearProgress,
   Paper,
+  Skeleton,
   Typography,
 } from '@mui/material'
 
@@ -66,7 +67,7 @@ export const StudyPage = observer(() => {
     )
   }
 
-  if (!controller.dueCards || controller.dueCards.length === 0 || controller.isSessionComplete) {
+  if (!controller.dueCards || controller.dueCards.length === 0) {
     return (
       <Container maxWidth="md" sx={{ mt: 12 }}>
         <Paper sx={{ p: 4, textAlign: 'center' }}>
@@ -151,12 +152,26 @@ export const StudyPage = observer(() => {
         {/* </Typography> */}
       </Box>
 
-      <StudySwiper
-        cards={controller.dueCards}
-        currentIndex={controller.currentCardIndex}
-        isProcessing={controller.isProcessingSwipe}
-        handleSwipe={handleSwipe}
-      />
+      {controller.isRefetching
+        ? (
+            <Box sx={{ height: 400, display: 'flex', alignItems: 'center', flexDirection: 'column', gap: 2 }}>
+              <Skeleton variant="rectangular" height={300} width={400} sx={{ borderRadius: 2 }} />
+              <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
+                <Skeleton variant="rectangular" width={80} height={40} sx={{ borderRadius: 1 }} />
+                <Skeleton variant="rectangular" width={80} height={40} sx={{ borderRadius: 1 }} />
+                <Skeleton variant="rectangular" width={80} height={40} sx={{ borderRadius: 1 }} />
+                <Skeleton variant="rectangular" width={80} height={40} sx={{ borderRadius: 1 }} />
+              </Box>
+            </Box>
+          )
+        : (
+            <StudySwiper
+              cards={controller.dueCards}
+              currentIndex={controller.currentCardIndex}
+              isProcessing={controller.isProcessingSwipe}
+              handleSwipe={handleSwipe}
+            />
+          )}
 
       {controller.isGrading && (
         <Box display="flex" justifyContent="center" alignItems="center" mb={2}>

@@ -140,7 +140,9 @@ export const Swiper = forwardRef<SwiperRef, SwiperProps>(
       leaveY.set(0)
     }, [leaveX, leaveY])
 
-    const displayedItems = items.slice(currentIndex, currentIndex + itemsPerView)
+    const safeCurrentIndex = Math.min(currentIndex, Math.max(0, items.length - 1))
+    const displayedItems = items.slice(safeCurrentIndex, safeCurrentIndex + itemsPerView)
+    console.log('displayedItems', displayedItems)
 
     return (
       <SwiperContext.Provider value={value}>
@@ -159,11 +161,11 @@ export const Swiper = forwardRef<SwiperRef, SwiperProps>(
             <AnimatePresence onExitComplete={onExitComplete} initial={false}>
               {displayedItems.map((item, index) => {
                 const zIndex = items.length - index
-                const key = `swiper-item-${item.key ?? currentIndex + index}`
+                const key = `swiper-item-${item.key ?? safeCurrentIndex + index}`
                 if (index === 0) {
                   return (
                     <SwiperItem
-                      id={currentIndex + index}
+                      id={safeCurrentIndex + index}
                       zIndex={zIndex}
                       key={key}
                     >

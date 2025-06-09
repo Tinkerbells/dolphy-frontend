@@ -25,13 +25,15 @@ export function StudySwiper({ cards, currentIndex, isProcessing, handleSwipe }: 
   } = useSwiper()
 
   const swiperItems = useMemo(() => {
-    return cards.map((cardData, index) => (
+    return cards.map(cardData => (
       <SwiperStudyCard
-        key={`study-card-${cardData.id}-${index}`}
+        key={`study-card-${cardData.cardId}-${cardData.id}`}
         cardData={cardData}
       />
     ))
   }, [cards])
+
+  console.log('swiperItems: ', swiperItems)
 
   return (
     <Box sx={{ mb: 3, height: '100%', width: '100%', position: 'relative' }}>

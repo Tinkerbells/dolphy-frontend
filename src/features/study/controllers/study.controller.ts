@@ -34,6 +34,7 @@ export class StudyController {
 
   private _currentCardIndex = 0
   private _isProcessingSwipe = false
+  private _isRefetching = false
 
   private readonly dueCardsQuery: Query<FsrsCardWithContent[], NetError>
   private readonly gradeCardMutation: Mutation<FsrsCardWithContent, GradeCardDto, NetError>
@@ -65,16 +66,10 @@ export class StudyController {
     this.gradeCardMutation = this.cache.createMutation<FsrsCardWithContent, GradeCardDto, NetError>(
       (dto: GradeCardDto) => this.fsrsService.grade(dto),
       {
-        onSuccess: (_, variables) => {
-          this._updateSessionStats(variables.rating)
-
+        onSuccess: () => {
           // Обновляем данные каждые несколько оценок для производительности
           if (this._sessionStats.total % 3 === 0) {
             this._refetchDueCards()
-          }
-
-          if (this.isSessionComplete) {
-            this._showSessionResults()
           }
         },
         onError: (error) => {
@@ -86,7 +81,17 @@ export class StudyController {
   }
 
   get dueCards(): FsrsCardWithContent[] | undefined {
-    return this.dueCardsQuery.result.data
+    const cards = this.dueCardsQuery.result.data
+    if (!cards)
+      return undefined
+    console.log('Due cards: ', cards.length)
+
+    // Сортируем карточки по дате изучения (раньше = приоритет)
+    return [...cards].sort((a, b) => {
+      const dateA = new Date(a.due).getTime()
+      const dateB = new Date(b.due).getTime()
+      return dateA - dateB
+    })
   }
 
   get isLoading(): boolean {
@@ -95,6 +100,10 @@ export class StudyController {
 
   get isGrading(): boolean {
     return this.gradeCardMutation.result.isPending
+  }
+
+  get isRefetching(): boolean {
+    return this._isRefetching
   }
 
   get currentCard(): FsrsCardWithContent | undefined {
@@ -116,7 +125,8 @@ export class StudyController {
     if (!this.dueCards) {
       return 0
     }
-    return this.dueCards.length - this._currentCardIndex
+    // Calculate remaining cards based on current position and available cards
+    return Math.max(0, this.dueCards.length - this._currentCardIndex)
   }
 
   get sessionStats() {
@@ -141,8 +151,19 @@ export class StudyController {
         rating,
       }
 
-      await this.gradeCardMutation.mutate(gradeDto)
       this._currentCardIndex++
+      this._updateSessionStats(rating)
+
+      this.gradeCardMutation.mutate(gradeDto).catch((error) => {
+        this._currentCardIndex--
+        this._revertSessionStats(rating)
+        console.error('Grade card error (optimistic rollback):', error)
+        this.notify.error('Ошибка при оценке карточки. Изменения отменены.')
+      })
+
+      if (this.isSessionComplete) {
+        this._showSessionResults()
+      }
     }
     finally {
       this._isProcessingSwipe = false
@@ -192,8 +213,26 @@ export class StudyController {
     }
   }
 
+  private _revertSessionStats(rating: Rating): void {
+    this._sessionStats.total--
+    if (rating === Rating.Good || rating === Rating.Easy) {
+      this._sessionStats.correct--
+    }
+    else {
+      this._sessionStats.incorrect--
+    }
+  }
+
   private async _refetchDueCards(): Promise<void> {
-    await this.dueCardsQuery.refetch()
+    this._isRefetching = true
+    try {
+      await this.dueCardsQuery.refetch()
+      // Reset current card index since the array has changed
+      this._currentCardIndex = 0
+    }
+    finally {
+      this._isRefetching = false
+    }
   }
 
   private _showSessionResults(): void {
