@@ -22,15 +22,10 @@ import {
 
 export class StudyController {
   private readonly keys = {
-    deckCards: ['deck', 'cards'] as const,
-    deckDueCards: (id: string) => ['deck', id, 'due-cards'] as const,
     dueCards: (deckId: string) => ['study', deckId] as const,
   }
 
   private _deckId: Deck['id']
-  private _currentCardIndex = 0
-  private _isCardFlipped = false
-  private _gradedCardsCount = 0
   private _sessionStats = {
     total: 0,
     correct: 0,
@@ -70,21 +65,20 @@ export class StudyController {
       (dto: GradeCardDto) => this.fsrsService.grade(dto),
       {
         onSuccess: (_, variables) => {
-          // TODO: добавить i18n в notify
           this._updateSessionStats(variables.rating)
-          this._moveToNextCard()
-          this._gradedCardsCount++
-          if (this._gradedCardsCount % 3 === 0) {
+
+          // Обновляем данные каждые несколько оценок для производительности
+          if (this._sessionStats.total % 3 === 0) {
             this._refetchDueCards()
           }
+
           if (this.isSessionComplete) {
             this._showSessionResults()
           }
-          // this.notify.success('Карточка успешно оценена')
         },
         onError: (error) => {
-          // this.notify.error('Ошибка при оценке карточки')
           console.error('Grade card error:', error)
+          this.notify.error('Ошибка при оценке карточки')
         },
       },
     )
@@ -106,25 +100,14 @@ export class StudyController {
     if (!this.dueCards || this.dueCards.length === 0) {
       return undefined
     }
-    return this.dueCards[this._currentCardIndex]
-  }
-
-  get isCardFlipped(): boolean {
-    return this._isCardFlipped
-  }
-
-  get progress(): number {
-    if (!this.dueCards || this.dueCards.length === 0) {
-      return 100
-    }
-    return Math.round((this._currentCardIndex / this.dueCards.length) * 100)
+    return this.dueCards[0] // Первая карточка в списке - текущая
   }
 
   get remainingCards(): number {
     if (!this.dueCards) {
       return 0
     }
-    return this.dueCards.length - this._currentCardIndex
+    return this.dueCards.length
   }
 
   get sessionStats() {
@@ -133,10 +116,6 @@ export class StudyController {
 
   get isSessionComplete(): boolean {
     return this.remainingCards === 0
-  }
-
-  flipCard(): void {
-    this._isCardFlipped = !this._isCardFlipped
   }
 
   async gradeCard(rating: Rating): Promise<void> {
@@ -155,16 +134,34 @@ export class StudyController {
 
   finishSession(deckName?: Deck['name']) {
     return async () => {
-      await this.cache.getClient().invalidateQueries({ queryKey: this.keys.deckDueCards(this._deckId) })
+      // Инвалидируем кэш для обновления статистики колоды
+      await this.cache.getClient().invalidateQueries({
+        queryKey: ['deck', this._deckId, 'due-cards'],
+      })
+
       this.router.navigate(
         root.decks.detail.$buildPath({
           params: { id: this._deckId! },
         }),
-        { state: root.decks.detail.$buildState({
-          state: { deckName },
-        }) },
+        {
+          state: root.decks.detail.$buildState({
+            state: { deckName },
+          }),
+        },
       )
     }
+  }
+
+  resetSessionStats(): void {
+    this._sessionStats = {
+      total: 0,
+      correct: 0,
+      incorrect: 0,
+    }
+  }
+
+  async refreshDueCards(): Promise<void> {
+    await this._refetchDueCards()
   }
 
   private _updateSessionStats(rating: Rating): void {
@@ -177,21 +174,17 @@ export class StudyController {
     }
   }
 
-  private _moveToNextCard(): void {
-    this._currentCardIndex++
-    this._isCardFlipped = false
-  }
-
   private async _refetchDueCards(): Promise<void> {
     await this.dueCardsQuery.refetch()
   }
 
   private _showSessionResults(): void {
-    // const { total, correct } = this._sessionStats
+    const { total, correct } = this._sessionStats
+    const accuracy = total > 0 ? Math.round((correct / total) * 100) : 0
 
-    // this.notify.success(
-    //   `Сессия завершена! Точность: ${accuracy}% (${correct}/${total})`,
-    // )
+    this.notify.success(
+      `Сессия завершена! Точность: ${accuracy}% (${correct}/${total})`,
+    )
   }
 }
 

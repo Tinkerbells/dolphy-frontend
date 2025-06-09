@@ -1,4 +1,4 @@
-import type { PanInfo } from 'framer-motion'
+import type { PanInfo } from 'motion/react'
 import type {
   Dispatch,
   HTMLAttributes,
@@ -6,11 +6,10 @@ import type {
 } from 'react'
 
 import { Box } from '@mui/material'
-import { AnimatePresence, useMotionValue } from 'framer-motion'
+import { AnimatePresence, useMotionValue } from 'motion/react'
 import React, {
   createContext,
   forwardRef,
-  SetStateAction,
   useCallback,
   useEffect,
   useImperativeHandle,
@@ -131,7 +130,6 @@ export const Swiper = forwardRef<SwiperRef, SwiperProps>(
         if (history) {
           setHistoryState((prevHistory) => {
             const newHistory = [...prevHistory, { items, direction }]
-            console.log(newHistory)
             return newHistory.length > historyDepth + 1
               ? newHistory.slice(1)
               : newHistory
@@ -265,6 +263,7 @@ export const Swiper = forwardRef<SwiperRef, SwiperProps>(
               alignItems: 'center',
               justifyContent: 'center',
             }}
+            className={className}
             {...props}
           >
             <AnimatePresence onExitComplete={onExitComplete} initial={false}>

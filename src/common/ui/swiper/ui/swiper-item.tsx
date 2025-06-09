@@ -4,14 +4,14 @@ import type {
 import type {
   HTMLMotionProps,
   PanInfo,
-} from 'framer-motion'
+} from 'motion/react'
 
 import {
   easeInOut,
   motion,
   useMotionValue,
   useTransform,
-} from 'framer-motion'
+} from 'motion/react'
 import {
   cloneElement,
   createContext,
@@ -22,6 +22,7 @@ import {
 
 import type { SwipeDirection, SwiperItemContextType } from '../api'
 
+import styles from './swiper-item.module.css'
 import { getDirection, useSwiperContext, useSwiperContextActions } from '../lib'
 
 export const SwiperItemContext = createContext<SwiperItemContextType | null>(
@@ -96,7 +97,6 @@ export const SwiperItem = forwardRef<HTMLDivElement, SwiperItemProps>(
     return (
       <SwiperItemContext.Provider value={value}>
         <motion.div
-          onAnimationStart={() => console.log('@')}
           drag
           ref={ref}
           animate={{ scale: 1 }}
@@ -125,7 +125,7 @@ export const SwiperItem = forwardRef<HTMLDivElement, SwiperItemProps>(
             transition: { duration: 0.4, ease: easeInOut },
           }}
           data-testid="active-card"
-          className="absolute cursor-grab"
+          className={styles.swiperItem}
           {...props}
         >
           {cloneElement(children as ReactElement, {
