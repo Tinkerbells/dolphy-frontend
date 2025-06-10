@@ -13,7 +13,6 @@ import {
   IconButton,
   LinearProgress,
   Paper,
-  Skeleton,
   Typography,
 } from '@mui/material'
 
@@ -147,42 +146,14 @@ export const StudyPage = observer(() => {
           value={progress}
           sx={{ height: 8, borderRadius: 4 }}
         />
-        {/* <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}> */}
-        {/*   {t('cards:study.cardsRemaining')} */}
-        {/*   : */}
-        {/*   {controller.dueCards.length} */}
-        {/* </Typography> */}
       </Box>
 
-      {controller.isRefetching
-        ? (
-            <Box sx={{ height: 400, display: 'flex', alignItems: 'center', flexDirection: 'column', gap: 2 }}>
-              <Skeleton variant="rectangular" height={300} width={400} sx={{ borderRadius: 2 }} />
-              <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
-                <Skeleton variant="rectangular" width={80} height={40} sx={{ borderRadius: 1 }} />
-                <Skeleton variant="rectangular" width={80} height={40} sx={{ borderRadius: 1 }} />
-                <Skeleton variant="rectangular" width={80} height={40} sx={{ borderRadius: 1 }} />
-                <Skeleton variant="rectangular" width={80} height={40} sx={{ borderRadius: 1 }} />
-              </Box>
-            </Box>
-          )
-        : (
-            <StudySwiper
-              cards={controller.dueCards}
-              currentIndex={controller.currentCardIndex}
-              isProcessing={controller.isProcessingSwipe}
-              handleSwipe={handleSwipe}
-            />
-          )}
-
-      {controller.isGrading && (
-        <Box display="flex" justifyContent="center" alignItems="center" mb={2}>
-          <CircularProgress size={24} sx={{ mr: 1 }} />
-          <Typography variant="body2" color="text.secondary">
-            {t('cards:study.grading')}
-          </Typography>
-        </Box>
-      )}
+      <StudySwiper
+        cards={controller.dueCards}
+        currentIndex={0}
+        isProcessing={controller.isProcessingSwipe}
+        handleSwipe={handleSwipe}
+      />
     </Container>
   )
 })

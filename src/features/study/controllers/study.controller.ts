@@ -36,6 +36,7 @@ export class StudyController {
   private _currentCardIndex = 0
   private _isProcessingSwipe = false
   private _isRefetching = false
+  private _localDueCards: FsrsCardWithContent[] | undefined = undefined
 
   private _undoStack: Array<{
     cardId: string
@@ -90,12 +91,6 @@ export class StudyController {
     this.gradeCardMutation = this.cache.createMutation<FsrsCardWithContent, GradeCardDto, NetError>(
       (dto: GradeCardDto) => this.fsrsService.grade(dto),
       {
-        onSuccess: () => {
-          // Обновляем данные каждые несколько оценок для производительности
-          if (this._sessionStats.total % 3 === 0) {
-            this._refetchDueCards()
-          }
-        },
         onError: (error) => {
           console.error('Grade card error:', error)
           this.notify.error('Ошибка при оценке карточки')
@@ -107,7 +102,6 @@ export class StudyController {
       (dto: UndoGradeCardDto) => this.fsrsService.undoGrade(dto),
       {
         onSuccess: () => {
-          this._refetchDueCards()
           this.notify.success('Оценка карточки отменена')
         },
         onError: (error) => {
@@ -119,17 +113,18 @@ export class StudyController {
   }
 
   get dueCards(): FsrsCardWithContent[] | undefined {
-    const cards = this.dueCardsQuery.result.data
-    if (!cards)
-      return undefined
-    console.log('Due cards: ', cards.length)
+    const serverCards = this.dueCardsQuery.result.data
 
-    // Сортируем карточки по дате изучения (раньше = приоритет)
-    return [...cards].sort((a, b) => {
-      const dateA = new Date(a.due).getTime()
-      const dateB = new Date(b.due).getTime()
-      return dateA - dateB
-    })
+    // Initialize local cards from server data if not set
+    if (serverCards && !this._localDueCards) {
+      this._localDueCards = [...serverCards].sort((a, b) => {
+        const dateA = new Date(a.due).getTime()
+        const dateB = new Date(b.due).getTime()
+        return dateA - dateB
+      })
+    }
+
+    return this._localDueCards
   }
 
   get isLoading(): boolean {
@@ -148,7 +143,7 @@ export class StudyController {
     if (!this.dueCards || this.dueCards.length === 0) {
       return undefined
     }
-    return this.dueCards[this._currentCardIndex]
+    return this.dueCards[0]
   }
 
   get currentCardIndex(): number {
@@ -163,8 +158,7 @@ export class StudyController {
     if (!this.dueCards) {
       return 0
     }
-    // Calculate remaining cards based on current position and available cards
-    return Math.max(0, this.dueCards.length - this._currentCardIndex)
+    return Math.max(0, this.dueCards.length)
   }
 
   get sessionStats() {
@@ -189,7 +183,7 @@ export class StudyController {
 
   async gradeCard(rating: Rating): Promise<void> {
     const currentCard = this.currentCard
-    if (!currentCard || this._isProcessingSwipe) {
+    if (!currentCard || this._isProcessingSwipe || !this._localDueCards) {
       return
     }
 
@@ -205,21 +199,26 @@ export class StudyController {
       this._undoStack.push({
         cardId: currentCard.cardId,
         rating,
-        cardIndex: this._currentCardIndex,
+        cardIndex: 0, // Always 0 since we remove from the front
         sessionStats: { ...this._sessionStats },
       })
 
       // Clear redo stack when new action is performed
       this._redoStack = []
 
-      this._currentCardIndex++
+      // Optimistically remove the current card from local array
+      this._localDueCards = this._localDueCards.slice(1)
       this._updateSessionStats(rating)
 
       this.gradeCardMutation.mutate(gradeDto).catch((error) => {
-        // Rollback optimistic update
-        this._undoStack.pop()
-        this._currentCardIndex--
-        this._revertSessionStats(rating)
+        // Rollback optimistic update - restore the card at the front
+        if (this._undoStack.length > 0) {
+          const lastAction = this._undoStack.pop()
+          if (lastAction && this._localDueCards) {
+            this._localDueCards = [currentCard, ...this._localDueCards]
+            this._revertSessionStats(rating)
+          }
+        }
         console.error('Grade card error (optimistic rollback):', error)
         this.notify.error('Ошибка при оценке карточки. Изменения отменены.')
       })
@@ -254,7 +253,7 @@ export class StudyController {
   }
 
   undoLastGrade(): void {
-    if (!this.canUndo || this.isUndoing) {
+    if (!this.canUndo || this.isUndoing || !this._localDueCards) {
       return
     }
 
@@ -269,33 +268,41 @@ export class StudyController {
 
     // Save current state for potential rollback
     const currentState = {
-      cardIndex: this._currentCardIndex,
       sessionStats: { ...this._sessionStats },
+      localCards: [...this._localDueCards],
     }
 
     // Move action to redo stack
     this._redoStack.push({
       cardId: lastAction.cardId,
       rating: lastAction.rating,
-      cardIndex: this._currentCardIndex,
+      cardIndex: 0,
       sessionStats: { ...this._sessionStats },
     })
 
-    // Restore previous state
-    this._currentCardIndex = lastAction.cardIndex
+    // Find the card from server data to restore it
+    const serverCards = this.dueCardsQuery.result.data
+    const cardToRestore = serverCards?.find(card => card.cardId === lastAction.cardId)
+
+    if (cardToRestore) {
+      // Restore the card at the front
+      this._localDueCards = [cardToRestore, ...this._localDueCards]
+    }
+
+    // Restore previous session stats
     this._sessionStats = { ...lastAction.sessionStats }
 
     this.undoGradeCardMutation.mutate(undoDto).catch(() => {
       // Rollback if mutation fails
       this._undoStack.push(lastAction)
       this._redoStack.pop()
-      this._currentCardIndex = currentState.cardIndex
       this._sessionStats = { ...currentState.sessionStats }
+      this._localDueCards = [...currentState.localCards]
     })
   }
 
   redoLastGrade(): void {
-    if (!this.canRedo || this.isGrading) {
+    if (!this.canRedo || this.isGrading || !this._localDueCards) {
       return
     }
 
@@ -311,28 +318,28 @@ export class StudyController {
 
     // Save current state for potential rollback
     const currentState = {
-      cardIndex: this._currentCardIndex,
       sessionStats: { ...this._sessionStats },
+      localCards: [...this._localDueCards],
     }
 
     // Move action back to undo stack
     this._undoStack.push({
       cardId: redoAction.cardId,
       rating: redoAction.rating,
-      cardIndex: this._currentCardIndex,
+      cardIndex: 0,
       sessionStats: { ...this._sessionStats },
     })
 
-    // Apply the redo action
-    this._currentCardIndex = redoAction.cardIndex
+    // Remove the first card (redo the grading)
+    this._localDueCards = this._localDueCards.slice(1)
     this._sessionStats = { ...redoAction.sessionStats }
 
     this.gradeCardMutation.mutate(gradeDto).catch(() => {
       // Rollback if mutation fails
       this._redoStack.push(redoAction)
       this._undoStack.pop()
-      this._currentCardIndex = currentState.cardIndex
       this._sessionStats = { ...currentState.sessionStats }
+      this._localDueCards = [...currentState.localCards]
     })
   }
 
@@ -345,6 +352,7 @@ export class StudyController {
     this._currentCardIndex = 0
     this._undoStack = []
     this._redoStack = []
+    this._localDueCards = undefined
   }
 
   async refreshDueCards(): Promise<void> {
@@ -375,7 +383,8 @@ export class StudyController {
     this._isRefetching = true
     try {
       await this.dueCardsQuery.refetch()
-      // Reset current card index since the array has changed
+      // Reset local state to reinitialize from fresh server data
+      this._localDueCards = undefined
       this._currentCardIndex = 0
     }
     finally {
