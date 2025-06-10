@@ -1,6 +1,5 @@
 import { observer } from 'mobx-react-lite'
 import { useEffect, useState } from 'react'
-import { styled } from '@mui/material/styles'
 import { useTranslation } from 'react-i18next'
 import LogoutIcon from '@mui/icons-material/Logout'
 import {
@@ -13,18 +12,11 @@ import {
   Skeleton,
   Toolbar,
   Tooltip,
-  Typography,
 } from '@mui/material'
 
 import { profile } from './external'
 import { ThemeSwitcher } from '../theme-switcher'
 import { LanguageSwitcher } from '../language-switcher'
-
-const CenteredNavigation = styled(Box)(() => ({
-  flexGrow: 1,
-  display: 'flex',
-  justifyContent: 'center',
-}))
 
 export const AuthHeader = observer(() => {
   const { logout, isLoading, user, refetch } = profile
@@ -53,22 +45,7 @@ export const AuthHeader = observer(() => {
   return (
     <AppBar position="fixed" color="default" elevation={0}>
       <Toolbar sx={{ padding: 1 / 2 }}>
-        {/* Logo/Brand */}
-        <Typography
-          variant="h6"
-          component="div"
-          sx={theme => ({
-            fontWeight: 'bold',
-            color: theme.palette.primary.main,
-            mr: 2,
-          })}
-        >
-          {t('app.name')}
-        </Typography>
-
-        <CenteredNavigation>
-          {/* Навигационные элементы могут быть добавлены здесь */}
-        </CenteredNavigation>
+        <Box sx={{ flexGrow: 1 }} />
 
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <LanguageSwitcher />

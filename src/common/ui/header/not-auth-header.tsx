@@ -1,24 +1,16 @@
 import { useNavigate } from 'react-router'
-import { styled } from '@mui/material/styles'
 import { useTranslation } from 'react-i18next'
 import {
   AppBar,
   Box,
   Button,
   Toolbar,
-  Typography,
 } from '@mui/material'
 
 import { root } from '@/app/navigation/routes'
 
 import { ThemeSwitcher } from '../theme-switcher'
 import { LanguageSwitcher } from '../language-switcher'
-
-const CenteredNavigation = styled(Box)(() => ({
-  flexGrow: 1,
-  display: 'flex',
-  justifyContent: 'center',
-}))
 
 export const NotAuthHeader: React.FC = () => {
   const { t } = useTranslation(['common', 'auth'])
@@ -35,22 +27,7 @@ export const NotAuthHeader: React.FC = () => {
   return (
     <AppBar position="static" color="default" elevation={0}>
       <Toolbar sx={{ padding: 1 / 2 }}>
-        {/* Logo/Brand */}
-        <Typography
-          variant="h6"
-          component="div"
-          sx={theme => ({
-            fontWeight: 'bold',
-            color: theme.palette.primary.main,
-            mr: 2,
-          })}
-        >
-          {t('app.name')}
-        </Typography>
-
-        <CenteredNavigation>
-          {/* Центрированный контент может быть добавлен позже */}
-        </CenteredNavigation>
+        <Box sx={{ flexGrow: 1 }} />
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <LanguageSwitcher />

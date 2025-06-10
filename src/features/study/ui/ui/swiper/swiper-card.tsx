@@ -23,9 +23,9 @@ export interface SwiperStudyCardProps {
 }
 
 const StyledCard = styled(Card)(({ theme }) => ({
-  // 'aspectRatio': '100/125',
+  'aspectRatio': '1/1',
   'position': 'absolute',
-  'height': 400,
+  'maxWidth': 400,
   'width': '100%',
   'backfaceVisibility': 'hidden',
   'WebkitBackfaceVisibility': 'hidden',
@@ -45,8 +45,8 @@ const StyledCardBack = styled(StyledCard)(() => ({
 
 const CardContainer = styled(Box)(() => ({
   perspective: '1000px',
+  height: '100%',
   width: '100%',
-  height: '400px',
   position: 'relative',
 }))
 
@@ -98,7 +98,7 @@ function SwiperStudyCardActive({ cardData }: SwiperStudyCardProps) {
   }
 
   return (
-    <Box sx={{ width: '400px', height: '100%', position: 'relative' }}>
+    <>
       {/* Карточка */}
       <CardContainer>
         <motion.div
@@ -237,7 +237,7 @@ function SwiperStudyCardActive({ cardData }: SwiperStudyCardProps) {
           />
         </RatingIndicator>
       </motion.div>
-    </Box>
+    </>
   )
 }
 
@@ -246,36 +246,34 @@ function SwiperStudyCardActive({ cardData }: SwiperStudyCardProps) {
  */
 function SwiperStudyCardInactive({ cardData }: SwiperStudyCardProps) {
   return (
-    <Box sx={{ width: '400px', height: '100%', position: 'relative' }}>
-      <CardContainer>
-        <StyledCard sx={{ opacity: 0.1, transform: 'scale(0.95)' }}>
-          <CardContent
+    <CardContainer>
+      <StyledCard sx={{ opacity: 0.1, transform: 'scale(0.95)' }}>
+        <CardContent
+          sx={{
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textAlign: 'center',
+            bgcolor: 'background.paper',
+            padding: 3,
+          }}
+        >
+          <Typography
+            variant="h5"
+            component="div"
             sx={{
-              width: '100%',
-              height: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              textAlign: 'center',
-              bgcolor: 'background.paper',
-              padding: 3,
+              wordBreak: 'break-word',
+              hyphens: 'auto',
+              opacity: 0.7,
             }}
           >
-            <Typography
-              variant="h5"
-              component="div"
-              sx={{
-                wordBreak: 'break-word',
-                hyphens: 'auto',
-                opacity: 0.7,
-              }}
-            >
-              {cardData.card.question}
-            </Typography>
-          </CardContent>
-        </StyledCard>
-      </CardContainer>
-    </Box>
+            {cardData.card.question}
+          </Typography>
+        </CardContent>
+      </StyledCard>
+    </CardContainer>
   )
 }
 

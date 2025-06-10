@@ -44,11 +44,11 @@ export const StudyPage = observer(() => {
   } as const), [])
 
   // Обработчик swipe
-  const handleSwipe = useCallback(async (swipeData: SwipeType) => {
+  const handleSwipe = useCallback((swipeData: SwipeType) => {
     const direction = swipeData.direction as SwipeDirection
     const rating = swipeDirectionToRating[direction]
     if (rating !== undefined) {
-      await controller.gradeCard(rating)
+      controller.gradeCard(rating)
     }
   }, [controller, swipeDirectionToRating])
 
@@ -105,7 +105,7 @@ export const StudyPage = observer(() => {
   }
 
   return (
-    <Container maxWidth="md" sx={theme => ({ mt: 12, mb: 4, height: `calc(100vh - ${theme.mixins.toolbar.minHeight}px)`, overflow: 'hidden' })}>
+    <Container maxWidth="md" sx={theme => ({ mb: 4, mt: `${theme.mixins.toolbar.minHeight}px`, pt: 4, height: `calc(100% - ${theme.mixins.toolbar.minHeight}px)`, overflow: 'hidden' })}>
       {/* Заголовок и управление */}
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <Typography variant="h5" component="h1">

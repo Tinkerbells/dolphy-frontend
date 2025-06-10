@@ -14,7 +14,7 @@ interface StudySwiperProps {
   cards: FsrsCardWithContent[]
   currentIndex: number
   isProcessing: boolean
-  handleSwipe: (swipe: SwipeType) => Promise<void>
+  handleSwipe: (swipe: SwipeType) => void
 }
 
 export function StudySwiper({ cards, currentIndex, isProcessing, handleSwipe }: StudySwiperProps) {
@@ -33,20 +33,20 @@ export function StudySwiper({ cards, currentIndex, isProcessing, handleSwipe }: 
     ))
   }, [cards])
 
-  console.log('swiperItems: ', swiperItems)
-
   return (
-    <Box sx={{ mb: 3, height: '100%', width: '100%', position: 'relative' }}>
-      <Swiper
-        ref={swiperRef}
-        items={swiperItems}
-        currentIndex={currentIndex}
-        isProcessing={isProcessing}
-        onSwipe={handleSwipe}
-        itemsPerView={2}
-        offsetBoundary={150}
-        className={styles.studySwiper}
-      />
+    <Box sx={{ mb: 3, pb: 8, height: '100%', width: '100%', position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between' }}>
+      <Box sx={{ maxWidth: 400, aspectRatio: 1 / 1, width: '100%' }}>
+        <Swiper
+          ref={swiperRef}
+          items={swiperItems}
+          currentIndex={currentIndex}
+          isProcessing={isProcessing}
+          onSwipe={handleSwipe}
+          itemsPerView={2}
+          offsetBoundary={150}
+          className={styles.studySwiper}
+        />
+      </Box>
       <StudySwiperControls swipe={swipe} disabled={disabled || isProcessing} />
     </Box>
   )
