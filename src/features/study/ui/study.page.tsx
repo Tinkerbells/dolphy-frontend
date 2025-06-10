@@ -1,4 +1,3 @@
-import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import UndoIcon from '@mui/icons-material/Undo'
 import RedoIcon from '@mui/icons-material/Redo'
@@ -16,12 +15,9 @@ import {
   Typography,
 } from '@mui/material'
 
-import type { SwipeDirection, SwipeType } from '@/common'
-
 import { root } from '@/app/navigation/routes'
 
 import { StudySwiper } from './ui'
-import { Rating } from '../external'
 import { createStudyController } from '../controllers/study.controller'
 
 /**
@@ -33,32 +29,6 @@ export const StudyPage = observer(() => {
   const { t } = useTranslation(['cards', 'common'])
 
   const controller = useLocalObservable(createStudyController(deckId!))
-
-  // Мапинг направлений swipe на рейтинги
-  const swipeDirectionToRating = useMemo(() => ({
-    left: Rating.Again,
-    down: Rating.Hard,
-    right: Rating.Good,
-    up: Rating.Easy,
-  } as const), [])
-
-  // Обработчик swipe
-  const handleSwipe = useCallback((swipeData: SwipeType) => {
-    const direction = swipeData.direction as SwipeDirection
-    const rating = swipeDirectionToRating[direction]
-    if (rating !== undefined) {
-      controller.gradeCard(rating)
-    }
-  }, [controller, swipeDirectionToRating])
-
-  // Вычисляем прогресс
-  const progress = useMemo(() => {
-    if (!controller.dueCards || controller.dueCards.length === 0) {
-      return 100
-    }
-    const totalCards = controller.sessionStats.total + controller.dueCards.length
-    return totalCards > 0 ? Math.round((controller.sessionStats.total / totalCards) * 100) : 0
-  }, [controller.dueCards, controller.sessionStats.total])
 
   if (controller.isLoading) {
     return (
@@ -75,22 +45,6 @@ export const StudyPage = observer(() => {
           <Typography variant="h4" gutterBottom>
             {t('cards:study.sessionComplete')}
           </Typography>
-          <Box sx={{ my: 3 }}>
-            <Typography variant="h6" color="text.secondary">
-              {t('cards:study.accuracy')}
-              :
-              {
-                Math.round((controller.sessionStats.correct / Math.max(controller.sessionStats.total, 1)) * 100)
-              }
-              %
-            </Typography>
-            <Typography variant="body1" color="text.secondary">
-              {t('cards:study.totalCards')}
-              :
-              {controller.sessionStats.total}
-            </Typography>
-          </Box>
-
           <Button
             variant="contained"
             color="primary"
@@ -143,7 +97,7 @@ export const StudyPage = observer(() => {
       <Box mb={3}>
         <LinearProgress
           variant="determinate"
-          value={progress}
+          value={controller.progress}
           sx={{ height: 8, borderRadius: 4 }}
         />
       </Box>
@@ -151,8 +105,8 @@ export const StudyPage = observer(() => {
       <StudySwiper
         cards={controller.dueCards}
         currentIndex={0}
-        isProcessing={controller.isProcessingSwipe}
-        handleSwipe={handleSwipe}
+        isProcessing={controller.isGrading}
+        handleSwipe={controller.handleSwipe}
       />
     </Container>
   )
