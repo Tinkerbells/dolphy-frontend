@@ -46,7 +46,7 @@ export const DeckDetailPage = observer(() => {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <Container maxWidth="lg" sx={{ mt: 12, mb: 4 }}>
+      <Container maxWidth="lg" sx={theme => ({ mt: `calc(${theme.mixins.toolbar.minHeight}px + 3rem)` })}>
         <Breadcrumbs items={breadcrumbItems} onBackButtonClick={controller.goBackToDecks} />
         <Box display="flex" alignItems="center" mb={3}>
           <Typography variant="h4" component="h1" sx={{ flexGrow: 1 }}>

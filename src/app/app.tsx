@@ -40,7 +40,7 @@ export const App = enhance(() => {
         <BrowserRouter />
         <Toaster />
         <ModalHandler />
-        <ReactQueryDevtools buttonPosition="top-left" position="right" initialIsOpen={false} />
+        <ReactQueryDevtools buttonPosition="bottom-left" position="right" initialIsOpen={false} />
       </ThemeProvider>
     </QueryClientProvider>
   )

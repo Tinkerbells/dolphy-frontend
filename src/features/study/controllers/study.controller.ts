@@ -56,7 +56,6 @@ export class StudyController {
     up: Rating.Easy,
   } as const
 
-  private _currentCardIndex = 0
   private _isProcessingSwipe = false
   private _isRefetching = false
   private _localDueCards: FsrsCardWithContent[] = []
@@ -282,7 +281,6 @@ export class StudyController {
     try {
       await this.dueCardsQuery.refetch()
       this._localDueCards = []
-      this._currentCardIndex = 0
     }
     finally {
       this._isRefetching = false

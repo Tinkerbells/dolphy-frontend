@@ -4,7 +4,7 @@ import type {
   ReactElement,
 } from 'react'
 
-import { Box } from '@mui/material'
+import { Box, useTheme } from '@mui/material'
 import { AnimatePresence, useMotionValue } from 'motion/react'
 import React, {
   createContext,
@@ -143,6 +143,8 @@ export const Swiper = forwardRef<SwiperRef, SwiperProps>(
     const safeCurrentIndex = Math.min(currentIndex, Math.max(0, items.length - 1))
     const displayedItems = items.slice(safeCurrentIndex, safeCurrentIndex + itemsPerView)
 
+    const theme = useTheme()
+
     return (
       <SwiperContext.Provider value={value}>
         <SwiperActionContext.Provider value={actions}>
@@ -159,7 +161,7 @@ export const Swiper = forwardRef<SwiperRef, SwiperProps>(
           >
             <AnimatePresence onExitComplete={onExitComplete} initial={false}>
               {displayedItems.map((item, index) => {
-                const zIndex = items.length - index
+                const zIndex = theme.zIndex.appBar + items.length - index
                 const key = `swiper-item-${item.key ?? safeCurrentIndex + index}`
                 if (index === 0) {
                   return (

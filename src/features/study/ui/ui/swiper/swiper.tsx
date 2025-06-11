@@ -34,8 +34,8 @@ export function StudySwiper({ cards, currentIndex, isProcessing, handleSwipe }: 
   }, [cards])
 
   return (
-    <Box sx={{ mb: 3, pb: 8, height: '100%', width: '100%', position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between' }}>
-      <Box sx={{ maxWidth: 400, aspectRatio: 1 / 1, width: '100%' }}>
+    <Box mb={4} display="flex" flexDirection="column" gap={4} justifyContent="space-between" alignItems="center" sx={{ flexGrow: 1 }}>
+      <Box width={1} sx={{ maxWidth: 400, aspectRatio: 1 / 1 }} my="auto">
         <Swiper
           ref={swiperRef}
           items={swiperItems}

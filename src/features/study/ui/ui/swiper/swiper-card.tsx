@@ -66,7 +66,7 @@ const RatingIndicator = styled(Box)<{ rating: Rating }>(({ theme, rating }) => {
     backgroundColor: colors[rating],
     color: theme.palette.common.white,
     fontWeight: 'bold',
-    zIndex: 10,
+    zIndex: 999,
   }
 })
 

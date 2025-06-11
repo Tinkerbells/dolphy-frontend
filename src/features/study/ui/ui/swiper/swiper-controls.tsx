@@ -1,5 +1,5 @@
+import { Button, Stack } from '@mui/material'
 import { useTranslation } from 'react-i18next'
-import { Button, Stack, Typography } from '@mui/material'
 
 import type { SwipeDirection } from '@/common'
 
@@ -15,53 +15,45 @@ export function StudySwiperControls({ swipe, disabled }: StudySwiperControlsProp
       <Button
         variant="contained"
         color="error"
+        size="large"
         onClick={() => swipe('left')}
         disabled={disabled}
         sx={{ minWidth: 100 }}
       >
         {t('cards:rating.again')}
-        <Typography variant="caption" sx={{ ml: 1 }}>
-          (1)
-        </Typography>
       </Button>
 
       <Button
         variant="contained"
         color="warning"
+        size="large"
         onClick={() => swipe('down')}
         disabled={disabled}
         sx={{ minWidth: 100 }}
       >
         {t('cards:rating.hard')}
-        <Typography variant="caption" sx={{ ml: 1 }}>
-          (2)
-        </Typography>
       </Button>
 
       <Button
         variant="contained"
         color="success"
+        size="large"
         onClick={() => swipe('right')}
         disabled={disabled}
         sx={{ minWidth: 100 }}
       >
         {t('cards:rating.good')}
-        <Typography variant="caption" sx={{ ml: 1 }}>
-          (3)
-        </Typography>
       </Button>
 
       <Button
         variant="contained"
         color="info"
+        size="large"
         onClick={() => swipe('up')}
         disabled={disabled}
         sx={{ minWidth: 100 }}
       >
         {t('cards:rating.easy')}
-        <Typography variant="caption" sx={{ ml: 1 }}>
-          (4)
-        </Typography>
       </Button>
     </Stack>
   )

@@ -58,56 +58,58 @@ export const StudyPage = observer(() => {
   }
 
   return (
-    <Container maxWidth="md" sx={theme => ({ mb: 4, mt: `${theme.mixins.toolbar.minHeight}px`, pt: 4, height: `calc(100% - ${theme.mixins.toolbar.minHeight}px)`, overflow: 'hidden' })}>
-      {/* Заголовок и управление */}
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-        <Typography variant="h5" component="h1">
-          {deckName}
-        </Typography>
+    <Box sx={{ flexGrow: 1, height: '100vh' }}>
+      <Container maxWidth="lg" sx={theme => ({ mt: `calc(${theme.mixins.toolbar.minHeight}px + 3rem)`, display: 'flex', flexDirection: 'column', height: `calc(100% - calc(${theme.mixins.toolbar.minHeight}px + 3rem))` })}>
+        {/* Заголовок и управление */}
+        <Box maxWidth="md" width={1} display="flex" justifyContent="space-between" alignItems="center" mb={2} mx="auto">
+          <Typography variant="h5" component="h1">
+            {deckName}
+          </Typography>
 
-        <Box display="flex" gap={1}>
-          <IconButton
-            onClick={controller.undoLastGrade}
-            disabled={!controller.canUndo}
-            title={t('common:actions.undo')}
-            size="small"
-          >
-            <UndoIcon />
-          </IconButton>
+          <Box display="flex" gap={1}>
+            <IconButton
+              onClick={controller.undoLastGrade}
+              disabled={!controller.canUndo}
+              title={t('common:actions.undo')}
+              size="small"
+            >
+              <UndoIcon />
+            </IconButton>
 
-          <IconButton
-            onClick={controller.redoLastGrade}
-            disabled={!controller.canRedo}
-            title={t('common:actions.redo')}
-            size="small"
-          >
-            <RedoIcon />
-          </IconButton>
+            <IconButton
+              onClick={controller.redoLastGrade}
+              disabled={!controller.canRedo}
+              title={t('common:actions.redo')}
+              size="small"
+            >
+              <RedoIcon />
+            </IconButton>
 
-          <IconButton
-            onClick={controller.finishSession(deckName)}
-            aria-label={t('common:actions.close')}
-          >
-            <CloseIcon />
-          </IconButton>
+            <IconButton
+              onClick={controller.finishSession(deckName)}
+              aria-label={t('common:actions.close')}
+            >
+              <CloseIcon />
+            </IconButton>
+          </Box>
         </Box>
-      </Box>
 
-      {/* Прогресс бар */}
-      <Box mb={3}>
-        <LinearProgress
-          variant="determinate"
-          value={controller.progress}
-          sx={{ height: 8, borderRadius: 4 }}
+        {/* Прогресс бар */}
+        <Box mb={3} maxWidth="md" width={1} mx="auto">
+          <LinearProgress
+            variant="determinate"
+            value={controller.progress}
+            sx={{ height: 8, borderRadius: 4 }}
+          />
+        </Box>
+
+        <StudySwiper
+          cards={controller.dueCards}
+          currentIndex={0}
+          isProcessing={controller.isGrading}
+          handleSwipe={controller.handleSwipe}
         />
-      </Box>
-
-      <StudySwiper
-        cards={controller.dueCards}
-        currentIndex={0}
-        isProcessing={controller.isGrading}
-        handleSwipe={controller.handleSwipe}
-      />
-    </Container>
+      </Container>
+    </Box>
   )
 })

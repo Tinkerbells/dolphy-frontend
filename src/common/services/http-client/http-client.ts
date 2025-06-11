@@ -1,8 +1,9 @@
 import { jwtDecode } from 'jwt-decode'
 
-import type { Env, I18n, PersistStorage } from '@/common'
+import type { Env, I18n, PersistStorage, RouterService } from '@/common'
 
-import { env, i18nInstance } from '@/common'
+import { root } from '@/app/navigation/routes'
+import { env, i18nInstance, router } from '@/common'
 import { FetchMethod, ResponseCode } from '@/types/enums/http.enum'
 
 import type { CustomRequest } from './custom-request'
@@ -34,6 +35,7 @@ class HttpService implements HttpClient {
     private readonly env: Env<ViteEnvironmentVariables>,
     private readonly persistService: PersistStorage,
     private readonly i18n: I18n,
+    private readonly router: RouterService,
   ) {
     if (!this.isAuthorized() && !this._authWhiteList.includes(window.location.pathname)) {
       this.goToAuth()
@@ -63,7 +65,7 @@ class HttpService implements HttpClient {
       if (this._isTokenExpired() && this.isAuthorized()) {
         const refreshed = await this._refreshToken()
         if (!refreshed) {
-          throw new NetError({ code: ResponseCode.AUTH_ERROR, status: 'Ошибка авторизации' })
+          this.goToAuth()
         }
       }
 
@@ -202,8 +204,8 @@ class HttpService implements HttpClient {
   }
 
   protected goToAuth(): void {
-    window.location.assign('/sign-in')
+    router.navigate(root['sign-in'].$path())
   }
 }
 
-export const http = new HttpService(env, localStorageInstance, i18nInstance)
+export const http = new HttpService(env, localStorageInstance, i18nInstance, router)
