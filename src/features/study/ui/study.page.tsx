@@ -71,7 +71,6 @@ export const StudyPage = observer(() => {
               onClick={controller.undoLastGrade}
               disabled={!controller.canUndo}
               title={t('common:actions.undo')}
-              size="small"
             >
               <UndoIcon />
             </IconButton>
@@ -80,7 +79,6 @@ export const StudyPage = observer(() => {
               onClick={controller.redoLastGrade}
               disabled={!controller.canRedo}
               title={t('common:actions.redo')}
-              size="small"
             >
               <RedoIcon />
             </IconButton>
