@@ -1,7 +1,8 @@
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { closeDialogWindow, openDialogWindow, openModalWindow } from '@/common'
+import { CreateCardForm } from '@/features/cards'
+import { closeDialogWindow, closeModalWindowHandler, openDialogWindow, openModalWindow } from '@/common'
 
 import type { DeckDetailController } from '../../controllers'
 
@@ -16,10 +17,10 @@ export function useCardsModals(controller: DeckDetailController) {
     controller.setModalsHandlers({
       create: () => openModalWindow({
         key: 'create-card',
-        element: () => null,
+        element: CreateCardForm,
         props: {
-          // onCancel: closeModalWindowHandler('create-card'),
-          // createCardForm: controller.createCardForm,
+          onCancel: closeModalWindowHandler('create-card'),
+          createCardForm: controller.createCardForm,
         },
         title: t('cards:createCard'),
       }),

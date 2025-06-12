@@ -12,10 +12,10 @@ export function createTheme() {
     cssVariables: {
       colorSchemeSelector: 'class',
     },
-    colorSchemes: {
-      light: colorSchemes.light,
-      dark: colorSchemes.dark,
-    },
+    // colorSchemes: {
+    //   light: colorSchemes.light,
+    //   dark: colorSchemes.dark,
+    // },
     shadows,
     shape: { borderRadius: 8 },
     typography,

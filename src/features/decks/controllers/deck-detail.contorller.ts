@@ -7,6 +7,7 @@ import type { CacheService, Modal, Notify, RouterService } from '@/common'
 
 import { root } from '@/app/navigation/routes'
 import { cacheInstance, modalInstance, notify, router } from '@/common'
+import { CardsCreateFormController } from '@/features/cards/controllers'
 
 import type { Deck } from '../../decks/models/deck.domain'
 import type { Card, CardsRepository, FsrsCardWithContent, FsrsRepository } from '../external'
@@ -29,6 +30,7 @@ export class DeckDetailController {
 
   private readonly deckCardsQuery: Query<Card[], NetError>
   private readonly deckDueCardsQuery: Query<FsrsCardWithContent[], NetError>
+  private cardCreateFormController: CardsCreateFormController
 
   private _deckId?: Deck['id'] = undefined
   private _openModal?: CardsModals
@@ -75,6 +77,7 @@ export class DeckDetailController {
         },
       ),
     )
+    this.cardCreateFormController = new CardsCreateFormController(() => {})
     makeAutoObservable(this, {}, { autoBind: true })
   }
 
@@ -87,6 +90,10 @@ export class DeckDetailController {
       this._deckId = deckId
       this._refetchData()
     }
+  }
+
+  public get createCardForm() {
+    return this.cardCreateFormController.createCardForm
   }
 
   get deckId() {

@@ -1,24 +1,49 @@
-import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator'
+import { Type } from 'class-transformer'
+import {
+  IsArray,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUUID,
+  MaxLength,
+} from 'class-validator'
+
+export class CardMetadataDto {
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  tags?: string[]
+
+  @IsString()
+  @IsOptional()
+  filename?: string
+
+  @IsString()
+  @IsOptional()
+  sourceId?: string
+}
 
 export class CreateCardDto {
   @IsString()
-  @IsNotEmpty({ message: 'Вопрос карточки обязателен' })
-  @MaxLength(1000, { message: 'Вопрос должен быть не более 1000 символов' })
+  @IsNotEmpty()
+  @MaxLength(1000)
   question: string
 
   @IsString()
-  @IsNotEmpty({ message: 'Ответ карточки обязателен' })
-  @MaxLength(2000, { message: 'Ответ должен быть не более 2000 символов' })
+  @IsNotEmpty()
+  @MaxLength(2000)
   answer: string
 
   @IsString()
-  @IsOptional()
-  deckId?: string
+  @IsNotEmpty()
+  source: string
 
+  @Type(() => CardMetadataDto)
   @IsOptional()
-  metadata?: {
-    tags?: string[]
-    source?: string
-    sourceId?: string
-  }
+  metadata?: CardMetadataDto
+
+  @IsString()
+  @IsUUID('4')
+  @IsNotEmpty()
+  deckId: string
 }
